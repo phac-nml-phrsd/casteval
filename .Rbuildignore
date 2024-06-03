@@ -1,2 +1,4 @@
+^renv$
+^renv\.lock$
 ^pipeline\.Rproj$
 ^\.Rproj\.user$
