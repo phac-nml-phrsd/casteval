@@ -39,6 +39,11 @@ create_forecast <- function(data, name=NULL, forecast_time=NULL) {
 # returns the type as a string
 # all input data frames pass through this function to ensure they are well-formatted
 get_format <- function(data) {
+    # empty data frames trip up some of the checks below
+    if(nrow(data) == 0) {
+        stop("data frame is empty")
+    }
+
     cols <- colnames(data)
     # check existence of time column
     if(! "time" %in% cols) {
@@ -68,9 +73,17 @@ get_format <- function(data) {
             stop("raw column not all numeric")
         }
 
+        # get lengths of raw vectors
+        raw_lens <- purrr::map(data["raw"], length)
+
+        if(length(unique(raw_lens)) > 1) {
+            # this could be changed into a warning if necessary
+            # however it would make plotting trajectories difficult down the line
+            stop("raw ensemble vectors have inconsistent lengths")
+        }
+
+        if(raw_lens[[1]])
     }
-
-
 }
 
 # receives the time column (list or vector) and returns a string indicating the type
