@@ -1,3 +1,5 @@
+supported_time_types <- c("POSIXct", "Date", "numeric")
+
 #' Create a forecast
 #'
 #' `create_forecast()` creates a forecast object given data and optional metadata.
@@ -5,7 +7,7 @@
 #'
 #' @param data Forecast data. Either a data frame or list of data frames.
 #'  An ensemble of forecasts can be provided as a list of data frames, in which case it will be aggregated into a single data frame.
-#'  The data frame(s) should contain a column named `time`, which may be of strings, integers, dates, or date-times.
+#'  The data frame(s) should contain a column named `time`, which may be of integers, dates, or date-times.
 #'  No mixing of types is allowed (e.g. `time` may not contain both integers and date-times).
 #' @param name A string specifying the name of the forecast/model.
 #' @param forecast_time An integer, date, or date-time specifying when the forecast was created.
@@ -30,4 +32,39 @@ create_forecast <- function(data, name=NULL, forecast_time=NULL) {
     } else {
         stop("`data` has invalid type. Must be data frame or list of data frames")
     }
+}
+
+
+# takes in a data frame
+# inspects the columns & column names to determine how it's formatted
+# also does input validation
+# returns the type as a string
+# all input data frames pass through this function to ensure they are well-formatted
+get_format <- function(data) {
+    cols <- colnames(data)
+    # check existence of time column
+    if(! "time" %in% cols) {
+        stop("data frame does not contain `time` column")
+    }
+
+    # validate time column
+    time_types <- purrr::map(data["time"], class)
+    num_time_types <- length(unique(time_types))
+
+    if(num_time_types > 1) { # check type consistency
+        stop("`time` column types are not all the same")
+    }
+    
+    if(num_time_types == 0) { # empty data frame edge case
+        warning("data frame has no rows")
+    } else { # check `time` types supported
+        time_types_valid <- any(time_types[[1]] %in% supported_time_types)
+        if(!time_types_valid) {
+            stop(paste0("data frame has time type ", time_types[[1]], ", which is not supported. Supported types are ", paste(supported_time_types, sep=", ")))
+        }
+    }
+
+    # check for existence of various data columns
+    raw_exists <- ("raw" %in% cols)
+    quant_cols <- stringr::str_subset(cols, "^quant_") # all columns whose names start with "quant_" contain quantiles
 }
