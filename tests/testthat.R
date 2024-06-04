@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(forecast-eval)
+library(casteval)
 
-test_check("forecast-eval")
+test_check("casteval")

@@ -1,4 +1,4 @@
 ^renv$
 ^renv\.lock$
-^pipeline\.Rproj$
+^casteval\.Rproj$
 ^\.Rproj\.user$
