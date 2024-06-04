@@ -5,19 +5,29 @@
 #'
 #' @param data Forecast data. Either a data frame or list of data frames.
 #'  An ensemble of forecasts can be provided as a list of data frames, in which case it will be aggregated into a single data frame.
-#' @param name A string containing the name of the forecast/model.
-#' @param forecast_date A string, integer, date, or date-time containing the day the forecast was created. Its type should match the type of values in the `time` column(s) of `data`
+#'  The data frame(s) should contain a column named `time`, which may be of strings, integers, dates, or date-times.
+#'  No mixing of types is allowed (e.g. `time` may not contain both integers and date-times).
+#' @param name A string specifying the name of the forecast/model.
+#' @param forecast_time An integer, date, or date-time specifying when the forecast was created.
+#'  Its type should match the type of values in the `time` column(s) of `data`
+#'  If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to `forecast_time`.
+#'  Additionally, graphs of this forecast will highlight the `forecast_time` using a vertical line.
 #' 
 #' @returns A named list containing the forecast and its metadata
 #' @export
 #'
 #' @examples
 #' # TBD
-create_forecast <- function(data, name=NULL, forecast_date=NULL) {
+create_forecast <- function(data, name=NULL, forecast_time=NULL) {
+    forecast <- list(name=name, forecast_time=forecast_time)
     # we check for data frame first since data frames are also lists
     if(is.data.frame(data)) {
-
+        if(! "time" %in% colnames(data))
+            stop("`data` does not contain `time` column")
+        
     } else if (is.list(data)) {
 
+    } else {
+        stop("`data` has invalid type. Must be data frame or list of data frames")
     }
 }
