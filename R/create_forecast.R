@@ -1,5 +1,3 @@
-supported_time_types <- c("POSIXct", "Date", "numeric")
-
 #' Create a forecast
 #'
 #' `create_forecast()` creates a forecast object given data and optional metadata.
@@ -47,24 +45,52 @@ get_format <- function(data) {
         stop("data frame does not contain `time` column")
     }
 
-    # validate time column
-    time_types <- purrr::map(data["time"], class)
-    num_time_types <- length(unique(time_types))
-
-    if(num_time_types > 1) { # check type consistency
-        stop("`time` column types are not all the same")
-    }
-    
-    if(num_time_types == 0) { # empty data frame edge case
-        warning("data frame has no rows")
-    } else { # check `time` types supported
-        time_types_valid <- any(time_types[[1]] %in% supported_time_types)
-        if(!time_types_valid) {
-            stop(paste0("data frame has time type ", time_types[[1]], ", which is not supported. Supported types are ", paste(supported_time_types, sep=", ")))
-        }
-    }
+    # validate and identify time types (date, datetime, or numeric)
+    time_type <- get_time_type(data["time"])
 
     # check for existence of various data columns
     raw_exists <- ("raw" %in% cols)
     quant_cols <- stringr::str_subset(cols, "^quant_") # all columns whose names start with "quant_" contain quantiles
+    quant_exists <- (length(quant_cols) > 0)
+    mean_exists <- ("mean" %in% cols)
+
+    if(raw_exists) {
+        if(mean_exists) {
+            stop("both raw and mean values provided")
+        }
+        if(quant_exists) {
+            # this could possibly be changed into a warning where the quantiles are simply discarded (and recomputed later if necessary)
+            stop("both raw and quantile values provided. For mean-and-quantiles format, use column name `mean`, not `raw`")
+        }
+
+        # check all raw values numeric (vector or otherwise)
+        if(!column_all(data["raw"], is.numeric)) {
+            stop("raw column not all numeric")
+        }
+
+    }
+
+
+}
+
+# receives the time column (list or vector) and returns a string indicating the type
+# raises error if not valid
+get_time_type <- function(timecol) {
+    # validate time column & get type
+    if(column_all(timecol, lubridate::is.Date)) { # all dates
+        time_type <- "date"
+    } else if(column_all(timecol, lubridate::is.POSIXt)) { # all date-times
+        time_type <- "datetime"
+    } else if(column_all(timecol, is.numeric)) { # all numbers
+        time_type <- "numeric"
+    } else {
+        stop(paste("time column has inconsistent/unsupported types. Supported types are", paste(supported_time_types, sep=", ")))
+    }
+    return time_type
+}
+
+# helper function for validating column types
+# f is a predicate
+column_all <- function(col, f) {
+    all(purrr::map(col, f))
 }
