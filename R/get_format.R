@@ -135,13 +135,13 @@ get_time_type <- function(timecol) {
 #'
 #' @examples
 #' # returns TRUE
-#' column_all(list(1, 2.5, 1.4e7, -10, 5L, Inf, NaN), is.numeric)
+#' casteval:::column_all(list(1, 2.5, 1.4e7, -10, 5L, Inf, NaN), is.numeric)
 #' 
 #' # returns FALSE
-#' column_all(list(1, 2, 3), function(x) {x < 3})
+#' casteval:::column_all(list(1, 2, 3), function(x) {x < 3})
 #' 
 #' # NA is by default a logical value, not a numeric one. Returns FALSE
-#' column_all(list(1, NA), is.numeric)
+#' casteval:::column_all(list(1, NA), is.numeric)
 #' 
 #' # NA gets coerced to NA_real_, because it's in a numeric vector. Returns TRUE
 #' column_all(c(1,NA), is.numeric)
