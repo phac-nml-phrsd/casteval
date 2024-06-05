@@ -147,5 +147,5 @@ get_time_type <- function(timecol) {
 #' # NA gets coerced to NA_real_, because it's in a numeric vector. Returns TRUE
 #' column_all(c(1,NA), is.numeric)
 column_all <- function(col, f) {
-    all(purrr::map(col, f))
+    all(as.logical(purrr::map(col, f)))
 }
