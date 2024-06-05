@@ -22,6 +22,8 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     forecast <- list(name=name, forecast_time=forecast_time)
     # we check for data frame first since data frames are also lists
 
+    # TODO detect lists that should be vectors and convert them to vectors
+
     # A single data frame 
     if(is.data.frame(dat)) {
         # validate data frame & get its format
