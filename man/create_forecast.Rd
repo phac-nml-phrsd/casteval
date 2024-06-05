@@ -4,12 +4,12 @@
 \alias{create_forecast}
 \title{Create a forecast}
 \usage{
-create_forecast(data, name = NULL, forecast_time = NULL)
+create_forecast(dat, name = NULL, forecast_time = NULL)
 }
 \arguments{
-\item{data}{Forecast data. Either a data frame or list of data frames.
+\item{dat}{Forecast data. Either a data frame or list of data frames.
 An ensemble of forecasts can be provided as a list of data frames, in which case it will be aggregated into a single data frame.
-The data frame(s) should contain a column named \code{time}, which may be of strings, integers, dates, or date-times.
+The data frame(s) should contain a column named \code{time}, which may be of integers, dates, or date-times.
 No mixing of types is allowed (e.g. \code{time} may not contain both integers and date-times).}
 
 \item{name}{A string specifying the name of the forecast/model.}
