@@ -29,5 +29,5 @@ casteval:::column_all(list(1, 2, 3), function(x) {x < 3})
 casteval:::column_all(list(1, NA), is.numeric)
 
 # NA gets coerced to NA_real_, because it's in a numeric vector. Returns TRUE
-column_all(c(1,NA), is.numeric)
+casteval:::column_all(c(1,NA), is.numeric)
 }
