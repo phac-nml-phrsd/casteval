@@ -51,10 +51,40 @@ combine_data_frames <- function(dfs) {
 #' @returns The combined data frame.
 combine_two_data_frames <- function(df1, df2) {
     # when dplyr::left_join() encounters identical (non-keyed) column names, it automatically renames them
-    # however we do this renaming manually to avoid confusion
+    # however we do this renaming manually to avoid confusion and possible bugs
+
+    # get the current lengths of the vectors that df1 and df2 contain
+    # this is important because of how dplyr::full_join() works
+    stopif(nrows(df1 == 0))
+    stopif(nrows(df2 == 0))
+    df1_len <- length(df1$raw[[1]])
+    df2_len <- length(df2$raw[[1]])
 
     df1 |>
-        dplyr::rename(temp=raw) |> # rename raw -> temp
-        dplyr::left_join(df2, dplyr::join_by(time)) |> # join by time column
-        dplyr::mutate()# merge `temp` and `raw` columns
+        # rename raw -> raw1
+        dplyr::rename(raw1=raw) |>
+        # join by time column
+        dplyr::full_join(df2, dplyr::join_by(time)) |>
+        # full_join() introduces NULLs when a key is in one data frame but not the other,
+        # so we have to replace them with NA's to preserve the order & number of ensembles
+        dplyr::mutate(raw1=widen_NULL(raw1,df1_len), raw=widen_NULL(raw, df2_len)) |>
+        # merge the two raw columns with c() and discard `raw1`
+        dplyr::mutate(raw=purrr::map2(raw1, raw, c), raw1=NULL)
+}
+
+#' Replace NULLs with vectors of NAs
+#'
+#' Helper for `combine_two_data_frames()`.
+#' Replaces NULLs in a list with vectors of NAs of the correct length
+#'
+#' @param lst A list of vectors and/or NULLs.
+#'  All NULLs in the list will be replaced with a vector of `len` NAs 
+#' @param len A positive integer.
+#'
+#' @returns The modified `lst`.
+#'
+#' @examples
+#' # TBD
+widen_NULL <- function(lst, len) {
+    purrr::map(len, ~ dplyr::if_else(is.null(.x), rep(NA, len), .x))
 }
