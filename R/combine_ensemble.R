@@ -35,6 +35,8 @@ combine_data_frames <- function(dfs) {
     }
 
     # accumulate
+    # this is not the most efficient way to do this but it is clean
+    # if it becomes a performance bottleneck it can be rewritten
     out <- dfs[[1]]
 }
 
@@ -48,5 +50,11 @@ combine_data_frames <- function(dfs) {
 #'
 #' @returns The combined data frame.
 combine_two_data_frames <- function(df1, df2) {
+    # when dplyr::left_join() encounters identical (non-keyed) column names, it automatically renames them
+    # however we do this renaming manually to avoid confusion
 
+    df1 |>
+        dplyr::rename(temp=raw) |> # rename raw -> temp
+        dplyr::left_join(df2, dplyr::join_by(time)) |> # join by time column
+        dplyr::mutate()# merge `temp` and `raw` columns
 }
