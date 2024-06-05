@@ -118,7 +118,7 @@ get_time_type <- function(timecol) {
     } else if(column_all(timecol, is.numeric)) { # all numbers
         time_type <- "numeric"
     } else {
-        stop(paste("time column has inconsistent/unsupported types. Supported types are", paste(supported_time_types, sep=", ")))
+        stop("time column has inconsistent/unsupported types")
     }
     time_type
 }
@@ -145,7 +145,7 @@ get_time_type <- function(timecol) {
 #' casteval:::column_all(list(1, NA), is.numeric)
 #' 
 #' # NA gets coerced to NA_real_, because it's in a numeric vector. Returns TRUE
-#' column_all(c(1,NA), is.numeric)
+#' casteval:::column_all(c(1,NA), is.numeric)
 column_all <- function(col, f) {
     all(as.logical(purrr::map(col, f)))
 }
