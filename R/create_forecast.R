@@ -37,6 +37,6 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 
         # TODO: combine the data frames using another (exported) function
     } else {
-        stop("`data` has invalid type. Must be data frame or list of data frames")
+        stop("`dat` has invalid type. Must be data frame or list of data frames")
     }
 }
