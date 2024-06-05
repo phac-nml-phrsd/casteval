@@ -41,6 +41,7 @@ get_format <- function(df) {
         }
         if(quant_exists) {
             # this could possibly be changed into a warning where the quantiles are simply discarded (and recomputed later if necessary)
+            # however it would require extra error checking elsewhere
             stop("both raw and quantile values provided. For mean-and-quantiles format, use column name `mean`, not `raw`")
         }
 
