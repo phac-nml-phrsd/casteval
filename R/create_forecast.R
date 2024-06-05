@@ -24,9 +24,11 @@ create_forecast <- function(data, name=NULL, forecast_time=NULL) {
 
     # A single data frame 
     if(is.data.frame(data)) {
-        if(! "time" %in% colnames(data))
-            stop("`data` does not contain `time` column")
-        
+        # validate data frame & get its format
+        format <- get_format(data)
+        # store the format as metadata
+        forecast$time_type <- format$time_type
+        forecast$data_type <- format$data_type
     }
     
     # A list of data frames, to be combined.
