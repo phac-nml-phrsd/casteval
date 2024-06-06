@@ -34,14 +34,30 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     }
     
     # A list of data frames, to be combined.
-    else if (is.list(dat)) {
-        # TODO: check that all data frames are valid and compatible
+    else if(is.list(dat)) {
+        if(length(dat == 0)) {
+            stop("list of data frames is empty")
+        }
 
-        # TODO: combine the data frames using another (exported) function
+        # validate data frames & get their formats
+        fmts <- dat |> purrr::map(~ get_format(.x))
+
+        if((fmts |> purrr::map(~ .x$time_type) |> unique() |> length()) > 1) {
+            stop("all data frames must have same time type")
+        }
+
+        if(!all(purrr::map(fmts, ~ "raw" %in% .x$data_types))) {
+            stop("all data frames must contain raw data")
+        }
+
+        forecast$time_type <- fmts[[1]]$time_type
+        forecast$data_types <- "raw"
+        forecast$data <- combine_data_frames(dat)
     } else {
         stop("`dat` has invalid type. Must be data frame or list of data frames")
     }
 
     # TODO sort the rows by time?
     # TODO attach the data frame itself and return
+    forecast
 }
