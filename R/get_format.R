@@ -90,8 +90,6 @@ get_format <- function(df) {
 }
 
 
-# receives the time column (list or vector) and returns a string indicating the type
-# raises error if not valid
 #' Get type of time column
 #'
 #' Helper function for `get_format()`.
@@ -104,7 +102,16 @@ get_format <- function(df) {
 #' @returns A string describing the type of the time column
 #'
 #' @examples
-#' # TBD
+#' # "numeric"
+#' casteval:::get_time_type(c(1,2,3))
+#' # "date"
+#' casteval:::get_time_type(c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")))
+#' # "date-time"
+#' casteval:::get_time_type(list(lubridate::ymd_hms("2024-01-01_12:34:56")))
+#' # inconsistent types
+#' try(casteval:::get_time_type(list(1, lubridate::ymd("2024-01-01"))))
+#' # unsupported types
+#' try(casteval:::get_time_type(list("January 1", "January 2")))
 get_time_type <- function(timecol) {
     # validate time column & get type
     if(column_all(timecol, lubridate::is.Date)) { # all dates
