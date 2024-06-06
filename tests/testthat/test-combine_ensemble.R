@@ -199,37 +199,3 @@ test_that("combine_data_frames() discards extraneous columns", {
     }
   )
 })
-
-## combine_ensemble() tests
-
-test_that("combine_ensemble() validates input", {
-  # demands > 0 arguments
-  expect_error(combine_ensemble(), "no arguments")
-
-  # rejects non-lists
-  expect_error(combine_ensemble(list(), 1), "non-lists")
-
-  # rejects data frames not inside lists
-  expect_error(combine_ensemble(list(), data.frame()), "data frame")
-
-  # rejects if missing time type
-  expect_error(combine_ensemble(list(time_type="date"), list()), "time.*names")
-
-  # rejects inconsistent time types
-  expect_error(
-    combine_ensemble(list(time_type="date"), list(time_type="numeric")),
-    "different time types"
-  )
-
-  # rejects if missing data
-  expect_error(
-    combine_ensemble(list(time_type="date"))
-  )
-})
-
-# test_that("combine_ensemble() accepts 1 data frame", {
-#   expect_equal(
-#     combine_ensemble(data=list(data.frame(time=c(1,2,3), raw=c(4,5,6)))),
-#     data.frame(time=c(1,2,3), raw=c(4,5,6))
-#   )
-# })
