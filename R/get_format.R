@@ -7,7 +7,7 @@
 #' @param df A data frame. It should have a valid time column and a valid combination of data columns.
 #'
 #' @returns A named list containing a `time_type` (a string containing the type of the values in the time column)
-#'  and `data_type` (a character vector containing the types of data columns present)
+#'  and `data_types` (a character vector containing the types of data columns present)
 #'
 #' @examples
 #' # TBD
@@ -32,7 +32,7 @@ get_format <- function(df) {
     quant_exists <- (length(quant_cols) > 0)
     mean_exists <- ("mean" %in% cols)
 
-    data_type <- c()
+    data_types <- c()
 
     # raw overrides everything else
     if(raw_exists) {
@@ -60,9 +60,9 @@ get_format <- function(df) {
         }
 
         if(raw_lens[[1]] == 1) {
-            data_type <- c(data_type, "raw_single")
+            data_types <- c(data_types, "raw_single")
         } else {
-            data_type <- c(data_type, "raw_multiple")
+            data_types <- c(data_types, "raw_multiple")
         }
     }
 
@@ -72,7 +72,7 @@ get_format <- function(df) {
             if(!column_all(df["mean"], is.numeric)) {
                 stop("mean column not all numeric")
             }
-            data_type <- c(data_type, "mean")
+            data_types <- c(data_types, "mean")
         }
 
         if(quant_exists) {
@@ -81,16 +81,16 @@ get_format <- function(df) {
                     stop(paste(col, "column not all numeric"))
                 }
             }
-            data_type <- c(data_type, "quant")
+            data_types <- c(data_types, "quant")
         }
     }
 
     # if no data columns were found above, there is a problem
-    if(is.null(data_type)) {
+    if(is.null(data_types)) {
         stop("data frame contains no data columns")
     }
 
-    list(time_type=time_type, data_type=data_type)
+    list(time_type=time_type, data_types=data_types)
 }
 
 

@@ -30,7 +30,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
         format <- get_format(dat)
         # store the format as metadata
         forecast$time_type <- format$time_type
-        forecast$data_type <- format$data_type
+        forecast$data_types <- format$data_types
     }
     
     # A list of data frames, to be combined.
