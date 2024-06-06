@@ -58,11 +58,11 @@ combine_data_frames <- function(dfs) {
 
     dfs |>
         # discard all columns that aren't `time` or `raw` 
-        purrr::map(~ .x |> select(time, raw)) |>
+        purrr::map(~ dplyr::select(.x, time, raw)) |>
         # accumulate
         # this is not the most efficient way to do this but it is clean
         # if it becomes a performance bottleneck it can be rewritten
-        purrr::reduce(dfs, combine_two_data_frames)
+        purrr::reduce(combine_two_data_frames)
 }
 
 #' Combine two forecast data frames into one
