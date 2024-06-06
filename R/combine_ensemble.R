@@ -13,29 +13,30 @@
 #' @examples
 #' #TBD
 combine_ensemble <- function(...) {
-    dfs <- list(...)
-    if(length(dfs) == 0) {
+    fcts <- list(...)
+    if(length(fcts) == 0) {
         stop("combine_ensemble() received no arguments")
     }
 
     # check time types consistent
-    time_types <- dfs |> purrr::map(~ .x$time_type) |> unique()
+    time_types <- fcts |> purrr::map(~ .x$time_type) |> unique()
     if(length(time_types) > 1) {
         stop("combine_ensemble() received forecasts with different time types")
     }
 
     # check data types contain raw
-    contains_raw <- dfs |> purrr::map(~ any(.x$data_types %in% c("raw_single", "raw_multiple")))
+    contains_raw <- fcts |> purrr::map(~ any(.x$data_types %in% c("raw_single", "raw_multiple")))
     if(!all(contains_raw)) {
         stop("combine_ensemble() received forecasts without raw data values")
     }
 
     # warn if summaries present
-    contains_summaries <- dfs |> purrr::map(~ any(! .x$data_types %in% c("raw_single", "raw_multiple")))
+    contains_summaries <- fcts |> purrr::map(~ any(! .x$data_types %in% c("raw_single", "raw_multiple")))
     if(any(contains_summaries)) {
         warning("all summary data will be discarded when the data frames are merged")
     }
 
+    dfs <- purrr::map(fcts, ~ .x$data)
     combine_data_frames(dfs)
 }
 
