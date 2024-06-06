@@ -13,8 +13,30 @@
 #' @examples
 #' #TBD
 combine_ensemble <- function(...) {
-    # ensure that time types are identical
-    # call combine_data_frames()
+    dfs <- list(...)
+    if(length(dfs) == 0) {
+        stop("combine_ensemble() received no arguments")
+    }
+
+    # check time types consistent
+    time_types <- dfs |> purrr::map(~ .x$time_type) |> unique()
+    if(length(time_types) > 1) {
+        stop("combine_ensemble() received forecasts with different time types")
+    }
+
+    # check data types contain raw
+    contains_raw <- dfs |> purrr::map(~ any(.x$data_types %in% c("raw_single", "raw_multiple")))
+    if(!all(contains_raw)) {
+        stop("combine_ensemble() received forecasts without raw data values")
+    }
+
+    # warn if summaries present
+    contains_summaries <- dfs |> purrr::map(~ any(! .x$data_types %in% c("raw_single", "raw_multiple")))
+    if(any(contains_summaries)) {
+        warning("all summary data will be discarded when the data frames are merged")
+    }
+
+    combine_data_frames(dfs)
 }
 
 #' Combine a group of forecast data frames into one
@@ -34,10 +56,13 @@ combine_data_frames <- function(dfs) {
         stop("dfs has length 0")
     }
 
-    # accumulate
-    # this is not the most efficient way to do this but it is clean
-    # if it becomes a performance bottleneck it can be rewritten
-    out <- dfs[[1]]
+    dfs |>
+        # discard all columns that aren't `time` or `raw` 
+        purrr::map(~ .x |> select(time, raw)) |>
+        # accumulate
+        # this is not the most efficient way to do this but it is clean
+        # if it becomes a performance bottleneck it can be rewritten
+        purrr::reduce(dfs, combine_two_data_frames)
 }
 
 #' Combine two forecast data frames into one
@@ -68,7 +93,7 @@ combine_two_data_frames <- function(df1, df2) {
         # full_join() introduces NULLs when a key is in one data frame but not the other,
         # so we have to replace them with NA's to preserve the order & number of ensembles
         dplyr::mutate(raw1=widen_NULL(raw1,df1_len), raw=widen_NULL(raw, df2_len)) |>
-        # merge the two raw columns with c() and discard `raw1`
+        # merge the two raw columns with c() and discard raw1
         dplyr::mutate(raw=purrr::map2(raw1, raw, c), raw1=NULL)
 }
 
