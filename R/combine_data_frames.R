@@ -9,7 +9,12 @@
 #' @returns A data frame containing the aggregated data.
 #'
 #' @examples
-#' # TBD
+#' # missing values are filled in with NA
+#' casteval:::combine_data_frames(list(
+#'   data.frame(time=c(1,2,3), raw=c(10,11,12)),
+#'   data.frame(time=c(2,3,4), raw=c(20,21,22)),
+#'   data.frame(time=c(3,4,5), raw=c(30,31,32))
+#' ))
 combine_data_frames <- function(dfs) {
     if(length(dfs) == 0) {
         stop("dfs has length 0")
@@ -33,6 +38,13 @@ combine_data_frames <- function(dfs) {
 #' @param df2 The second data frame.
 #'
 #' @returns The combined data frame.
+#' 
+#' @examples
+#' # full_join() is used to make times line up
+#' casteval:::combine_two_data_frames(
+#'   data.frame(time=c(1,2,3), raw=c(10, 11, 12)),
+#'   data.frame(time=c(3,2,1), raw=c(20, 21, 22))
+#' )
 combine_two_data_frames <- function(df1, df2) {
     # when dplyr::left_join() encounters identical (non-keyed) column names, it automatically renames them
     # however we do this renaming manually to avoid confusion and possible bugs
