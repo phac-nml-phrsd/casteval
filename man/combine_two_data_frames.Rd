@@ -18,3 +18,10 @@ The combined data frame.
 Helper for \code{combine_data_frames()}.
 See \code{?combine_data_frames()} for details.
 }
+\examples{
+# full_join() is used to make times line up
+casteval:::combine_two_data_frames(
+  data.frame(time=c(1,2,3), raw=c(10, 11, 12)),
+  data.frame(time=c(3,2,1), raw=c(20, 21, 22))
+)
+}

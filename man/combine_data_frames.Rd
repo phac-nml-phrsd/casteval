@@ -18,5 +18,10 @@ into a single data frame containing all the aggregated data points in one column
 It performs no input validation so it is not user-facing.
 }
 \examples{
-# TBD
+# missing values are filled in with NA
+casteval:::combine_data_frames(list(
+  data.frame(time=c(1,2,3), raw=c(10,11,12)),
+  data.frame(time=c(2,3,4), raw=c(20,21,22)),
+  data.frame(time=c(3,4,5), raw=c(30,31,32))
+))
 }
