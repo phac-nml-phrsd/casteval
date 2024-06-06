@@ -33,17 +33,39 @@ test_that("get_time_type() works", {
   )
   expect_error(
     get_time_type(list(1, lubridate::ymd("2024-01-01"))),
-    "inconsistent"
+    "inconsistent.*types"
   )
   expect_error(
     get_time_type(list("January 1", "January 2")),
-    "unsupported"
+    "unsupported.*types"
   )
 })
 
-# test_that("get_format() works", {
-#   expect_equal(
-#     column_all(c(1,2), is.numeric),
-#     TRUE
-#   )
+test_that("get_format() validates", {
+  expect_error(get_format(data.frame()), "data frame is empty")
+  expect_error(get_format(data.frame(raw=1:3), "time.*column"))
+  expect_error(
+    get_format(data.frame(time=1:3, raw=4:6, mean=7:9)),
+    "both raw and mean values provided"
+  )
+  expect_error(
+    get_format(data.frame(time=1:3, raw=4:6, quant_50=7:9)),
+    "both raw and quantile values provided"
+  )
+  expect_error(
+    get_format(dplyr::tibble(time=1:3, raw=list(1,"a",3))),
+    "raw column not all numeric"
+  )
+  expect_error(
+    get_format(dplyr::tibble(time=1:3, raw=list(c(1,2), c(1,2,3), c(1,2)))),
+    "raw.*inconsistent lengths"
+  )
+  expect_error(
+    get_format(dplyr::tibble(time=1:3, raw=list(NULL,1,2))),
+    "raw.*inconsistent lengths"
+  )
+})
+
+# test_that("get_format() returns correct format", {
+#   expect_equal()
 # })
