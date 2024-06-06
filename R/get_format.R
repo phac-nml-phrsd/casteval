@@ -59,11 +59,7 @@ get_format <- function(df) {
             stop("raw ensemble vectors have inconsistent lengths")
         }
 
-        if(raw_lens[[1]] == 1) {
-            data_types <- c(data_types, "raw_single")
-        } else {
-            data_types <- c(data_types, "raw_multiple")
-        }
+        data_types <- c(data_types, "raw")
     }
 
     # if no raw, then check for other data columns (usually summaries)
