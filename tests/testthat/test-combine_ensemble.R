@@ -154,3 +154,46 @@ test_that("combine_two_data_frames() handles empty values", {
     dplyr::tibble(time=c(1,2), raw=list(numeric(0),numeric(0)))
   )
 })
+
+## combine_data_frames() tests
+
+test_that("combine_data_frames() demands > 0 data frames", {
+  expect_error(combine_data_frames(list()))
+})
+
+test_that("combine_data_frames() accepts 1 data frame", {
+  expect_equal(
+    casteval:::combine_data_frames(list(data.frame(time=c(1,2,3), raw=c(4,5,6)))),
+    data.frame(time=c(1,2,3), raw=c(4,5,6))
+  )
+})
+
+test_that("combine_data_frames() works", {
+  expect_equal(
+    casteval:::combine_data_frames(list(
+      data.frame(time=c(1,2,3), raw=c(10,11,12)),
+      data.frame(time=c(2,3,4), raw=c(20,21,22)),
+      data.frame(time=c(3,4,5), raw=c(30,31,32))
+    )),
+    {
+      df <- data.frame(time=1:5)
+      df$raw <- list(c(10,NA,NA), c(11,20,NA), c(12,21,30), c(NA,22,31), c(NA,NA,32))
+      df
+    }
+  )
+})
+
+test_that("combine_data_frames() discards extraneous columns", {
+  expect_equal(
+    casteval:::combine_data_frames(list(
+      data.frame(time=c(1,2,3), raw=c(10,11,12), whatever=c(100,200,300)),
+      data.frame(time=c(2,3,4), raw=c(20,21,22), whatever=c(-1,-2,-3)),
+      data.frame(time=c(3,4,5), raw=c(30,31,32), something=c("a","b","c"))
+    )),
+    {
+      df <- data.frame(time=1:5)
+      df$raw <- list(c(10,NA,NA), c(11,20,NA), c(12,21,30), c(NA,22,31), c(NA,NA,32))
+      df
+    }
+  )
+})
