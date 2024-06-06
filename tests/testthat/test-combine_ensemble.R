@@ -29,3 +29,12 @@ test_that("widen_NULL() does not modify non-NULL", {
     list(list(), NA, logical(0), numeric(0), NA_real_, 1, c(1,2,3), "hi", 0, FALSE)
   )
 })
+
+test_that("combine_two_data_frames() demands non-empty data frames", {
+  expect_error(
+    casteval:::combine_two_data_frames(data.frame(), data.frame(a=1))
+  )
+  expect_error(
+    casteval:::combine_two_data_frames(data.frame(a=1), data.frame())
+  )
+})

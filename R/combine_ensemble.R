@@ -80,8 +80,8 @@ combine_two_data_frames <- function(df1, df2) {
 
     # get the current lengths of the vectors that df1 and df2 contain
     # this is important because of how dplyr::full_join() works
-    stopifnot(nrow(df1 > 0))
-    stopifnot(nrow(df2 > 0))
+    stopifnot(nrow(df1) > 0)
+    stopifnot(nrow(df2) > 0)
     df1_len <- length(df1$raw[[1]])
     df2_len <- length(df2$raw[[1]])
 
