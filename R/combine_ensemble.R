@@ -18,6 +18,15 @@ combine_ensemble <- function(...) {
         stop("combine_ensemble() received no arguments")
     }
 
+    # check that all provided forecasts are lists
+    if(! all(purrr::map(fcts, ~ is.list(x)))) {
+        stop("received non-lists as input")
+    }
+    # catch the likely pitfall of giving data frames (which pass is.list()) instead of lists containing data frames
+    if(any(purrr::map(fcts, ~ is.data.frame))) {
+        stop("received data frames as input. combine_ensemble() requires lists, such as the ones outputted by create_forecast()")
+    }
+
     # check time types consistent
     time_types <- fcts |> purrr::map(~ .x$time_type) |> unique()
     if(length(time_types) > 1) {
