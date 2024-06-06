@@ -18,7 +18,14 @@ test_that("widen_NULL() widens to multiple", {
 
 test_that("widen_NULL() widens to 0", {
   expect_equal(
-    casteval:::widen_NULL(list(NULL, 1, NA, c(2,3,4), NULL), 0),
-    list(numeric(0), 1, NA, c(2,3,4), numeric(0))
+    casteval:::widen_NULL(list(NULL, 1, c(2,3,4), NULL), 0),
+    list(numeric(0), 1, c(2,3,4), numeric(0))
+  )
+})
+
+test_that("widen_NULL() does not modify non-NULL", {
+  expect_equal(
+    casteval:::widen_NULL(list(list(), NA, logical(0), numeric(0), NA_real_, 1, c(1,2,3), "hi", 0, FALSE), 2),
+    list(list(), NA, logical(0), numeric(0), NA_real_, 1, c(1,2,3), "hi", 0, FALSE)
   )
 })

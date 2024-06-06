@@ -103,7 +103,7 @@ combine_two_data_frames <- function(df1, df2) {
 #' Replaces NULLs in a list with vectors of NAs of the correct length
 #'
 #' @param lst A list of vectors and/or NULLs.
-#'  All NULLs in the list will be replaced with a vector of `len` NAs 
+#'  All NULLs in the list will be replaced with a vector of `len` NAs
 #' @param len A positive integer.
 #'
 #' @returns The modified `lst`.
