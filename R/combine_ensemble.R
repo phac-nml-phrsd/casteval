@@ -112,5 +112,5 @@ combine_two_data_frames <- function(df1, df2) {
 #' casteval:::widen_NULL(list(1, 2, NULL, 4, NULL), 1)
 #' casteval:::widen_NULL(list(c(1,2,3), c(4,5,6), NULL), 3)
 widen_NULL <- function(lst, len) {
-    purrr::map(len, ~ dplyr::if_else(is.null(.x), rep(NA, len), .x))
+    purrr::map(lst, ~ dplyr::if_else(is.null(.x), rep(NA, len), .x))
 }
