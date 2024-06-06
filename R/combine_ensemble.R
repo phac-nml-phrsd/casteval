@@ -19,11 +19,11 @@ combine_ensemble <- function(...) {
     }
 
     # check that all provided forecasts are lists
-    if(! all(purrr::map(fcts, ~ is.list(x)))) {
+    if(! all(purrr::map(fcts, ~ is.list(.x)))) {
         stop("received non-lists as input")
     }
     # catch the likely pitfall of giving data frames (which pass is.list()) instead of lists containing data frames
-    if(any(purrr::map(fcts, ~ is.data.frame))) {
+    if(any(purrr::map(fcts, ~ is.data.frame(.x)))) {
         stop("received data frames as input. combine_ensemble() requires lists, such as the ones outputted by create_forecast()")
     }
 
