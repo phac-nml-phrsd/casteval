@@ -11,7 +11,7 @@ get_format(df)
 }
 \value{
 A named list containing a \code{time_type} (a string containing the type of the values in the time column)
-and \code{data_type} (a character vector containing the types of data columns present)
+and \code{data_types} (a character vector containing the types of data columns present)
 }
 \description{
 Helper function for \code{create_forecast()}
