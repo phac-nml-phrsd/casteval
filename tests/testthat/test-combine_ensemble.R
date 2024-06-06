@@ -211,6 +211,20 @@ test_that("combine_ensemble() validates input", {
 
   # rejects data frames not inside lists
   expect_error(combine_ensemble(list(), data.frame()), "data frame")
+
+  # rejects if missing time type
+  expect_error(combine_ensemble(list(time_type="date"), list()), "time.*names")
+
+  # rejects inconsistent time types
+  expect_error(
+    combine_ensemble(list(time_type="date"), list(time_type="numeric")),
+    "different time types"
+  )
+
+  # rejects if missing data
+  expect_error(
+    combine_ensemble(list(time_type="date"))
+  )
 })
 
 # test_that("combine_ensemble() accepts 1 data frame", {
