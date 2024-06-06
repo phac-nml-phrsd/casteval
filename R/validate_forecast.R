@@ -47,9 +47,9 @@ validate_forecast <- function(fcst) {
     if(fcst$time_type != fmt$time_type) {
         stop("stated time type does not match data frame time type")
     }
-    if(!identical(sort(fcst$data_types), sort(fmt$data_types))) {
+    if(!setequal(fcst$data_types, fmt$data_types)) {
         stop("stated data types do not match data frame data types")
     }
-    
+
     NULL
 }
