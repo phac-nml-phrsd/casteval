@@ -113,6 +113,10 @@ get_format <- function(df) {
 #' # unsupported types
 #' try(casteval:::get_time_type(list("January 1", "January 2")))
 get_time_type <- function(timecol) {
+    if(length(timecol) == 0) {
+        stop("no times present")
+    }
+
     # validate time column & get type
     if(column_all(timecol, lubridate::is.Date)) { # all dates
         time_type <- "date"
