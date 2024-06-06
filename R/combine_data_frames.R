@@ -38,6 +38,7 @@ combine_data_frames <- function(dfs) {
 #' @param df2 The second data frame.
 #'
 #' @returns The combined data frame.
+#' @autoglobal
 #' 
 #' @examples
 #' # full_join() is used to make times line up
