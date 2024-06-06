@@ -1,3 +1,5 @@
+## widen_NULL() tests
+
 test_that("widen_NULL() accepts empty list", {
   expect_equal(casteval:::widen_NULL(list(), 1), list())
 })
@@ -29,6 +31,8 @@ test_that("widen_NULL() does not modify non-NULL", {
     list(list(), NA, logical(0), numeric(0), NA_real_, 1, c(1,2,3), "hi", 0, FALSE)
   )
 })
+
+## combine_two_data_frames() tests
 
 test_that("combine_two_data_frames() demands non-empty data frames", {
   expect_error(
@@ -126,4 +130,27 @@ test_that("combine_two_data_frames() works with list columns", {
   )
 })
 
-
+# this is unlikely to occur but for robustness it should still work
+test_that("combine_two_data_frames() handles empty values", {
+  expect_equal(
+    casteval:::combine_two_data_frames(
+      dplyr::tibble(time=c(1,2), raw=c(1,2)),
+      dplyr::tibble(time=c(1,2), raw=list(NULL, numeric(0)))
+    ),
+    dplyr::tibble(time=c(1,2), raw=list(1,2))
+  )
+  expect_equal(
+    casteval:::combine_two_data_frames(
+      dplyr::tibble(time=c(1,2), raw=list(NULL, numeric(0))),
+      dplyr::tibble(time=c(1,2), raw=c(1,2))
+    ),
+    dplyr::tibble(time=c(1,2), raw=list(1,2))
+  )
+  expect_equal(
+    casteval:::combine_two_data_frames(
+      dplyr::tibble(time=c(1,2), raw=list(NULL, numeric(0))),
+      dplyr::tibble(time=c(1,2), raw=list(numeric(0),NULL))
+    ),
+    dplyr::tibble(time=c(1,2), raw=list(numeric(0),numeric(0)))
+  )
+})
