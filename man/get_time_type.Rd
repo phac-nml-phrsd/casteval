@@ -19,5 +19,14 @@ Inspects a time column from a data frame to determine the type of its contents.
 Also checks that the contents are all of the same supported type.
 }
 \examples{
-# TBD
+# "numeric"
+casteval:::get_time_type(c(1,2,3))
+# "date"
+casteval:::get_time_type(c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")))
+# "date-time"
+casteval:::get_time_type(list(lubridate::ymd_hms("2024-01-01_12:34:56")))
+# inconsistent types
+try(casteval:::get_time_type(list(1, lubridate::ymd("2024-01-01"))))
+# unsupported types
+try(casteval:::get_time_type(list("January 1", "January 2")))
 }
