@@ -36,10 +36,12 @@ test_that("widen_NULL() does not modify non-NULL", {
 
 test_that("combine_two_data_frames() demands non-empty data frames", {
   expect_error(
-    casteval:::combine_two_data_frames(data.frame(), data.frame(a=1))
+    casteval:::combine_two_data_frames(data.frame(), data.frame(a=1)),
+    "nrow.*df1"
   )
   expect_error(
-    casteval:::combine_two_data_frames(data.frame(a=1), data.frame())
+    casteval:::combine_two_data_frames(data.frame(a=1), data.frame()),
+    "nrow.*df2"
   )
 })
 
@@ -158,7 +160,7 @@ test_that("combine_two_data_frames() handles empty values", {
 ## combine_data_frames() tests
 
 test_that("combine_data_frames() demands > 0 data frames", {
-  expect_error(combine_data_frames(list()))
+  expect_error(combine_data_frames(list()), "dfs.*length.*0")
 })
 
 test_that("combine_data_frames() accepts 1 data frame", {
@@ -202,13 +204,13 @@ test_that("combine_data_frames() discards extraneous columns", {
 
 test_that("combine_ensemble() validates input", {
   # demands > 0 arguments
-  expect_error(combine_ensemble())
+  expect_error(combine_ensemble(), "no arguments")
 
   # rejects non-lists
-  expect_error(combine_ensemble(list(), 1))
+  expect_error(combine_ensemble(list(), 1), "non-lists")
 
   # rejects data frames not inside lists
-  expect_error(combine_ensemble(list(), data.frame()))
+  expect_error(combine_ensemble(list(), data.frame()), "data frame")
 })
 
 # test_that("combine_ensemble() accepts 1 data frame", {
