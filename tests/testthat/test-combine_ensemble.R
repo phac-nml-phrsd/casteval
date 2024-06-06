@@ -197,3 +197,23 @@ test_that("combine_data_frames() discards extraneous columns", {
     }
   )
 })
+
+## combine_ensemble() tests
+
+test_that("combine_ensemble() validates input", {
+  # demands > 0 arguments
+  expect_error(combine_ensemble())
+
+  # rejects non-lists
+  expect_error(combine_ensemble(list(), 1))
+
+  # rejects data frames not inside lists
+  expect_error(combine_ensemble(list(), data.frame()))
+})
+
+# test_that("combine_ensemble() accepts 1 data frame", {
+#   expect_equal(
+#     combine_ensemble(data=list(data.frame(time=c(1,2,3), raw=c(4,5,6)))),
+#     data.frame(time=c(1,2,3), raw=c(4,5,6))
+#   )
+# })
