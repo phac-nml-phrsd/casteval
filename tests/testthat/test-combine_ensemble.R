@@ -38,3 +38,32 @@ test_that("combine_two_data_frames() demands non-empty data frames", {
     casteval:::combine_two_data_frames(data.frame(a=1), data.frame())
   )
 })
+
+test_that("combine_two_data_frames() works", {
+  expect_equal(
+    casteval:::combine_two_data_frames(
+      data.frame(time=c(1,2,3), raw=c(10, 11, 12)),
+      data.frame(time=c(3,2,1), raw=c(20, 21, 22))
+    ),
+
+    # we have to do this because inserting list columns with I() introduces attributes
+    {
+      df <- data.frame(time=c(1,2,3))
+      df$raw <- list(c(10, 22), c(11, 21), c(12, 20))
+      df
+    }
+  )
+
+  expect_equal(
+    casteval:::combine_two_data_frames(
+      data.frame(time=c(1, 2, 3), raw=c(10, 11, 12)),
+      data.frame(time=c(2, 3, 4), raw=c(20, 21, 22))
+    ),
+    {
+      df <- data.frame(time=c(1,2,3,4))
+      df$raw <- list(c(10, NA), c(11, 20), c(12, 21), c(NA, 22))
+      df
+    }
+  )
+})
+
