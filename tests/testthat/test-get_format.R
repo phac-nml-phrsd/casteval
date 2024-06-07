@@ -64,6 +64,18 @@ test_that("get_format() validates", {
     get_format(dplyr::tibble(time=1:3, raw=list(NULL,1,2))),
     "raw.*inconsistent lengths"
   )
+  expect_error(
+    get_format(dplyr::tibble(time=1:3, mean=list(1,2,FALSE))),
+    "mean column not all numeric"
+  )
+  expect_error(
+    get_format(dplyr::tibble(time=1:3, quant_25=list(1,2,"hi"))),
+    "quant.*column not all numeric"
+  )
+  expect_error(
+    get_format(dplyr::tibble(time=1:3)),
+    "contains no data columns"
+  )
 })
 
 # test_that("get_format() returns correct format", {
