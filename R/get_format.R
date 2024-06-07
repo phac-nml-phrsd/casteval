@@ -71,10 +71,21 @@ get_format <- function(df) {
             data_types <- c(data_types, "mean")
         }
 
+        # TODO move all quantile column processing into a new file & functions
         if(quant_exists) {
             for(col in quant_cols) {
+                # check numeric
                 if(!column_all(df[[col]], is.numeric)) {
                     stop(paste(col, "column not all numeric"))
+                }
+
+                # check valid quantile number provided
+                parts <- strsplit(col)[[1]]
+                if(length(parts) != 2) {
+                    stop(paste("quantile column name", col, "badly formatted"))
+                }
+                if(is.na(as.numeric(parts[[2]]))) {
+                    stop(paste("quantile column name", col, "does not specify percentage"))
                 }
             }
             data_types <- c(data_types, "quant")
