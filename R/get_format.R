@@ -84,8 +84,12 @@ get_format <- function(df) {
                 if(length(parts) != 2) {
                     stop(paste("quantile column name", col, "badly formatted"))
                 }
-                if(is.na(as.numeric(parts[[2]]))) {
+                perc <- as.numeric(parts[[2]])
+                if(is.na(perc)) {
                     stop(paste("quantile column name", col, "does not specify percentage"))
+                }
+                if(perc < 0 || perc > 100) {
+                    stop(paste("quantile percentage must be between 0 and 100, not", parts[[2]]))
                 }
             }
             data_types <- c(data_types, "quant")
