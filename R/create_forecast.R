@@ -35,7 +35,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     
     # A list of data frames, to be combined.
     else if(is.list(dat)) {
-        if(length(dat == 0)) {
+        if(length(dat) == 0) {
             stop("list of data frames is empty")
         }
 
