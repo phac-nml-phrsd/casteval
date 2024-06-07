@@ -39,7 +39,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
             stop("list of data frames is empty")
         }
 
-        if(!all(purrr::map(dat, is.data.frame))) {
+        if(!all(as.logical(purrr::map(dat, is.data.frame)))) {
             stop("received list containing non-data-frames")
         }
 
