@@ -33,17 +33,17 @@ test_that("get_time_type() works", {
   )
   expect_error(
     get_time_type(list(1, lubridate::ymd("2024-01-01"))),
-    "inconsistent.*types"
+    "time column has.*inconsistent.*types"
   )
   expect_error(
     get_time_type(list("January 1", "January 2")),
-    "unsupported.*types"
+    "time column has.*unsupported.*types"
   )
 })
 
 test_that("get_format() validates", {
   expect_error(get_format(data.frame()), "data frame is empty")
-  expect_error(get_format(data.frame(raw=1:3), "time.*column"))
+  expect_error(get_format(data.frame(raw=1:3), "does not contain.*time.*column"))
   expect_error(
     get_format(data.frame(time=1:3, raw=4:6, mean=7:9)),
     "both raw and mean values provided"
@@ -122,5 +122,9 @@ test_that("get_format() returns correct format", {
       lubridate::ymd_hms("2024-01-03_03:03:03")),
       quant_45=c(10, 11, 12))),
       list(time_type="date-time", data_types="quant")
+  )
+  expect_equal(
+    get_format(data.frame(time=1:3, quant_0=4:6, quant_100=7:9, mean=10:12)),
+    list(time_type="numeric", data_types=c("mean","quant"))
   )
 })
