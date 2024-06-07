@@ -84,7 +84,7 @@ get_format <- function(df) {
                 if(length(parts) != 2) {
                     stop(paste("quantile column name", col, "badly formatted"))
                 }
-                perc <- as.numeric(parts[[2]])
+                perc <- suppressWarnings(as.numeric(parts[[2]]))
                 if(is.na(perc)) {
                     stop(paste("quantile column name", col, "does not specify percentage"))
                 }
