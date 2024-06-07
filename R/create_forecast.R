@@ -50,7 +50,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
             stop("all data frames must have same time type")
         }
 
-        if(!all(purrr::map(fmts, ~ "raw" %in% .x$data_types))) {
+        if(!all(as.logical(purrr::map(fmts, ~ "raw" %in% .x$data_types)))) {
             stop("all data frames must contain raw data")
         }
 
