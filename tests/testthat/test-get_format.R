@@ -73,6 +73,30 @@ test_that("get_format() validates", {
     "quant.*column not all numeric"
   )
   expect_error(
+    get_format(data.frame(time=1, quant_=2)),
+    "quantile column name.*badly formatted"
+  )
+  expect_error(
+    get_format(data.frame(time=1, quant_1_2=2)),
+    "quantile column name.*badly formatted"
+  )
+  expect_error(
+    get_format(data.frame(time=1, quant_abc123=2)),
+    "quantile column.*does not specify percentage"
+  )
+  expect_error(
+    get_format({
+      df<-data.frame(time=1)
+      df[["quant_-1"]]<-2
+      df
+    }),
+    "quantile percentage out of range"
+  )
+  expect_error(
+    get_format(data.frame(time=1, quant_101=2)),
+    "quantile percentage out of range"
+  )
+  expect_error(
     get_format(dplyr::tibble(time=1:3)),
     "contains no data columns"
   )
@@ -95,7 +119,7 @@ test_that("get_format() returns correct format", {
     get_format(data.frame(time=c(
       lubridate::ymd_hms("2024-01-01_01:01:01"),
       lubridate::ymd_hms("2024-01-02_02:02:02"),
-      lubridate::ymd("2024-01-03_03:03:03")),
+      lubridate::ymd_hms("2024-01-03_03:03:03")),
       quant_45=c(10, 11, 12))),
       list(time_type="date-time", data_types="quant")
   )
