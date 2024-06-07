@@ -61,7 +61,7 @@ test_that("get_format() validates", {
     "raw.*inconsistent lengths"
   )
   expect_error(
-    get_format(dplyr::tibble(time=1:3, raw=list(NULL,1,2))),
+    get_format(dplyr::tibble(time=1:3, raw=list(numeric(0),1,2))),
     "raw.*inconsistent lengths"
   )
   expect_error(
