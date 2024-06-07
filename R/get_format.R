@@ -24,7 +24,7 @@ get_format <- function(df) {
     }
 
     # validate and identify time types (date, date-time, or numeric)
-    time_type <- get_time_type(df["time"])
+    time_type <- get_time_type(df$time)
 
     # check for existence of various data columns
     raw_exists <- ("raw" %in% cols)
@@ -46,12 +46,12 @@ get_format <- function(df) {
         }
 
         # check all raw values numeric (vector or otherwise)
-        if(!column_all(df["raw"], is.numeric)) {
+        if(!column_all(df$raw, is.numeric)) {
             stop("raw column not all numeric")
         }
 
         # get lengths of raw vectors
-        raw_lens <- purrr::map(df["raw"], length)
+        raw_lens <- purrr::map(df$raw, length)
 
         if(length(unique(raw_lens)) > 1) {
             # this could be changed into a warning if necessary
@@ -65,7 +65,7 @@ get_format <- function(df) {
     # if no raw, then check for other data columns (usually summaries)
     else {
         if(mean_exists) {
-            if(!column_all(df["mean"], is.numeric)) {
+            if(!column_all(df$mean, is.numeric)) {
                 stop("mean column not all numeric")
             }
             data_types <- c(data_types, "mean")
@@ -73,7 +73,7 @@ get_format <- function(df) {
 
         if(quant_exists) {
             for(col in quant_cols) {
-                if(!column_all(df[col], is.numeric)) {
+                if(!column_all(df[[col]], is.numeric)) {
                     stop(paste(col, "column not all numeric"))
                 }
             }
