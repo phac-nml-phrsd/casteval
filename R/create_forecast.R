@@ -21,7 +21,10 @@
 #' create_forecast(data.frame(time=1:3, raw=10:12), name="a forecast", forecast_time=2)
 #' 
 #' # forecast with dates and mean-and-quantiles data
-#' create_forecast(data.frame(time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")), mean=10:11, quant_2.5=5:6, quant_97.5=15:16), name="another forecast")
+#' create_forecast(
+#'   data.frame(
+#'     time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")),
+#'     mean=10:11, quant_2.5=5:6, quant_97.5=15:16), name="another forecast")
 #'
 #' # combining an ensemble of realizations into one
 #' create_forecast(list(

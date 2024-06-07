@@ -27,5 +27,21 @@ A named list containing the forecast and its metadata
 It accepts a variety of forecast formats as input and intelligently converts them into a standardized format.
 }
 \examples{
-# TBD
+# forecast with numeric times and raw data
+create_forecast(data.frame(time=1:3, raw=10:12), name="a forecast", forecast_time=2)
+
+# forecast with dates and mean-and-quantiles data
+create_forecast(
+  data.frame(
+    time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")),
+    mean=10:11, quant_2.5=5:6, quant_97.5=15:16), name="another forecast")
+
+# combining an ensemble of realizations into one
+create_forecast(list(
+  dplyr::tibble(time=1:5,raw=6:10),
+  dplyr::tibble(time=2:6,raw=7:11),
+  dplyr::tibble(time=3:7,raw=8:12)))
+
+# an already-combined ensemble
+create_forecast(dplyr::tibble(time=1:2, raw=list(10:11, 12:13)))
 }

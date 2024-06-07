@@ -19,5 +19,16 @@ Helper function for \code{create_forecast()}
 Also performs input validation on the contents of the data frame.
 }
 \examples{
-# TBD
+# numeric times, raw data
+casteval:::get_format(data.frame(time=1:3, raw=4:6))
+# dates, mean data
+casteval:::get_format(
+  data.frame(time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")), mean=1:2))
+# dates-times, quantile data (median)
+casteval:::get_format(
+  data.frame(
+    time=c(lubridate::ymd_hms("2024-01-01_01:01:01"), lubridate::ymd_hms("2024-01-02_02:02:02")),
+    quant_50=1:2))
+# numeric times, mean-and-quantiles data
+casteval:::get_format(data.frame(time=1:3, quant_5=4:6, quant_95=7:9, mean=10:12))
 }
