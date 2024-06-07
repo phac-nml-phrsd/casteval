@@ -78,6 +78,25 @@ test_that("get_format() validates", {
   )
 })
 
-# test_that("get_format() returns correct format", {
-#   expect_equal()
-# })
+test_that("get_format() returns correct format", {
+  expect_equal(
+    get_format(data.frame(time=1:3, raw=4:6)),
+    list(time_type="numeric", data_types="raw")
+  )
+  expect_equal(
+    get_format(data.frame(time=c(
+      lubridate::ymd("2024-01-01"),
+      lubridate::ymd("2024-01-02"),
+      lubridate::ymd("2024-01-03")),
+      mean=c(10, 11, 12))),
+      list(time_type="date", data_types="mean")
+  )
+  expect_equal(
+    get_format(data.frame(time=c(
+      lubridate::ymd_hms("2024-01-01_01:01:01"),
+      lubridate::ymd_hms("2024-01-02_02:02:02"),
+      lubridate::ymd("2024-01-03_03:03:03")),
+      quant_45=c(10, 11, 12))),
+      list(time_type="date-time", data_types="quant")
+  )
+})
