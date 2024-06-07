@@ -80,7 +80,7 @@ get_format <- function(df) {
                 }
 
                 # check valid quantile number provided
-                parts <- strsplit(col)[[1]]
+                parts <- strsplit(col,"_")[[1]]
                 if(length(parts) != 2) {
                     stop(paste("quantile column name", col, "badly formatted"))
                 }
@@ -89,7 +89,7 @@ get_format <- function(df) {
                     stop(paste("quantile column name", col, "does not specify percentage"))
                 }
                 if(perc < 0 || perc > 100) {
-                    stop(paste("quantile percentage must be between 0 and 100, not", parts[[2]]))
+                    stop("quantile percentage out of range")
                 }
             }
             data_types <- c(data_types, "quant")
