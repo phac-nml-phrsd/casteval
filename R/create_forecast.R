@@ -63,6 +63,5 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     }
 
     # TODO sort the rows by time?
-    # TODO attach the data frame itself and return
     forecast
 }
