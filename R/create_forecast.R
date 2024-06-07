@@ -31,6 +31,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
         # store the format as metadata
         forecast$time_type <- fmt$time_type
         forecast$data_types <- fmt$data_types
+        forecast$data <- dat
     }
     
     # A list of data frames, to be combined.
