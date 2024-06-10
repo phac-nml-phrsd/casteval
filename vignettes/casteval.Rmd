@@ -21,6 +21,7 @@ It provides functionality for formatting, processing, scoring, and visualizing i
 
 # Formatting
 *NB: As this is a work in progress, the number of formats supported is still limited*
+
 Every forecast provided to the pipeline must be a data frame with a `time` column and one or more data columns.
 The current supported time types are:
 
