@@ -138,9 +138,29 @@ get_format <- function(df) {
 #' @autoglobal
 #'
 #' @examples
-#' #TBD
-get_obs_format() <- function() {
+#' # "numeric"
+#' get_obs_format(data.frame(time=1:3, raw=4:6))
+#' 
+#' # "date"
+#' get_obs_format(data.frame(time=lubridate::ymd("2024-01-01"), raw=10))
+#' 
+#' # raw not present
+#' try(get_obs_format(data.frame(time=1:3, mean=4:6)))
+#' 
+#' # multiple raw realizations
+#' try(get_obs_format(dplyr::tibble(time=1:3, raw=list(1:2, 3:4, 5:6))))
+get_obs_format(obs) <- function() {
+    fmt <- get_format(obs)
+    if(! raw %in% fmt$data_types) {
+        stop("observations require `raw` column")
+    }
 
+    # get_format() already ensures data frame non-empty and raw has consistent lengths
+    if(length(obs$raw[[1]]) > 1) {
+        stop("observations require single-point raw data, not multiple")
+    }
+
+    return fmt$time_type
 }
 
 #' Get type of time column
