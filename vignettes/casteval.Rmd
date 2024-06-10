@@ -92,7 +92,7 @@ Raw realizations can be passed to `create_forecast()` in two ways:
 Therefore, the two calls to `create_forecast()` below will have the same output.
 
 ```{r}
-# Passing a single data frame will realizations already aggregated
+# Passing a single data frame with realizations already aggregated
 fc4 <- create_forecast(df4)
 
 a <- dplyr::tibble(time=c(1, 2, 3), raw=c(100, 102, 110))
