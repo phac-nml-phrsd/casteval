@@ -66,12 +66,20 @@ library(casteval)
 # A forecast with a name
 fc1 <- create_forecast(df1, name="forecast 1")
 
+# `name` and `forecast_time` are optional, and default to NULL
+fc2 <- create_forecast(df2)
+
 # A forecast with a name and a forecast time
 # All data from before the given time will be ignored when scoring the forecast
-fc2 <- create_forecast(df2, name="forecast 2", forecast_time=lubridate::ymd("2024-01-02"))
+# The given forecast time must have the same type as the values in the `time` column
+fc3 <- create_forecast(df3, name="forecast 3", forecast_time=2)
 
-# `name` and `forecast_time` are optional, and default to NULL
-fc3 <- create_forecast(df3)
+# Metadata and data are easily accessible
+print(fc3$name)
+print(fc3$forecast_time)
+print(fc3$time_type)
+print(fc3$data_types)
+print(fc3$data)
 ```
 
 ## Auto-aggregation
