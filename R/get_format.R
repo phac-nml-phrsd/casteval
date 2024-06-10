@@ -149,7 +149,7 @@ get_format <- function(df) {
 #' 
 #' # multiple raw realizations
 #' try(get_obs_format(dplyr::tibble(time=1:3, raw=list(1:2, 3:4, 5:6))))
-get_obs_format(obs) <- function() {
+get_obs_format <- function(obs) {
     fmt <- get_format(obs)
     if(! raw %in% fmt$data_types) {
         stop("observations require `raw` column")
