@@ -14,9 +14,19 @@ A named list containing a \code{time_type} (a string containing the type of the 
 and \code{data_types} (a character vector containing the types of data columns present)
 }
 \description{
-Helper function for \code{create_forecast()}
+Helper function for \code{create_forecast()}.
 \code{get_format()} inspects the columns of a data frame to determine how it's formatted.
 Also performs input validation on the contents of the data frame.
+In particular, it checks that:
+\itemize{
+\item The data frame isn't empty
+\item The \code{time} column is present
+\item The \code{time} column contains only dates, only date-times, or only numeric values
+\item If raw values are provided, mean and/or quantile values are not also provided
+\item At least one data column is present
+\item All data columns contain numeric values only
+\item Quantile percentages are valid
+}
 }
 \examples{
 # numeric times, raw data

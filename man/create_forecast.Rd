@@ -8,19 +8,26 @@ create_forecast(dat, name = NULL, forecast_time = NULL)
 }
 \arguments{
 \item{dat}{Forecast data. Either a data frame or list of data frames.
-An ensemble of forecasts can be provided as a list of data frames, in which case it will be aggregated into a single data frame.
+An ensemble of forecasts can be provided as a list of data frames with raw data, in which case it will be aggregated into a single data frame.
 The data frame(s) should contain a column named \code{time}, which may be of integers, dates, or date-times.
-No mixing of types is allowed (e.g. \code{time} may not contain both integers and date-times).}
+No mixing of types is allowed (e.g. \code{time} may not contain both integers and date-times).
+The predicted forecast values can be stored the \code{raw} column (for vectors of 1 or more realizations),
+or as summaries such as mean-and-quantiles, using the \code{mean} column as well as columns that are named "quant_" followed by a percentage,
+e.x. "quant_50" for the median.}
 
 \item{name}{A string specifying the name of the forecast/model.}
 
 \item{forecast_time}{An integer, date, or date-time specifying when the forecast was created.
 Its type should match the type of values in the \code{time} column(s) of \code{data}
 If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to \code{forecast_time}.
-Additionally, graphs of this forecast will highlight the \code{forecast_time} using a vertical line.}
+Additionally, graphs of this forecast may highlight the \code{forecast_time} using a vertical line.}
 }
 \value{
-A named list containing the forecast and its metadata
+A named list containing the forecast and its metadata.
+The (possibly processed) data frame is stored in \verb{$data}.
+The name and forecast time are stored in \verb{$name} and \verb{$forecast_time}.
+The type of the time column (one of "date", "date-time", or "numeric") is stored in \verb{$time_type}
+The types of the data columns (a character vector containing "mean", "quant", and/or "raw") are stored in \verb{$data_types}
 }
 \description{
 \code{create_forecast()} creates a forecast object given data and optional metadata.
@@ -44,4 +51,7 @@ create_forecast(list(
 
 # an already-combined ensemble
 create_forecast(dplyr::tibble(time=1:2, raw=list(10:11, 12:13)))
+}
+\seealso{
+\code{\link[=get_format]{get_format()}} for further details.
 }

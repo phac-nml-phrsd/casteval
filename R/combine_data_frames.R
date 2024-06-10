@@ -2,7 +2,7 @@
 #'
 #' `combine_data_frames()` converts a list of forecast data frames
 #' into a single data frame containing all the aggregated data points in one column.
-#' It performs no input validation so it is not user-facing.
+#' It performs no input validation so it is not exported.
 #' 
 #' @param dfs A list of forecast data frames, with raw data points and the same time types.
 #'
@@ -32,7 +32,7 @@ combine_data_frames <- function(dfs) {
 #' Combine two forecast data frames into one
 #'
 #' Helper for `combine_data_frames()`.
-#' See `?combine_data_frames()` for details.
+#' See [combine_data_frames()] for details.
 #'
 #' @param df1 The first data frame.
 #' @param df2 The second data frame.

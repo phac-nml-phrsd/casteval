@@ -16,7 +16,7 @@ The combined data frame.
 }
 \description{
 Helper for \code{combine_data_frames()}.
-See \code{?combine_data_frames()} for details.
+See \code{\link[=combine_data_frames]{combine_data_frames()}} for details.
 }
 \examples{
 # full_join() is used to make times line up

@@ -1,8 +1,16 @@
 #' Get data frame format
 #'
-#' Helper function for `create_forecast()`
+#' Helper function for `create_forecast()`.
 #' `get_format()` inspects the columns of a data frame to determine how it's formatted.
 #' Also performs input validation on the contents of the data frame.
+#' In particular, it checks that:
+#' - The data frame isn't empty
+#' - The `time` column is present
+#' - The `time` column contains only dates, only date-times, or only numeric values
+#' - If raw values are provided, mean and/or quantile values are not also provided
+#' - At least one data column is present
+#' - All data columns contain numeric values only
+#' - Quantile percentages are valid
 #'
 #' @param df A data frame. It should have a valid time column and a valid combination of data columns.
 #'
@@ -112,6 +120,7 @@ get_format <- function(df) {
         stop("data frame contains no data columns")
     }
 
+    # TODO check that quantile values are in order (increasing order from lower quantiles to higher)
     list(time_type=time_type, data_types=data_types)
 }
 
@@ -123,7 +132,7 @@ get_format <- function(df) {
 #' Also checks that the contents are all of the same supported type.
 #'
 #' @param timecol A vector or list, presumably a column in a data frame.
-#'  Its contents should all be of the same suppotred type (date, date-time, or numeric)
+#'  Its contents should all be of the same supported type (date, date-time, or numeric)
 #'
 #' @returns A string describing the type of the time column
 #'

@@ -15,7 +15,7 @@ A data frame containing the aggregated data.
 \description{
 \code{combine_data_frames()} converts a list of forecast data frames
 into a single data frame containing all the aggregated data points in one column.
-It performs no input validation so it is not user-facing.
+It performs no input validation so it is not exported.
 }
 \examples{
 # missing values are filled in with NA

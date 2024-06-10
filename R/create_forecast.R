@@ -4,16 +4,24 @@
 #' It accepts a variety of forecast formats as input and intelligently converts them into a standardized format.
 #'
 #' @param dat Forecast data. Either a data frame or list of data frames.
-#'  An ensemble of forecasts can be provided as a list of data frames, in which case it will be aggregated into a single data frame.
+#'  An ensemble of forecasts can be provided as a list of data frames with raw data, in which case it will be aggregated into a single data frame.
 #'  The data frame(s) should contain a column named `time`, which may be of integers, dates, or date-times.
 #'  No mixing of types is allowed (e.g. `time` may not contain both integers and date-times).
+#'  The predicted forecast values can be stored the `raw` column (for vectors of 1 or more realizations),
+#'  or as summaries such as mean-and-quantiles, using the `mean` column as well as columns that are named "quant_" followed by a percentage,
+#'  e.x. "quant_50" for the median.
+#' See [get_format()] for further details.
 #' @param name A string specifying the name of the forecast/model.
 #' @param forecast_time An integer, date, or date-time specifying when the forecast was created.
 #'  Its type should match the type of values in the `time` column(s) of `data`
 #'  If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to `forecast_time`.
-#'  Additionally, graphs of this forecast will highlight the `forecast_time` using a vertical line.
+#'  Additionally, graphs of this forecast may highlight the `forecast_time` using a vertical line.
 #' 
-#' @returns A named list containing the forecast and its metadata
+#' @returns A named list containing the forecast and its metadata.
+#'  The (possibly processed) data frame is stored in `$data`.
+#'  The name and forecast time are stored in `$name` and `$forecast_time`.
+#'  The type of the time column (one of "date", "date-time", or "numeric") is stored in `$time_type`
+#'  The types of the data columns (a character vector containing "mean", "quant", and/or "raw") are stored in `$data_types`
 #' @export
 #'
 #' @examples
@@ -80,6 +88,6 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 
     # TODO sort the rows by time?
     # TODO verify that forecast_time type same as time_type, and do the same in validate_forecast()
-    # TODO check that quantile values are in order (increasing order from lower quantiles to higher)
+
     forecast
 }

@@ -8,7 +8,7 @@ get_time_type(timecol)
 }
 \arguments{
 \item{timecol}{A vector or list, presumably a column in a data frame.
-Its contents should all be of the same suppotred type (date, date-time, or numeric)}
+Its contents should all be of the same supported type (date, date-time, or numeric)}
 }
 \value{
 A string describing the type of the time column
