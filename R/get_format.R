@@ -160,7 +160,7 @@ get_obs_format(obs) <- function() {
         stop("observations require single-point raw data, not multiple")
     }
 
-    return fmt$time_type
+    fmt$time_type
 }
 
 #' Get type of time column
