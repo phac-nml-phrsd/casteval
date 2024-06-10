@@ -124,6 +124,24 @@ get_format <- function(df) {
     list(time_type=time_type, data_types=data_types)
 }
 
+#' Get observations format
+#'
+#' Consumes a data frame, performs input validation, and returns the time type.
+#' Essentially a wrapper around `get_format()` with stricter requirements.
+#'
+#' @param obs Data frame containing observations. In order to pass input validation it should:
+#' - Be non-empty
+#' - Contain a `time` column with a consistent and valid time type
+#' - Contain a numeric `raw` column with only one value per row
+#'
+#' @returns The time type, as a string.
+#' @autoglobal
+#'
+#' @examples
+#' #TBD
+get_obs_format() <- function() {
+
+}
 
 #' Get type of time column
 #'
