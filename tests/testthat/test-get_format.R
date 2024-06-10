@@ -128,3 +128,14 @@ test_that("get_format() returns correct format", {
     list(time_type="numeric", data_types=c("mean","quant"))
   )
 })
+
+test_that("get_obs_format() validates", {
+  expect_error(get_obs_format(data.frame(time=1:3, mean=4:6)), "observations require.*raw.*column")
+  expect_error(get_obs_format(dplyr::tibble(time=1:3, raw=list(1:2, 3:4, 5:6))), "observations require single-point raw data")
+})
+
+test_that("get_obs_format() works", {
+  expect_equal(get_obs_format(data.frame(time=1:3, raw=4:6)), "numeric")
+  expect_equal(get_obs_format(data.frame(time=lubridate::ymd("2024-01-01"), raw=10)), "date")
+  expect_equal(get_obs_format(data.frame(time=lubridate::ymd_hms("2024-01-01_01:02:03"), raw=10)), "date-time")
+})
