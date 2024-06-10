@@ -13,7 +13,8 @@ The data frame(s) should contain a column named \code{time}, which may be of int
 No mixing of types is allowed (e.g. \code{time} may not contain both integers and date-times).
 The predicted forecast values can be stored the \code{raw} column (for vectors of 1 or more realizations),
 or as summaries such as mean-and-quantiles, using the \code{mean} column as well as columns that are named "quant_" followed by a percentage,
-e.x. "quant_50" for the median.}
+e.x. "quant_50" for the median.
+See \code{\link[=get_format]{get_format()}} for further details.}
 
 \item{name}{A string specifying the name of the forecast/model.}
 
@@ -51,7 +52,4 @@ create_forecast(list(
 
 # an already-combined ensemble
 create_forecast(dplyr::tibble(time=1:2, raw=list(10:11, 12:13)))
-}
-\seealso{
-\code{\link[=get_format]{get_format()}} for further details.
 }

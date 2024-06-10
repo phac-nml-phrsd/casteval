@@ -10,6 +10,8 @@ Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
     "roxyglobals::global_roclet"))
 RoxygenNote: 7.3.1
 Suggests: 
+    knitr,
+    rmarkdown,
     roxyglobals,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
@@ -20,3 +22,4 @@ Imports:
     stringr
 Config/roxyglobals/filename: globals.R
 Config/roxyglobals/unique: FALSE
+VignetteBuilder: knitr
