@@ -6,3 +6,5 @@
 .quarto
 R/test.R
 inst/doc
+/doc/
+/Meta/
