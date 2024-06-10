@@ -1,8 +1,8 @@
 ---
-title: "casteval"
+title: "Automate forecast evaluation using `{casteval}`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{casteval}
+  %\VignetteIndexEntry{Automate forecast evaluation using `{casteval}`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,6 +14,46 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(casteval)
+
+# Overview
+`{casteval}` is an R package which lets you automate the forecast testing process.
+It provides functionality for formatting, processing, scoring, and visualizing infectious disease forecasts.
+
+# Input
+All forecasts must be entered into the pipeline using `create_forecast()`.
+This function performs input validation and intelligently determines the format of the given forecast.
+It then returns a named list containing metadata about the forecast as well as the given forecast data.
+
+## Formatting
+Every forecast provided to `create_forecast()` must be a data frame with a `time` column and one or more data columns.
+The current supported time types are:
+
+- numeric (-1, 0, 1, 1.5, etc.)
+- dates (from `{lubridate}`)
+- date-times (from `{lubridate}`)
+
+All data columns must contain numeric data.
+The current supported data columns are `raw` (for raw data), `mean`, and any column whose name consists of `quant_` followed by a percentage from 0 to 100 (e.x. `quant_50` would represent the median).
+
+```{r}
+# Create some dates and date-times for convenience
+dates <- c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02"), lubridate::ymd("2024-01-03"))
+datetimes <- c(lubridate::ymd_hms("2024-02-01_12:00:00"), lubridate::ymd_hms("2024-02-01_13:00:00"), lubridate::ymd_hms("2024-02-01_14:00:00"))
+
+# A forecast with date-times and raw data points
+fc1 <- data.frame(time=datetimes, raw=c(400, 450, 500))
+
+# A forecast with dates and quartiles
+fc2 <- data.frame(time=dates, quant_25=c(50, 60, 70), quant_50=c(100, 110, 120), quant_75=c(150, 160, 170))
+
+# A forecast with numeric times, the mean, and 95% confidence interval
+fc3 <- data.frame(time=c(1, 2, 3), mean=c(1000, 900, 800), quant_2.5=c(950, 850, 750), quant_97.5=c(1050, 950, 850))
+
+# A forecast with raw data over multiple realizations of the model/simulation
+# We use tibbles here to make entering the list column easier
+fc4 <- dplyr::tibble(time=c(1, 2, 3), raw=list(c(100, 200, 300), c(102, 195, 301), c(110, 197, 300)))
 ```
+
+As demonstrated above, raw data can contain multiple realizations in a single day by storing a vector of projected values in each row instead of a single value.
+In this case, all of the vectors must have the same length.
+If we were to name these vectors `v[1]` through `v[n]`, then `v[i][j]` would be the projected value at time-point `i` for realization `j` of the forecast (each row is a time point, and there are `n` rows in the data frame).
