@@ -47,13 +47,17 @@ accuracy <- function(fcst, obs, interval=NULL) {
             lowname <- quant_name(low)
             highname <- quant_name(high)
         } else {
-            
+            validate_interval(interval)
 
-            lowname <- quant_name(low)
-            highname <- quant_name(high)
+            lowname <- quant_name(interval[[1]])
+            highname <- quant_name(interval[[2]])
+            
             # confirm that the corresponding columns exist
-            if(! quant_name(low) %in% colnames(df)) {
-                stop()
+            if(! lowname %in% colnames(df)) {
+                stop(paste0("column named `", lowname, "` not in data frame"))
+            }
+            if(! highname %in% colnames(df)) {
+                stop(paste0("column named `", highname, "` not in data frame"))
             }
         }
 
