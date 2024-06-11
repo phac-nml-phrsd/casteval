@@ -68,12 +68,33 @@ accuracy <- function(fcst, obs, interval=NULL) {
                 stop("outermost quantiles must be equidistant from 50th percentile")
             }
 
-            df |> dplyr::select(time, low=quant_name(low), high=quant_name(high))
-            low_col <- get_quant_col(df, low)
-            high_col <- get_quant_col(df, high)
+            lowname <- quant_name(low)
+            highname <- quant_name(high)
         } else {
+            # do some input validation on `interval`
+            if(length(interval) != 2) {
+                stop("`interval` must be either NULL or a vector of 2 numbers")
+            }
+            low <- interval[[1]]
+            high <- interval[[2]]
 
+
+            if(low >= high) {
+                stop("`interval[[1]]` must be less than `interval[[2]]`")
+            }
+
+            lowname <- quant_name(low)
+            highname <- quant_name(high)
+            # confirm that the corresponding columns exist
+            if(! quant_name(low) %in% colnames(df)) {
+                stop()
+            }
         }
+
+        df |>
+            # isolate/rename the time and relevant quantile columns
+            dplyr::select(time, low=quant_name(low), high=quant_name(high))
+            # join observations by date
     } else {
         stop("`raw` or `quant_*` columns required to calculate accuracy")
     }
