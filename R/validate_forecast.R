@@ -13,7 +13,7 @@
 #' @returns NULL if valid (error if invalid)
 #'
 #' @examples
-#' #TBD
+#' #TODO
 validate_forecast <- function(fcst) {
     # must be list
     if(!is.list(fcst)) {

@@ -13,7 +13,7 @@
 #' @autoglobal
 #'
 #' @examples
-#' #TBD
+#' #TODO
 filter_forecast_time(df, forecast_time) {
     if(is.null(forecast_time)) {
         return(df)
@@ -42,7 +42,7 @@ filter_forecast_time(df, forecast_time) {
 #' @autoglobal
 #'
 #' @examples
-#' #TBD
+#' #TODO
 accuracy <- function(fcst, obs, quants=NULL) {
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
@@ -55,5 +55,7 @@ accuracy <- function(fcst, obs, quants=NULL) {
         } else {
 
         }
+    } else {
+
     }
 }
