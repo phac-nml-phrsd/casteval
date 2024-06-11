@@ -13,7 +13,7 @@
 #' @autoglobal
 #'
 #' @examples
-#' #TBD
+#' #TODO
 get_quantiles <- function(df) {
     cols <- colnames(df)
     quant_cols <- str_subset(cols, "^quant_")
@@ -22,4 +22,22 @@ get_quantiles <- function(df) {
         purrr::map(~ as.numeric(strsplit(.x, "_")[[1]][[2]])) |>
         as.numeric() |>
         sort()
+}
+
+#' Get quantile column from data frame
+#'
+#' Given a data frame and a quantile number, returns the corresponding
+#'  column from the data frame.
+#'
+#' @param df The data frame. Should contain a "quant_*" column corresponding to `num`
+#' @param num A number between 0 and 100 inclusive.
+#'
+#' @returns The `num` quantile column in `df`.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+get_quant_col <- function(df, num) {
+    name <- paste0("quant_", as.character(num))
+    df[[name]]
 }
