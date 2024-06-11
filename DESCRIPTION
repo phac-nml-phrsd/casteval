@@ -4,11 +4,23 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Daniel", "Yu", , "daniel.yu@phac-aspc.gc.ca", role = c("aut", "cre"))
 Description: Provides a generalized, modular set of tools to facilitate/automate the scoring and comparing of infectious disease forecasts. 
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: GPL (>= 3)
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
+Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
+    "roxyglobals::global_roclet"))
 RoxygenNote: 7.3.1
 Suggests: 
-    testthat (>= 3.0.0)
+    knitr,
+    rmarkdown,
+    roxyglobals,
+    testthat (>= 3.0.0),
+    waldo
 Config/testthat/edition: 3
+Imports: 
+    dplyr,
+    lubridate,
+    purrr,
+    stringr
+Config/roxyglobals/filename: globals.R
+Config/roxyglobals/unique: FALSE
+VignetteBuilder: knitr
