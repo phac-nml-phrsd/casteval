@@ -29,9 +29,9 @@ filter_forecast_time(df, forecast_time) {
 #'
 #' @param fcst The forecast (see `create_forecast()` output).
 #'  If quantiles are provided, they will be used to compute the accuracy.
-#'  If raw data is provided, quantiles will be calculated according to the `quant` parameter.
+#'  If raw data is provided, quantiles will be calculated according to the `interval` parameter.
 #' @param obs The observations data frame.
-#' @param quants Either NULL or a vector of two numbers from 0 to 100.
+#' @param interval Either NULL or a vector of two numbers from 0 to 100.
 #'  If `fcst` contains quantile data then the corresponding quantile columns will be
 #'  used as the confidence interval.
 #'  If `fcst` contains raw data then the corresponding quantiles will be calculated and
@@ -43,19 +43,29 @@ filter_forecast_time(df, forecast_time) {
 #'
 #' @examples
 #' #TODO
-accuracy <- function(fcst, obs, quants=NULL) {
+accuracy <- function(fcst, obs, interval=NULL) {
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    if("quant" %in% fcst$data_types) {
-        if(is.null(quants)) {
+    if("raw" %in% fcst$data_types) {
+
+    } else if("quant" %in% fcst$data_types) {
+        quants <- get_quantiles(df)
+
+        # can't do anything with a single quantile
+        if(length(quants) < 2) {
+
+        }
+
+        if(is.null(interval)) {
             # if quantile columns are provided but `quants` is NULL,
             # we select the two outermost quantiles provided,
             # and require that they be equidistant from the median.
             # e.x. 25% to 75% is acceptable, but not 25% to 60%
+            
         } else {
 
         }
     } else {
-
+        stop("`raw` or `quant_*` columns needed to calculate accuracy")
     }
 }
