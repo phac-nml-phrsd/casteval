@@ -15,11 +15,11 @@
 #'
 #' @examples
 #' #TBD
-filter_forecast_time(dat, forecast_time) {
+filter_forecast_time(df, forecast_time) {
     if(is.null(forecast_time)) {
-        return(dat)
+        return(df)
     } else {
-        return(dat |> dplyr::filter(time > forecast_time))
+        return(df |> dplyr::filter(time > forecast_time))
     }
 }
 
@@ -33,6 +33,10 @@ filter_forecast_time(dat, forecast_time) {
 #'  If raw data is provided, quantiles will be calculated according to the `quant` parameter.
 #' @param obs The observations data frame.
 #' @param quants Either NULL or a vector of two numbers from 0 to 100.
+#'  If `fcst` contains quantile data then the corresponding quantile columns will be
+#'  used as the confidence interval.
+#'  If `fcst` contains raw data then the corresponding quantiles will be calculated and
+#'  used as a confidence interval.
 #'
 #' @returns desc
 #' @export
@@ -43,4 +47,14 @@ filter_forecast_time(dat, forecast_time) {
 accuracy <- function(fcst, obs, quants=NULL) {
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
+    if(quant %in% fcst$data_types) {
+        if(is.null(quants)) {
+            # if quantile columns are provided but `quants` is NULL,
+            # we select the two outermost quantiles provided,
+            # and require that they be equidistant from the median.
+            # e.x. 25% to 75% is acceptable, but not 25% to 60%
+        } else {
+
+        }
+    }
 }
