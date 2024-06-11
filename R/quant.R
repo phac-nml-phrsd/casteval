@@ -13,7 +13,8 @@
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # returns c(2.5, 50, 97.5)
+#' casteval:::get_quantiles(data.frame(time=1:3, quant_2.5=4:6, quant_50=7:9, quant_97.5=10:12))
 get_quantiles <- function(df) {
     cols <- colnames(df)
     quant_cols <- stringr::str_subset(cols, "^quant_")
@@ -36,7 +37,8 @@ get_quantiles <- function(df) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # returns 4:6
+#' casteval:::get_quant_col(data.frame(time=1:3, quant_50=4:6), 50)
 get_quant_col <- function(df, num) {
     df[[quant_name(num)]]
 }

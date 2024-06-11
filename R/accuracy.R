@@ -90,7 +90,20 @@ accuracy <- function(fcst, obs, interval=NULL) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # valid
+#' casteval:::validate_interval(c(50, 70))
+#' 
+#' # invalid
+#' try(casteval:::validate_interval(c(70, 50)))
+#' 
+#' # invalid
+#' try(casteval:::validate_interval(c(-1, 50)))
+#' 
+#' # invalid
+#' try(casteval:::validate_interval(c(50,60,70)))
+#' 
+#' # invalid
+#' try(casteval:::validate_interval("50, 60"))
 validate_interval <- function(interval) {
     if(!is.numeric(interval)) {
         stop("`interval` must be either NULL or vector of 2 numbers")
