@@ -23,8 +23,24 @@ filter_forecast_time(dat, forecast_time) {
     }
 }
 
-accuracy <- function(fcst, obs) {
-    if(!is.null(fcst$forecast_time)) {
-        fcst <- 
-    }
+#' Get accuracy from quantiles
+#'
+#' Given a forecast and set of observations,
+#'  compute the accuracy (# within confidence interval / # total) of the forecast.
+#'
+#' @param fcst The forecast (see `create_forecast()` output).
+#'  If quantiles are provided, they will be used to compute the accuracy.
+#'  If raw data is provided, quantiles will be calculated according to the `quant` parameter.
+#' @param obs The observations data frame.
+#' @param quants Either NULL or a vector of two numbers from 0 to 100.
+#'
+#' @returns desc
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' #TBD
+accuracy <- function(fcst, obs, quants=NULL) {
+    df <- filter_forecast_time(fcst$data, fcst$forecast_time)
+
 }
