@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' #TODO
-filter_forecast_time(df, forecast_time) {
+filter_forecast_time <- function(df, forecast_time) {
     if(is.null(forecast_time)) {
         return(df)
     } else {
