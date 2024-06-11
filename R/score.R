@@ -53,7 +53,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
 
         # can't do anything with a single quantile
         if(length(quants) < 2) {
-
+            stop("2 or more quantiles required to calculate accuracy")
         }
 
         if(is.null(interval)) {
@@ -61,11 +61,20 @@ accuracy <- function(fcst, obs, interval=NULL) {
             # we select the two outermost quantiles provided,
             # and require that they be equidistant from the median.
             # e.x. 25% to 75% is acceptable, but not 25% to 60%
-            
+            low <- min(quants)
+            high <- max(quants)
+            # use all.equal() to deal with floating point errors
+            if(all.equal(50-low, high-50)) {
+                stop("outermost quantiles must be equidistant from 50th percentile")
+            }
+
+            df |> dplyr::select(time, low=quant_name(low), high=quant_name(high))
+            low_col <- get_quant_col(df, low)
+            high_col <- get_quant_col(df, high)
         } else {
 
         }
     } else {
-        stop("`raw` or `quant_*` columns needed to calculate accuracy")
+        stop("`raw` or `quant_*` columns required to calculate accuracy")
     }
 }
