@@ -38,6 +38,25 @@ get_quantiles <- function(df) {
 #' @examples
 #' #TODO
 get_quant_col <- function(df, num) {
-    name <- paste0("quant_", as.character(num))
-    df[[name]]
+    df[[quant_name(num)]]
+}
+
+#' Turn quantile number into column name
+#'
+#' Given a number, returns the column name of a corresponding quantile column
+#'
+#' @param num The quantile number.
+#'
+#' @returns The quantile column name.
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' # "quant_50"
+#' casteval:::quant_name(50)
+#' 
+#' # "quant_2.5"
+#' casteval:::quant_name(2.5)
+quant_name <- function(num) {
+    paste0("quant_", as.character(num))
 }
