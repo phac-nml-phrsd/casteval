@@ -16,7 +16,7 @@
 #' #TODO
 get_quantiles <- function(df) {
     cols <- colnames(df)
-    quant_cols <- str_subset(cols, "^quant_")
+    quant_cols <- stringr::str_subset(cols, "^quant_")
     
     quant_cols |>
         purrr::map(~ as.numeric(strsplit(.x, "_")[[1]][[2]])) |>
