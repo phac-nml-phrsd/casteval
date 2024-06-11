@@ -43,7 +43,7 @@ test_that("get_time_type() works", {
 
 test_that("get_format() validates", {
   expect_error(get_format(data.frame()), "data frame is empty")
-  expect_error(get_format(data.frame(raw=1:3), "does not contain.*time.*column"))
+  expect_error(get_format(data.frame(raw=1:3)), "does not contain.*time.*column")
   expect_error(
     get_format(data.frame(time=1:3, raw=4:6, mean=7:9)),
     "both raw and mean values provided"

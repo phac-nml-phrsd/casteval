@@ -14,7 +14,11 @@ Suggests:
     rmarkdown,
     roxyglobals,
     testthat (>= 3.0.0),
-    waldo
+    waldo,
+    devtools,
+    covr,
+    DT,
+    htmltools
 Config/testthat/edition: 3
 Imports: 
     dplyr,
