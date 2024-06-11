@@ -13,7 +13,8 @@
 #'  If `fcst` contains raw data then the corresponding quantiles will be calculated and
 #'  used as a confidence interval.
 #'
-#' @returns desc
+#' @returns A number from 0 to 1,
+#'  the rate at which the observations were inside the specified confidence interval
 #' @export
 #' @autoglobal
 #'
@@ -66,11 +67,17 @@ accuracy <- function(fcst, obs, interval=NULL) {
         stop("`raw` or `quant_*` columns required to calculate accuracy")
     }
 
-    df |>
-    # isolate/rename the time and relevant quantile columns
-    dplyr::select(time, low=lowname, high=highname) |>
-    # join observations by date
-    dplyr::left_join(obs, dplyr::join_by())
+    # compare observations against specified confidence interval
+    df <- df |>
+        # isolate/rename the time and relevant quantile columns
+        dplyr::select(time, low=lowname, high=highname) |>
+        # join observations by time into `obs` column
+        dplyr::left_join(obs |> dplyr::rename(obs=raw), dplyr::join_by(time)) |>
+        # flag the rows where the observations are within the confidence interval
+        dplyr::mutate(success=dplyr::between(obs, low, high)) |>
+
+    # calculate success rate (aka accuracy)
+    mean(df$success)
 }
 
 #' Validate quantile interval vector
