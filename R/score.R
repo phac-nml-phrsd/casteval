@@ -71,17 +71,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
             lowname <- quant_name(low)
             highname <- quant_name(high)
         } else {
-            # do some input validation on `interval`
-            if(length(interval) != 2) {
-                stop("`interval` must be either NULL or a vector of 2 numbers")
-            }
-            low <- interval[[1]]
-            high <- interval[[2]]
-
-
-            if(low >= high) {
-                stop("`interval[[1]]` must be less than `interval[[2]]`")
-            }
+            
 
             lowname <- quant_name(low)
             highname <- quant_name(high)
@@ -98,4 +88,38 @@ accuracy <- function(fcst, obs, interval=NULL) {
     } else {
         stop("`raw` or `quant_*` columns required to calculate accuracy")
     }
+}
+
+#' Validate quantile interval vector
+#'
+#' Helper function for accuracy(). Performs input validation on its `interval` parameter.
+#'
+#' @param interval Same as the `interval` parameter passed to accuracy()
+#'
+#' @returns NULL if valid. Error otherwise.
+#' @autoglobal
+#'
+#' @examples
+#' #TBD
+validate_interval <- function(interval) {
+    if(!is.numeric(interval)) {
+        stop("`interval` must be either NULL or vector of 2 numbers")
+    }
+
+    if(length(interval) != 2) {
+        stop("`interval` vector must have length 2")
+    }
+
+    low <- interval[[1]]
+    high <- interval[[2]]
+
+    if(low >= high) {
+        stop("`interval[[1]]` must be less than `interval[[2]]`")
+    }
+
+    if(low < 0 || low > 100 | high < 0 || high > 100) {
+        stop("`interval[[1]]` and `interval[[2]]` must be between 0 and 100, inclusive")
+    }
+
+    NULL
 }
