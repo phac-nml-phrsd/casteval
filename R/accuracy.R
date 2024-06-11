@@ -23,7 +23,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
     if("raw" %in% fcst$data_types) {
-
+        stop("TODO")
     } else if("quant" %in% fcst$data_types) {
         quants <- get_quantiles(df)
 
@@ -51,7 +51,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
 
             lowname <- quant_name(interval[[1]])
             highname <- quant_name(interval[[2]])
-            
+
             # confirm that the corresponding columns exist
             if(! lowname %in% colnames(df)) {
                 stop(paste0("column named `", lowname, "` not in data frame"))
@@ -60,14 +60,15 @@ accuracy <- function(fcst, obs, interval=NULL) {
                 stop(paste0("column named `", highname, "` not in data frame"))
             }
         }
-
-        df |>
-            # isolate/rename the time and relevant quantile columns
-            dplyr::select(time, low=quant_name(low), high=quant_name(high))
-            # join observations by date
     } else {
         stop("`raw` or `quant_*` columns required to calculate accuracy")
     }
+
+    df |>
+    # isolate/rename the time and relevant quantile columns
+    dplyr::select(time, low=lowname, high=highname) |>
+    # join observations by date
+    dplyr::left_join(obs, dplyr::join_by())
 }
 
 #' Validate quantile interval vector
