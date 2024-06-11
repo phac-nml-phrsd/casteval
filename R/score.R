@@ -10,7 +10,6 @@
 #'  If non-NULL, all rows with time prior to `forecast_time` will be removed from `dat`.
 #'
 #' @returns The filtered data frame (no change if `forecast_time` NULL)
-#' @export
 #' @autoglobal
 #'
 #' @examples
