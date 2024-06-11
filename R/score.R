@@ -46,7 +46,7 @@ filter_forecast_time(df, forecast_time) {
 accuracy <- function(fcst, obs, quants=NULL) {
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    if(quant %in% fcst$data_types) {
+    if("quant" %in% fcst$data_types) {
         if(is.null(quants)) {
             # if quantile columns are provided but `quants` is NULL,
             # we select the two outermost quantiles provided,
