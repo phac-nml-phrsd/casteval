@@ -21,3 +21,28 @@ filter_forecast_time(df, forecast_time) {
         return(df |> dplyr::filter(time > forecast_time))
     }
 }
+
+#' Validate a forecast-observations pair
+#'
+#' Given a forecast and observations, verify that:
+#' - forecast is valid
+#' - observations are valid
+#' - forecast time type matches observations time type
+#'
+#' @param fcst The forecast object (a named list, such as the output of `create_forecast()`)
+#' @param obs The observations (a data frame)
+#'
+#' @returns NULL if valid. Error otherwise
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+validate_fcst_obs_pair <- function(fcst, obs) {
+    validate_forecast(fcst)
+    obs_time_type <- get_obs_format(obs)
+    if(obs_time_type != fcst$time_type) {
+        stop("observations time type must match forecast time type")
+    }
+    NULL
+}

@@ -20,6 +20,8 @@
 #' @examples
 #' #TODO
 accuracy <- function(fcst, obs, interval=NULL) {
+    validate_fcst_obs_pair(fcst, obs)
+
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
     if("raw" %in% fcst$data_types) {
@@ -81,7 +83,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
 #' @autoglobal
 #'
 #' @examples
-#' #TBD
+#' #TODO
 validate_interval <- function(interval) {
     if(!is.numeric(interval)) {
         stop("`interval` must be either NULL or vector of 2 numbers")
