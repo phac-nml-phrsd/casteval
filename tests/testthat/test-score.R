@@ -1,6 +1,14 @@
 test_that("filter_forecast_time() works", {
   expect_equal(
     filter_forecast_time(
+      data.frame(time=1:10, raw=11:20),
+      NULL
+    ),
+    data.frame(time=1:10, raw=11:20)
+  )
+
+  expect_equal(
+    filter_forecast_time(
       data.frame(time=1:10,raw=11:20),
       5
     ),

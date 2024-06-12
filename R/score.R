@@ -15,6 +15,9 @@
 #' @examples
 #' # data.frame(time=5:10, raw=15:20)
 #' casteval:::filter_forecast_time(data.frame(time=1:10, raw=11:20), 5)
+#' 
+#' # unchanged
+#' casteval:::filter_forecast_time(data.frame(time=1:10, raw=11:20), NULL)
 filter_forecast_time <- function(df, forecast_time) {
     if(is.null(forecast_time)) {
         return(df)

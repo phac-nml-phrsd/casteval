@@ -22,4 +22,7 @@ i.e. the data generated for dates/times prior to when the forecast was created.
 \examples{
 # data.frame(time=5:10, raw=15:20)
 casteval:::filter_forecast_time(data.frame(time=1:10, raw=11:20), 5)
+
+# unchanged
+casteval:::filter_forecast_time(data.frame(time=1:10, raw=11:20), NULL)
 }
