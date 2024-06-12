@@ -54,7 +54,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
             low <- min(quants)
             high <- max(quants)
             # use all.equal() to deal with floating point errors
-            if(all.equal(50-low, high-50)) {
+            if(all.equal(50-low, high-50) != TRUE) {
                 stop("outermost quantiles must be equidistant from 50th percentile")
             }
 
