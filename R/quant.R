@@ -40,7 +40,7 @@ get_quantiles <- function(df) {
 #' # returns 4:6
 #' casteval:::get_quant_col(data.frame(time=1:3, quant_50=4:6), 50)
 get_quant_col <- function(df, num) {
-    df[[quant_name(num)]]
+    as.numeric(df[[quant_name(num)]])
 }
 
 #' Turn quantile number into column name
