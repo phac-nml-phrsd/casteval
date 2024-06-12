@@ -38,7 +38,17 @@ filter_forecast_time <- function(df, forecast_time) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # compatible time types
+#' casteval:::validate_fcst_obs_pair(
+#'   create_forecast(data.frame(time=1:10, raw=11:20)),
+#'   data.frame(time=101:110, raw=111:120)
+#' )
+#' 
+#' # incompatible time types
+#' casteval:::validate_fcst_obs_pair(
+#'   create_forecast(data.frame(time=1:10, raw=11:20)),
+#'   data.frame(time=lubridate::ymd("2024-01-01"), raw=5)
+#' )
 validate_fcst_obs_pair <- function(fcst, obs) {
     validate_forecast(fcst)
     obs_time_type <- get_obs_format(obs)
