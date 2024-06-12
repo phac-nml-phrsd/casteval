@@ -34,7 +34,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
         validate_interval(interval)
 
         # compute quantiles using raw & interval
-        df |> dplyr::mutate(low = quantile(raw, interval[[1]])[[1]], high = quantile(raw, interval[[2]])[[1]])
+        df |> dplyr::mutate(low = stats::quantile(raw, interval[[1]])[[1]], high = stats::quantile(raw, interval[[2]])[[1]])
         
         lowname <- "low"
         highname <- "high"
