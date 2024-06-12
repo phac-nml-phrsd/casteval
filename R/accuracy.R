@@ -131,7 +131,7 @@ validate_interval <- function(interval) {
         stop("`interval[[1]]` must be less than `interval[[2]]`")
     }
 
-    if(low < 0 || low > 100 | high < 0 || high > 100) {
+    if(low < 0 || low > 100 || high < 0 || high > 100) {
         stop("`interval[[1]]` and `interval[[2]]` must be between 0 and 100, inclusive")
     }
 
