@@ -72,7 +72,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
         # isolate/rename the time and relevant quantile columns
         dplyr::select(time, low=lowname, high=highname) |>
         # join observations by time into `obs` column
-        dplyr::left_join(obs |> dplyr::rename(obs=raw), dplyr::join_by(time)) |>
+        dplyr::inner_join(obs |> dplyr::rename(obs=raw), dplyr::join_by(time)) |>
         # flag the rows where the observations are within the confidence interval
         dplyr::mutate(success=dplyr::between(obs, low, high)) |>
 
