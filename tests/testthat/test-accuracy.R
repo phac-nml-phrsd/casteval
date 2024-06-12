@@ -44,3 +44,33 @@ test_that("validate_interval() works", {
     NULL
   )
 })
+
+test_that("accuracy() validates", {
+  expect_error(
+    accuracy(
+        create_forecast(data.frame(time=1:3, raw=4:6)),
+        data.frame(time=1:3, raw=4:6),
+        NULL
+    ),
+    "`interval` parameter required for computing accuracy from raw data"
+  )
+
+  expect_error(
+    accuracy(
+        create_forecast(data.frame(time=1:3, quant_25=4:6)),
+        data.frame(time=1:3, raw=4:6),
+        NULL
+    ),
+    "2 or more quantiles required to calculate accuracy"
+  )
+
+  expect_error(
+    accuracy(
+        create_forecast(data.frame(time=1:3, quant_25=4:6, quant_74=7:9)),
+        data.frame(time=1:3, raw=4:6),
+        NULL
+    ),
+    "outermost quantiles must be equidistant from 50th percentile"
+  )
+})
+
