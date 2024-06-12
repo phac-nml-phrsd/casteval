@@ -18,7 +18,7 @@ filter_forecast_time <- function(df, forecast_time) {
     if(is.null(forecast_time)) {
         return(df)
     } else {
-        return(df |> dplyr::filter(time > forecast_time))
+        return(df |> dplyr::filter(time >= forecast_time))
     }
 }
 
