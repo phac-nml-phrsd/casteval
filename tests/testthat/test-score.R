@@ -23,3 +23,21 @@ test_that("filter_forecast_time() works", {
     data.frame(time=numeric(0),raw=numeric(0))
   )
 })
+
+test_that("validate_fcst_obs_pair() works", {
+  expect_equal(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:10, raw=11:20)),
+      data.frame(time=101:110, raw=111:120)
+    ),
+    NULL
+  )
+
+  expect_error(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:10, raw=11:20)),
+      data.frame(time=lubridate::ymd("2024-01-01"), raw=5)
+    ),
+    "observations time type must match forecast time type"
+  )
+})
