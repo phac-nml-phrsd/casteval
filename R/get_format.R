@@ -139,16 +139,16 @@ get_format <- function(df) {
 #'
 #' @examples
 #' # "numeric"
-#' get_obs_format(data.frame(time=1:3, raw=4:6))
+#' casteval:::get_obs_format(data.frame(time=1:3, raw=4:6))
 #' 
 #' # "date"
-#' get_obs_format(data.frame(time=lubridate::ymd("2024-01-01"), raw=10))
+#' casteval:::get_obs_format(data.frame(time=lubridate::ymd("2024-01-01"), raw=10))
 #' 
 #' # raw not present
-#' try(get_obs_format(data.frame(time=1:3, mean=4:6)))
+#' try(casteval:::get_obs_format(data.frame(time=1:3, mean=4:6)))
 #' 
 #' # multiple raw realizations
-#' try(get_obs_format(dplyr::tibble(time=1:3, raw=list(1:2, 3:4, 5:6))))
+#' try(casteval:::get_obs_format(dplyr::tibble(time=1:3, raw=list(1:2, 3:4, 5:6))))
 get_obs_format <- function(obs) {
     fmt <- get_format(obs)
     if(! "raw" %in% fmt$data_types) {
