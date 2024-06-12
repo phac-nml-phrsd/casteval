@@ -22,3 +22,10 @@ test_that("get_quant_col() works", {
   )
 })
 
+test_that("quant_name() works", {
+  expect_equal(quant_name(50), "quant_50")
+  expect_equal(quant_name(0), "quant_0")
+  expect_equal(quant_name(100), "quant_100")
+  expect_equal(quant_name(2.5), "quant_2.5")
+  expect_equal(quant_name(1.2345), "quant_1.2345")
+})
