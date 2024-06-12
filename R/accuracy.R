@@ -21,12 +21,23 @@
 #' @examples
 #' #TODO
 accuracy <- function(fcst, obs, interval=NULL) {
+    #TODO deal with NA values
     validate_fcst_obs_pair(fcst, obs)
 
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
     if("raw" %in% fcst$data_types) {
-        stop("TODO")
+        # perform input validation
+        if(is.null(interval)) {
+            stop("`interval` parameter required for computing accuracy from raw data")
+        }
+        validate_interval(interval)
+
+        # compute quantiles using raw & interval
+        df |> dplyr::mutate(low = quantile(raw, interval[[1]])[[1]], high = quantile(raw, interval[[2]])[[1]])
+        
+        lowname <- "low"
+        highname <- "high"
     } else if("quant" %in% fcst$data_types) {
         quants <- get_quantiles(df)
 
