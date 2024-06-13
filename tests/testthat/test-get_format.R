@@ -57,6 +57,9 @@ test_that("get_format() validates", {
     "raw column not all numeric"
   )
   expect_error(
+    get_format(dplyr::tibble(time=1:3, raw=list(1:2, list(2,3), 4:5)))
+  )
+  expect_error(
     get_format(dplyr::tibble(time=1:3, raw=list(c(1,2), c(1,2,3), c(1,2)))),
     "raw.*inconsistent lengths"
   )
