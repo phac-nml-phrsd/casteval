@@ -34,7 +34,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
         validate_interval(interval)
 
         # compute quantiles using raw & interval
-        quants <- df$raw |> purrr::map(~ stats::quantile(.x, c(interval[[1]]/100, interval[[2]]/100)))
+        quants <- df$raw |> purrr::map(~ stats::quantile(.x, c(interval[[1]]/100, interval[[2]]/100), na.rm=TRUE))
         lows <- as.numeric(purrr::map(quants, ~ .x[[1]]))
         highs <- as.numeric(purrr::map(quants, ~ .x[[2]]))
         df <- df |> dplyr::mutate(time, low=lows, high=highs, .keep="none")
@@ -81,12 +81,26 @@ accuracy <- function(fcst, obs, interval=NULL) {
         stop("`raw` or `quant_*` columns required to calculate accuracy")
     }
 
-    # compare observations against specified confidence interval
     df <- df |>
         # isolate/rename the time and relevant quantile columns
         dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname)) |>
+        # remove rows containing NA
+        dplyr::filter(!is.na(time) & !is.na(low) & !is.na(high))
+    # make sure nonempty
+    if(nrow(df) == 0) {
+        stop("forecast data frame contains NA in every row")
+    }
+
+    df <- df |>
         # join observations by time into `obs` column
         dplyr::inner_join(obs |> dplyr::rename(obs=raw), dplyr::join_by(time)) |>
+        dplyr::filter(!is.na(obs))
+    # make sure still nonempty
+    if(nrow(df) == 0) {
+        stop("observations don't overlap with forecast data at all")
+    }
+
+    df <- df |>
         # flag the rows where the observations are within the confidence interval
         dplyr::mutate(success=dplyr::between(obs, low, high))
     
