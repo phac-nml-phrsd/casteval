@@ -88,7 +88,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
         dplyr::filter(!is.na(time) & !is.na(low) & !is.na(high))
     # make sure nonempty
     if(nrow(df) == 0) {
-        stop("forecast data frame contains NA in every row")
+        stop("forecast quantiles contain NA in every row")
     }
 
     df <- df |>

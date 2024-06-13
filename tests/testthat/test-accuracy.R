@@ -101,3 +101,130 @@ test_that("accuracy() validates", {
   )
 })
 
+test_that("accuracy() handles NAs", {
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(
+        time=1:3, raw=list(c(1,NA, 3), c(4, NA, NA), as.numeric(c(NA,NA,NA)))
+      )),
+      data.frame(time=1:3, raw=c(1.5, 3, 100)),
+      c(25,75)
+    ),
+    0.5
+  )
+
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(4:6,7:9,10:12))),
+      data.frame(time=2:4, raw=c(8, 100, 100)),
+      c(0,100)
+    ),
+    0.5
+  )
+
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(4:6,7:9,10:12))),
+      data.frame(time=1:3, raw=c(NA,8,10)),
+      c(0,50)
+    ),
+    1
+  )
+
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(
+        time=1:4, quant_25=c(10,NA,11,12), quant_75=c(13,14,NA,15)
+      )),
+      data.frame(time=1:4, raw=c(10, 100, 100, 15.1)),
+      c(25,75)
+    ),
+    0.5
+  )
+
+  expect_error(
+    accuracy(
+      create_forecast(dplyr::tibble(
+        time=1:3, quant_25=c(10, NA, NA), quant_75=c(NA, 11, NA)
+      )),
+      data.frame(time=1:3, raw=c(10, 11, 100)),
+      c(25,75)
+    ),
+    "forecast quantiles contain NA in every row"
+  )
+
+  expect_error(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(NA_real_,NA_real_,NA_real_))),
+      data.frame(time=1:3, raw=4:6),
+      c(0,100)
+    ),
+    "forecast quantiles contain NA in every row"
+  )
+
+  expect_error(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(4:6,7:9,10:12))),
+      data.frame(time=4:6, raw=1:3),
+      c(0,100)
+    ),
+    "observations don't overlap with forecast data at all"
+  )
+
+  expect_error(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(4:6,as.numeric(c(NA,NA,NA)),10:12))),
+      data.frame(time=2:4, raw=c(5, NA, 10)),
+      c(0, 100)
+    ),
+    "observations don't overlap with forecast data at all"
+  )
+})
+
+
+test_that("accuracy() raw works", {
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
+      data.frame(time=1:3, raw=c(5, 7.5, 11.5)),
+      c(25, 75)
+    ),
+    1
+  )
+
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
+      data.frame(time=1:3, raw=c(5, 7.4, 11.6)),
+      c(25, 75)
+    ),
+    1/3
+  )
+
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
+      data.frame(time=1:3, raw=c(0, 7.4, 11.6)),
+      c(25, 75)
+    ),
+    0
+  )
+
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=c(4,5,6))),
+      data.frame(time=1:3, raw=c(4,5,7)),
+      c(25, 75)
+    ),
+    2/3
+  )
+  
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
+      data.frame(time=1:3, raw=c(4, 9, 13)),
+      c(0,100)
+    ),
+    2/3
+  )
+})
