@@ -34,8 +34,11 @@ accuracy <- function(fcst, obs, interval=NULL) {
         validate_interval(interval)
 
         # compute quantiles using raw & interval
-        df |> dplyr::mutate(low = stats::quantile(raw, interval[[1]])[[1]], high = stats::quantile(raw, interval[[2]])[[1]])
-        
+        quants <- df$raw |> purrr::map(~ stats::quantile(.x, c(interval[[1]]/100, interval[[2]]/100)))
+        lows <- as.numeric(purrr::map(quants, ~ .x[[1]]))
+        highs <- as.numeric(purrr::map(quants, ~ .x[[2]]))
+        df <- df |> dplyr::mutate(time, low=lows, high=highs, .keep="none")
+
         lowname <- "low"
         highname <- "high"
     } else if("quant" %in% fcst$data_types) {
@@ -81,12 +84,12 @@ accuracy <- function(fcst, obs, interval=NULL) {
     # compare observations against specified confidence interval
     df <- df |>
         # isolate/rename the time and relevant quantile columns
-        dplyr::select(time, low=lowname, high=highname) |>
+        dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname)) |>
         # join observations by time into `obs` column
         dplyr::inner_join(obs |> dplyr::rename(obs=raw), dplyr::join_by(time)) |>
         # flag the rows where the observations are within the confidence interval
-        dplyr::mutate(success=dplyr::between(obs, low, high)) |>
-
+        dplyr::mutate(success=dplyr::between(obs, low, high))
+    
     # calculate success rate (aka accuracy)
     mean(df$success)
 }
