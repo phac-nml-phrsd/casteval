@@ -28,5 +28,29 @@ Given a forecast and set of observations,
 compute the accuracy (# within confidence interval / # total) of the forecast.
 }
 \examples{
-#TODO
+# calculate quantiles and accuracy from raw data
+# returns 2/3
+accuracy(
+  create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
+  data.frame(time=1:3, raw=c(5, 7.4, 11.6)),
+  interval=c(25, 75)
+)
+
+# provide two quantiles and specify them in `interval`
+# returns 1/3
+accuracy(
+  create_forecast(dplyr::tibble(
+    time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
+  )),
+  data.frame(time=1:3, raw=c(4, 201, 1000)),
+  interval=c(25,50)
+)
+
+# implicitly use the outermost quantiles (must be symmetric around the median)
+accuracy(
+  create_forecast(dplyr::tibble(
+    time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
+  )),
+  data.frame(time=1:3, raw=c(4, 201, 1000)),
+)
 }

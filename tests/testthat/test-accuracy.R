@@ -228,3 +228,27 @@ test_that("accuracy() raw works", {
     2/3
   )
 })
+
+test_that("accuracy() quant works", {
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(
+        time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
+      )),
+      data.frame(time=1:3, raw=c(4, 201, 1000)),
+      NULL
+    ),
+    2/3
+  )
+
+  expect_equal(
+    accuracy(
+      create_forecast(dplyr::tibble(
+        time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
+      )),
+      data.frame(time=1:3, raw=c(4, 201, 1000)),
+      c(25,50)
+    ),
+    1/3
+  )
+})
