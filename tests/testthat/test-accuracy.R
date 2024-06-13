@@ -72,5 +72,32 @@ test_that("accuracy() validates", {
     ),
     "outermost quantiles must be equidistant from 50th percentile"
   )
+
+  expect_error(
+    accuracy(
+      create_forecast(data.frame(time=1:3,quant_25=4:6, quant_75=7:9)),
+      data.frame(time=1:3, raw=4:6),
+      c(1, 25)
+    ),
+    "column named `quant_1` not in data frame"
+  )
+  
+  expect_error(
+    accuracy(
+      create_forecast(data.frame(time=1:3,quant_25=4:6, quant_75=7:9)),
+      data.frame(time=1:3, raw=4:6),
+      c(25,74.9)
+    ),
+    "column named `quant_74.9` not in data frame"
+  )
+
+  expect_error(
+    accuracy(
+      create_forecast(data.frame(time=1:3, mean=4:6)),
+      data.frame(time=1:3, raw=4:6),
+      NULL
+    ),
+    "`raw` or `quant.*columns required to calculate accuracy"
+  )
 })
 
