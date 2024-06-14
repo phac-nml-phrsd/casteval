@@ -54,5 +54,6 @@ neglog <- function(fcst, obs) {
 #' @examples
 #' #TODO
 neglog_point <- function(samp, x) {
-    density(samp, bw="nrd", from=x, to=x, n=1)$y[[1]]
+    dens <- density(samp, bw="nrd", from=x, to=x, n=1)$y[[1]]
+    -leg(dens)
 }
