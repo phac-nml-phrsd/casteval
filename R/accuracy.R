@@ -45,7 +45,6 @@
 #'   data.frame(time=1:3, raw=c(4, 201, 1000)),
 #' )
 accuracy <- function(fcst, obs, interval=NULL) {
-    #TODO deal with NA values
     validate_fcst_obs_pair(fcst, obs)
 
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
