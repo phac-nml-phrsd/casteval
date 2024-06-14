@@ -8,8 +8,7 @@
 #' @param fcst The forecast (see `create_forecast()` output).
 #' @param obs The observations data frame.
 #'
-#' @returns A data frame with a `time` column and a `score` column,
-#'  containing the scores for every corresponding time point.
+#' @returns The sum of scores across all time points for which there is sufficient data.
 #' @export
 #' @autoglobal
 #'
@@ -37,7 +36,9 @@ neglog <- function(fcst, obs) {
         stop("observations don't overlap with forecast data at all")
     }
 
-    df$score <- purrr::map2(df$raw, df$obs)
+    # TODO catch cases where not enough data points in sample for KDE
+    df$score <- purrr::map2(df$raw, df$obs, neglog_point)
+    sum(df$score)
 }
 
 #' Get negative-log-frequency score for single time point
