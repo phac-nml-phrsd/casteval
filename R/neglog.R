@@ -27,7 +27,7 @@ neglog <- function(fcst, obs) {
     # remove NAs & prepare for join
     df$raw <- purrr::map(df$raw, ~ .x[!is.na(.x)]) |> dplyr::select(time, raw) |>
       # remove rows with no data
-      dplyr::filter(as.logical(purrr::map(raw, ~ length(.x) != 0)))
+      dplyr::filter(as.logical(purrr::map(raw, ~ length(.x) >= 2)))
     obs <- dplyr::filter(obs, !is.na(raw)) |> dplyr::rename(obs=raw)
 
     # join & check for overlap
@@ -56,5 +56,5 @@ neglog <- function(fcst, obs) {
 #' #TODO
 neglog_point <- function(samp, x) {
     dens <- density(samp, bw="nrd", from=x, to=x, n=1)$y[[1]]
-    -leg(dens)
+    -log(dens)
 }
