@@ -1,7 +1,9 @@
-#' Get negative-log-frequency score for forecast
+#' Get negative-log score for forecast
 #'
 #' Given a forecast and set of observations,
 #'  compute the negative-log score for every time point.
+#' Uses a Kernel Density Estimation (KDE) to interpolate the density
+#'  at the observation point.
 #'
 #' @param fcst The forecast (see `create_forecast()` output).
 #' @param obs The observations data frame.
@@ -22,14 +24,14 @@ neglog <- function(fcst, obs) {
 #' Helper for neglog(). Given a set of predictions and a single observation,
 #'  compute the negative-log score.
 #'
-#' @param pred A numeric vector. The values predicted by the model.
-#' @param actual The actual value observed.
+#' @param samp A numeric vector. The values predicted by the model.
+#' @param x The actual value observed.
 #'
 #' @returns A number representing the score.
 #' @autoglobal
 #'
 #' @examples
 #' #TODO
-neglog_point <- function(pred, actual) {
-
+neglog_point <- function(samp, x) {
+    density(samp, bw="nrd", from=x, to=x, n=1)$y[[1]]
 }
