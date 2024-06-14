@@ -58,6 +58,7 @@ accuracy <- function(fcst, obs, interval=NULL) {
         validate_interval(interval)
 
         # compute quantiles using raw & interval
+        # TODO extract this into a function for computing a given quantile from raw
         quants <- df$raw |> purrr::map(~ stats::quantile(.x, c(interval[[1]]/100, interval[[2]]/100), na.rm=TRUE))
         lows <- as.numeric(purrr::map(quants, ~ .x[[1]]))
         highs <- as.numeric(purrr::map(quants, ~ .x[[2]]))
