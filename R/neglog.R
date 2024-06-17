@@ -19,14 +19,8 @@ neglog <- function(fcst, obs) {
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    # demand raw values
-    if(! "raw" %in% fcst$data_types) {
-        stop("raw data needed to calculate log score")
-    }
+    df <- remove_raw_NAs(df)
 
-    # remove NAs
-    df$raw <- purrr::map(df$raw, ~ .x[!is.na(.x)])
-    
     # prepare for join
     df |> 
       dplyr::select(time, raw) |>
