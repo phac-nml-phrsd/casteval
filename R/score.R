@@ -172,10 +172,10 @@ join_fcst_obs <- function(df, obs, na.rm=FALSE) {
 #' try(casteval:::get_time_point(data.frame(time=1:3,raw=4:6), 4))
 #' 
 #' # 2 rows with time==2
-#' try(get_time_point(data.frame(time=c(1,2,2,3), raw=4:7), 2))
+#' try(casteval:::get_time_point(data.frame(time=c(1,2,2,3), raw=4:7), 2))
 #' 
 #' # data.frame(time=2, raw=5, mean=8)
-#' get_time_point(data.frame(time=1:3, raw=4:6, mean=7:9), 2)
+#' casteval:::get_time_point(data.frame(time=1:3, raw=4:6, mean=7:9), 2)
 get_time_point <- function(df, t) {
     #TODO add a flag for allowing multiple matches
     df <- dplyr::filter(df, time == t)

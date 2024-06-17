@@ -7,5 +7,6 @@ utils::globalVariables(c(
   "time", # <neglog>
   "time", # <filter_forecast_time>
   "time", # <join_fcst_obs>
+  "time", # <get_time_point>
   NULL
 ))

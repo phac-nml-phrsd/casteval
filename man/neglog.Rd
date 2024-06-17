@@ -4,15 +4,25 @@
 \alias{neglog}
 \title{Get negative-log score for forecast}
 \usage{
-neglog(fcst, obs)
+neglog(fcst, obs, at = NULL, after = NULL)
 }
 \arguments{
 \item{fcst}{The forecast (see \code{create_forecast()} output).}
 
 \item{obs}{The observations data frame.}
+
+\item{at}{A time (compatible with \code{fcst} and \code{obs}).
+If specified, the score for this time point will be returned.
+Mutually exclusive with \code{after}.}
+
+\item{after}{A number. If specified, the score at
+time \code{fcst$forecast_time + after} will be returned.
+Mutually exclusive with \code{at}.}
 }
 \value{
-A data frame containing times, raw data, observations, and scores for those times.
+If \code{at} and \code{after} are both unspecified,
+a data frame containing times, raw data, observations, and scores for those times.
+Otherwise, the score at the time speficied by either \code{at} or \code{after}.
 }
 \description{
 Given a forecast and set of observations,

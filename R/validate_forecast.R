@@ -98,9 +98,9 @@ validate_forecast <- function(fcst) {
 #'   create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
 #' ))
 validate_time <- function(t, fcst) {
-    if(lubridate::is.Date(t) && fcst$time_type == "date" ||
-        lubridate::is.POSIXt(t) && fcst$time_type == "date-time" ||
-        is.numeric(t) && fcst$time_type == "numeric") {
+    if((lubridate::is.Date(t) && fcst$time_type == "date") ||
+        (lubridate::is.POSIXt(t) && fcst$time_type == "date-time") ||
+        (is.numeric(t) && fcst$time_type == "numeric")) {
         return(NULL)
     } else {
         stop("type of `t` does not match `fcst$time_type`")
