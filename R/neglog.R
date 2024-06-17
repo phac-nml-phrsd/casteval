@@ -24,8 +24,12 @@ neglog <- function(fcst, obs) {
         stop("raw data needed to calculate log score")
     }
 
-    # remove NAs & prepare for join
-    df$raw <- purrr::map(df$raw, ~ .x[!is.na(.x)]) |> dplyr::select(time, raw) |>
+    # remove NAs
+    df$raw <- purrr::map(df$raw, ~ .x[!is.na(.x)])
+    
+    # prepare for join
+    df |> 
+      dplyr::select(time, raw) |>
       # remove rows with no data
       dplyr::filter(as.logical(purrr::map(raw, ~ length(.x) >= 2)))
     obs <- dplyr::filter(obs, !is.na(raw)) |> dplyr::rename(obs=raw)
@@ -36,25 +40,7 @@ neglog <- function(fcst, obs) {
         stop("observations don't overlap with forecast data at all")
     }
 
-    df$score <- purrr::map2(df$raw, df$obs, neglog_point)
+    df$score <- purrr::map2(df$obs, df$raw, scoringRules::logs_sample)
     
     df
-}
-
-#' Get negative-log-frequency score for single time point
-#'
-#' Helper for neglog(). Given a set of predictions and a single observation,
-#'  compute the negative-log score.
-#'
-#' @param samp A numeric vector. The values predicted by the model.
-#' @param x The actual value observed.
-#'
-#' @returns A number representing the score.
-#' @autoglobal
-#'
-#' @examples
-#' #TODO
-neglog_point <- function(samp, x) {
-    dens <- density(samp, bw="nrd", from=x, to=x, n=1)$y[[1]]
-    -log(dens)
 }
