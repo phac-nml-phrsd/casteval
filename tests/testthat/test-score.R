@@ -92,6 +92,15 @@ test_that("join_fcst_obs() works", {
     "missing observations for some forecast time points"
   )
 
+  expect_error(
+    join_fcst_obs(
+      data.frame(time=1:3, raw=4:6),
+      data.frame(time=2:4, raw=c(NA, NA, 7)),
+      na.rm=TRUE
+    ),
+    "no rows remain after removing NA observations"
+  )
+
   expect_equal(
     join_fcst_obs(
       data.frame(time=1:3, mean=4:6),

@@ -124,6 +124,10 @@ remove_raw_NAs <- function(df) {
 #'   data.frame(time=2:3, raw=c(NA,7))
 #' ))
 join_fcst_obs <- function(df, obs, na.rm=FALSE) {
+    # this function does very little input validation because
+    # it is meant to be used inside functions like `accuracy()` and `neglog()`,
+    # where the forecast and observations are already validated.
+
     # rename obs `raw` to `obs` and check that no collisions will occur
     obs <- dplyr::rename(obs, obs=raw)
     if("obs" %in% colnames(df)) {
@@ -138,6 +142,9 @@ join_fcst_obs <- function(df, obs, na.rm=FALSE) {
     if(any(as.logical(purrr::map(df$obs, is.na)))) {
         if(na.rm) { # remove the rows with NA obs
             df <- dplyr::filter(df, !is.na(obs))
+            if(nrow(df) == 0) {
+                stop("no rows remain after removing NA observations")
+            }
         } else { # raise error
             stop("missing observations for some forecast time points")
         }
