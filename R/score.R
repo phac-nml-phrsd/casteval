@@ -74,8 +74,12 @@ validate_fcst_obs_pair <- function(fcst, obs) {
 #' @examples
 #' # TODO
 remove_raw_NAs <- function(df) {
-    df$raw <- purrr::map(df$raw, ~ .x[!is.na(x)])
-    if(any(purrr::map(df$raw, ~ length(.x) == 0))) {
+    if(! "raw" %in% colnames(df)) {
+        stop("data frame does not contain `raw` column")
+    }
+
+    df$raw <- purrr::map(df$raw, ~ .x[!is.na(.x)])
+    if(any(as.logical(purrr::map(df$raw, ~ length(.x) == 0)))) {
         stop("data frame contains row with no raw data")
     }
     df

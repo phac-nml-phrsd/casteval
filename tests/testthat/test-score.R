@@ -49,3 +49,20 @@ test_that("validate_fcst_obs_pair() works", {
     "observations time type must match forecast time type"
   )
 })
+
+test_that("remove_raw_NAs() works", {
+  expect_error(
+    remove_raw_NAs(data.frame(time=6, mean=3)),
+    "data frame does not contain `raw` column"
+  )
+
+  expect_error(
+    remove_raw_NAs(dplyr::tibble(time=4:5, raw=list(c(1,NA), c(NA,NA)))),
+    "data frame contains row with no raw data"
+  )
+
+  expect_equal(
+    remove_raw_NAs(dplyr::tibble(time=1:3, raw=list(c(NA, 1), c(1, 2, 3), c(NA, NA, 4)))),
+    dplyr::tibble(time=1:3, raw=list(1, 1:3, 4))
+  )
+})
