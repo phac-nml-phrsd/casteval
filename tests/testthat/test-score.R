@@ -98,4 +98,30 @@ test_that("join_fcst_obs() works", {
     ),
     data.frame(time=1:3, mean=4:6, obs=7:9)
   )
+
+  expect_equal(
+    join_fcst_obs(
+      data.frame(time=1:3, raw=4:6),
+      data.frame(time=1:3, raw=c(NA, 7, 8)),
+      na.rm=TRUE
+    ),
+    data.frame(time=2:3, raw=5:6, obs=7:8)
+  )
+
+  expect_equal(
+    join_fcst_obs(
+      data.frame(time=1:3, raw=4:6),
+      data.frame(time=2:3, raw=7:8),
+      na.rm=TRUE
+    ),
+    data.frame(time=2:3, raw=5:6, obs=7:8)
+  )
+
+  expect_equal(
+    join_fcst_obs(
+      data.frame(time=1:3, raw=4:6),
+      data.frame(time=0:4, raw=7:11)
+    ),
+    data.frame(time=1:3, raw=4:6, obs=8:10)
+  )
 })
