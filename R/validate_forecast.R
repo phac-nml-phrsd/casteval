@@ -13,7 +13,26 @@
 #' @returns NULL if valid (error if invalid)
 #'
 #' @examples
-#' #TODO
+#' # incorrect time type
+#' try(casteval:::validate_forecast(list(
+#'   time_type="date", data_types="raw", data=data.frame(time=1:3, raw=4:6)
+#' )))
+#' 
+#' # invalid `forecast_time` type
+#' try(casteval:::validate_forecast(list(
+#'   time_type="numeric",
+#'   data_types="raw",
+#'   data=data.frame(time=1,raw=4),
+#'   forecast_time=lubridate::ymd("2024-01-01")
+#' )))
+#' 
+#' # a valid forecast
+#' casteval:::validate_forecast(list(
+#'   time_type="numeric",
+#'   data_types=c("mean", "quant"),
+#'   data=data.frame(time=1:3, mean=4:6, quant_50=7:9),
+#'   forecast_time=2
+#' ))
 validate_forecast <- function(fcst) {
     # must be list
     if(!is.list(fcst)) {
@@ -71,10 +90,10 @@ validate_forecast <- function(fcst) {
 #'
 #' @examples
 #' # both numeric (compatible)
-#' validate_time(5, create_forecast(data.frame(time=6,raw=7)))
+#' casteval:::validate_time(5, create_forecast(data.frame(time=6,raw=7)))
 #' 
 #' # one date, one date-time (incompatible)
-#' try(validate_time(
+#' try(casteval:::validate_time(
 #'   lubridate::ymd("2024-01-01"),
 #'   create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
 #' ))

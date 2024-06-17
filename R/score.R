@@ -153,3 +153,31 @@ join_fcst_obs <- function(df, obs, na.rm=FALSE) {
 
     df
 }
+
+
+#' Get a row of a date frame for a given time
+#'
+#' Given a forecast/observations data frame and a time,
+#'  isolate the row with the given time.
+#'
+#' @param df A data frame with a `time` column.
+#' @param t A time.
+#'
+#' @returns A data frame with one row, where the time equals `t`.
+#'  Raises error if there isn't exactly one row which satisfies this.
+#' @autoglobal
+#'
+#' @examples
+#' # TODO
+get_time_point <- function(df, t) {
+    #TODO add a flag for allowing multiple matches
+    df <- dplyr::filter(df, time == t)
+
+    if(nrow(df) == 0) {
+        stop("no rows in data frame with given time")
+    } else if(nrow(df) > 1) {
+        stop("multiple rows in data frame with given time")
+    }
+
+    df
+}
