@@ -37,7 +37,6 @@ filter_forecast_time <- function(df, forecast_time) {
 #' @param obs The observations (a data frame)
 #'
 #' @returns NULL if valid. Error otherwise
-#' @export
 #' @autoglobal
 #'
 #' @examples
@@ -59,4 +58,25 @@ validate_fcst_obs_pair <- function(fcst, obs) {
         stop("observations time type must match forecast time type")
     }
     NULL
+}
+
+#' Remove NA values from raw data
+#'
+#' Removes NA values from raw data in a forecast data frame.
+#' Raises an error if this leaves any rows empty.
+#'
+#' @param df The forecast data frame.
+#'  It should contain a `raw` column of numeric vectors.
+#'
+#' @returns The data frame with raw NA values removed from the vectors.
+#' @autoglobal
+#'
+#' @examples
+#' # TODO
+remove_raw_NAs <- function(df) {
+    df$raw <- purrr::map(df$raw, ~ .x[!is.na(x)])
+    if(any(purrr::map(df$raw, ~ length(.x) == 0))) {
+        stop("data frame contains row with no raw data")
+    }
+    df
 }
