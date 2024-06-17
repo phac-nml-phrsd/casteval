@@ -1,4 +1,5 @@
 # generic score-calculating helpers and wrappers
+# the actual scoring functions can be found in `accuracy.R`, `neglog.R`, etc.
 
 #' Isolate projected values from fit values
 #'
@@ -60,6 +61,7 @@ validate_fcst_obs_pair <- function(fcst, obs) {
     NULL
 }
 
+
 #' Remove NA values from raw data
 #'
 #' Removes NA values from raw data in a forecast data frame.
@@ -83,4 +85,42 @@ remove_raw_NAs <- function(df) {
         stop("data frame contains row with no raw data")
     }
     df
+}
+
+
+#' Join a forecast and observations into a single data frame
+#'
+#' Add an observations column to the forecast data frame containing
+#'  observations for each time point.
+#'
+#' @param df The forecast data frame.
+#' @param obs The observations data frame.
+#' @param na.rm A boolean. If FALSE, then an error will be raised when
+#'  observations are missing for any forecast time points.
+#'  If TRUE, any time points with missing observations will be removed from the data frame.
+#'
+#' @returns The forecast data frame with an additional `obs` column containing observations.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+join_fcst_obs(df, obs, na.rm=FALSE) {
+    # rename obs `raw` to `obs` and check that no collisions will occur
+    obs <- dplyr::rename(obs, obs=raw)
+    if("obs" %in% colnames(df)) {
+        stop("`obs` column already present in forecast data frame")
+    }
+    
+    # join, using NAs for wherever observations are missing
+    df <- dplyr::left_join(df, obs, dplyr::join_by(time))
+
+    # check for NAs in the `obs` column
+    # (whether they are from NAs in the `obs` data frame or due to left_join() does not matter)
+    if(any(as.logical(purrr::map(df$obs, is.na)))) {
+        if(na.rm) { # remove the rows with NA obs
+            df <- dplyr::filter(df, !is.na(obs))
+        } else { # raise error
+            stop("missing observations for some forecast time points")
+        }
+    }
 }
