@@ -66,3 +66,36 @@ test_that("remove_raw_NAs() works", {
     dplyr::tibble(time=1:3, raw=list(1, 1:3, 4))
   )
 })
+
+test_that("join_fcst_obs() works", {
+  expect_error(
+    join_fcst_obs(
+      data.frame(time=1:3, raw=4:6, obs=7:9),
+      data.frame(time=1:3, raw=10:12)
+    ),
+    "`obs` column already present in forecast data frame"
+  )
+
+  expect_error(
+    join_fcst_obs(
+      data.frame(time=1:3, raw=4:6),
+      data.frame(time=2:3, raw=7:8)
+    ),
+    "missing observations for some forecast time points"
+  )
+
+  expect_error(
+    join_fcst_obs(
+      data.frame(time=1:3, raw=4:6),
+      data.frame(time=1:3, raw=c(NA, 7, 8))
+    )
+  )
+
+  expect_equal(
+    join_fcst_obs(
+      data.frame(time=1:3, mean=4:6),
+      data.frame(time=1:3, raw=7:9)
+    ),
+    data.frame(time=1:3, mean=4:6, obs=7:9)
+  )
+})

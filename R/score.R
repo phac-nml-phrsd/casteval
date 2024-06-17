@@ -104,7 +104,7 @@ remove_raw_NAs <- function(df) {
 #'
 #' @examples
 #' #TODO
-join_fcst_obs(df, obs, na.rm=FALSE) {
+join_fcst_obs <- function(df, obs, na.rm=FALSE) {
     # rename obs `raw` to `obs` and check that no collisions will occur
     obs <- dplyr::rename(obs, obs=raw)
     if("obs" %in% colnames(df)) {
@@ -123,4 +123,6 @@ join_fcst_obs(df, obs, na.rm=FALSE) {
             stop("missing observations for some forecast time points")
         }
     }
+
+    df
 }
