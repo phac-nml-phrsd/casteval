@@ -39,7 +39,7 @@ neglog <- function(fcst, obs, at=NULL, after=NULL) {
     df <- df |> dplyr::select(time, raw) |> join_fcst_obs(obs)
 
     # score using KDE
-    df$score <- purrr::map2(df$obs, df$raw, scoringRules::logs_sample)
+    df$score <- as.numeric(purrr::map2(df$obs, df$raw, scoringRules::logs_sample))
     
     # deal with neither/both cases for `at` and `after`
     if(is.null(at) && is.null(after)) { # return the whole data frame with the score column
@@ -57,10 +57,11 @@ neglog <- function(fcst, obs, at=NULL, after=NULL) {
         if(!is.numeric(after)) {
             stop("`after` not numeric")
         }
+        if(is.null(fcst$forecast_time)) {
+            stop("`after` cannot be used if `fcst$forecast_time` is NULL")
+        }
         t <- fcst$forecast_time + after
     }
 
-    
-    
-    
+    get_time_point(df, t)[["score"]]
 }
