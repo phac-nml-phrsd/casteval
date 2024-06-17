@@ -53,3 +53,33 @@ validate_forecast <- function(fcst) {
 
     NULL
 }
+
+#' Check that time compatible with forecast
+#'
+#' Check that the type of a given time matches the time type of a given forecast.
+#'
+#' @param t A time (e.x. a number, date, or date-time).
+#' @param fcst A forecast (as returned by `create_forecast()`).
+#'  No input validation is done on `fcst` itself.
+#'
+#' @returns NULL if `t` is compatible with `fcst`. Error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' # both numeric (compatible)
+#' validate_time(5, create_forecast(data.frame(time=6,raw=7)))
+#' 
+#' # one date, one date-time (incompatible)
+#' try(validate_time(
+#'   lubridate::ymd("2024-01-01"),
+#'   create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
+#' ))
+validate_time <- function(t, fcst) {
+    if(lubridate::is.Date(t) && fcst$time_type == "date" ||
+        lubridate::is.POSIXt(t) && fcst$time_type == "date-time" ||
+        is.numeric(t) && fcst$time_type == "numeric") {
+        return(NULL)
+    } else {
+        stop("type of `t` does not match `fcst$time_type`")
+    }
+}

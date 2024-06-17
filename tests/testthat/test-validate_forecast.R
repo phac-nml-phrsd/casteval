@@ -68,3 +68,47 @@ test_that("validate_forecast() checks data types properly", {
     NULL
   )
 })
+
+test_that("validate_time() works", {
+  expect_equal(
+    validate_time(5, create_forecast(data.frame(time=6,raw=7))),
+    NULL
+  )
+
+  expect_equal(
+    validate_time(lubridate::ymd("2024-01-02"), create_forecast(data.frame(time=lubridate::ymd("2024-01-01"), raw=7))),
+    NULL
+  )
+
+  expect_equal(
+    validate_time(
+      lubridate::ymd_hms("2024-01-01_03:03:03"),
+      create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_04:04:04"),raw=8))
+    ),
+    NULL
+  )
+  
+  expect_error(
+    validate_time(
+      lubridate::ymd_hms("2024-01-01_04:04:04"),
+      create_forecast(data.frame(time=5,raw=6))
+    ),
+    "type of `t` does not match `fcst.*time_type`"
+  )
+
+  expect_error(
+    validate_time(
+      lubridate::ymd("2024-01-01"),
+      create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
+    ),
+    "type of `t` does not match `fcst.*time_type`"
+  )
+
+  expect_error(
+    validate_time(
+      lubridate::ymd_hms("2024-01-01_00:00:00"),
+      create_forecast(data.frame(time=lubridate::ymd("2024-01-01"),raw=7))
+    ),
+    "type of `t` does not match `fcst.*time_type`"
+  )
+})

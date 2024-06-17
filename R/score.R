@@ -53,6 +53,7 @@ filter_forecast_time <- function(df, forecast_time) {
 #'   data.frame(time=lubridate::ymd("2024-01-01"), raw=5)
 #' ))
 validate_fcst_obs_pair <- function(fcst, obs) {
+    # TODO move this and its tests over to validate_forecast.R and rename to validate.R
     validate_forecast(fcst)
     obs_time_type <- get_obs_format(obs)
     if(obs_time_type != fcst$time_type) {
