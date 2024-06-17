@@ -46,7 +46,6 @@
 #' )
 accuracy <- function(fcst, obs, interval=NULL) {
     validate_fcst_obs_pair(fcst, obs)
-
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
     if("raw" %in% fcst$data_types) {
@@ -56,9 +55,11 @@ accuracy <- function(fcst, obs, interval=NULL) {
         }
         validate_interval(interval)
 
+        df <- remove_raw_NAs(df)
+
         # compute quantiles using raw & interval
         # TODO extract this into a function for computing a given quantile from raw
-        quants <- df$raw |> purrr::map(~ stats::quantile(.x, c(interval[[1]]/100, interval[[2]]/100), na.rm=TRUE))
+        quants <- df$raw |> purrr::map(~ stats::quantile(.x, c(interval[[1]]/100, interval[[2]]/100)))
         lows <- as.numeric(purrr::map(quants, ~ .x[[1]]))
         highs <- as.numeric(purrr::map(quants, ~ .x[[2]]))
         df <- df |> dplyr::mutate(time, low=lows, high=highs, .keep="none")
@@ -105,16 +106,15 @@ accuracy <- function(fcst, obs, interval=NULL) {
         stop("`raw` or `quant_*` columns required to calculate accuracy")
     }
 
-    df <- df |>
-        # isolate/rename the time and relevant quantile columns
-        dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname)) |>
-        # remove rows containing NA
-        dplyr::filter(!is.na(time) & !is.na(low) & !is.na(high))
-    # make sure nonempty
-    if(nrow(df) == 0) {
-        stop("forecast quantiles contain NA in every row")
+    # isolate/rename the time and relevant quantile columns
+    df <- df |> dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname))
+    
+    # check for any NAs that make proceeding impossible without removing rows
+    if(NA %in% df$low || NA %in% df$high) {
+        stop("some forecast quantiles are NA")
     }
 
+    # TODO replace with join_fcst_obs()
     df <- df |>
         # join observations by time into `obs` column
         dplyr::inner_join(obs |> dplyr::rename(obs=raw), dplyr::join_by(time)) |>
