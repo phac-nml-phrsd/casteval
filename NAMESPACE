@@ -2,5 +2,5 @@
 
 export(accuracy)
 export(create_forecast)
+export(neglog)
 export(quant_name)
-export(validate_fcst_obs_pair)

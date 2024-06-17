@@ -13,7 +13,7 @@
 #' @autoglobal
 #'
 #' @examples
-#' 
+#' #TODO
 neglog <- function(fcst, obs) {
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)

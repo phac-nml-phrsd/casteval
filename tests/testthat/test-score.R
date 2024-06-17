@@ -88,7 +88,8 @@ test_that("join_fcst_obs() works", {
     join_fcst_obs(
       data.frame(time=1:3, raw=4:6),
       data.frame(time=1:3, raw=c(NA, 7, 8))
-    )
+    ),
+    "missing observations for some forecast time points"
   )
 
   expect_equal(

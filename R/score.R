@@ -74,7 +74,11 @@ validate_fcst_obs_pair <- function(fcst, obs) {
 #' @autoglobal
 #'
 #' @examples
-#' # TODO
+#' # dplyr::tibble(time=1:3, raw=list(1, 1:3, 4))
+#' casteval:::remove_raw_NAs(dplyr::tibble(time=1:3, raw=list(c(NA, 1), c(1, 2, 3), c(NA, NA, 4))))
+#' 
+#' # error if we end up with any empty rows
+#' try(casteval:::remove_raw_NAs(dplyr::tibble(time=4:5, raw=list(c(1,NA), c(NA,NA)))))
 remove_raw_NAs <- function(df) {
     if(! "raw" %in% colnames(df)) {
         stop("data frame does not contain `raw` column")
@@ -103,7 +107,22 @@ remove_raw_NAs <- function(df) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # data.frame(time=1:3, raw=4:6, obs=8:10)
+#' casteval:::join_fcst_obs(data.frame(time=1:3, raw=4:6), data.frame(time=0:4, raw=7:11))
+#' 
+#' # remove rows with missing observations 
+#' # data.frame(time=3, quant_50=6, obs=7)
+#' casteval:::join_fcst_obs(
+#'   data.frame(time=1:3, quant_50=4:6),
+#'   data.frame(time=2:3, raw=c(NA,7)),
+#'   na.rm=TRUE
+#' )
+#' 
+#' # default behaviour is to error if observations are missing
+#' try(casteval:::join_fcst_obs(
+#'   data.frame(time=1:3, quant_50=4:6),
+#'   data.frame(time=2:3, raw=c(NA,7))
+#' ))
 join_fcst_obs <- function(df, obs, na.rm=FALSE) {
     # rename obs `raw` to `obs` and check that no collisions will occur
     obs <- dplyr::rename(obs, obs=raw)

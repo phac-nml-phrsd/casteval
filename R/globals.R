@@ -4,6 +4,8 @@ utils::globalVariables(c(
   "time", # <accuracy>
   "time", # <combine_two_data_frames>
   "raw1", # <combine_two_data_frames>
+  "time", # <neglog>
   "time", # <filter_forecast_time>
+  "time", # <join_fcst_obs>
   NULL
 ))
