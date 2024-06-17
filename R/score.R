@@ -82,12 +82,12 @@ validate_fcst_obs_pair <- function(fcst, obs) {
 #' try(casteval:::remove_raw_NAs(dplyr::tibble(time=4:5, raw=list(c(1,NA), c(NA,NA)))))
 remove_raw_NAs <- function(df) {
     if(! "raw" %in% colnames(df)) {
-        stop("data frame does not contain `raw` column")
+        stop("forecast data frame does not contain `raw` column")
     }
 
     df$raw <- purrr::map(df$raw, ~ .x[!is.na(.x)])
     if(any(as.logical(purrr::map(df$raw, ~ length(.x) == 0)))) {
-        stop("data frame contains row with no raw data")
+        stop("forecast data frame contains row with no raw data")
     }
     df
 }

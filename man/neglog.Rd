@@ -31,5 +31,23 @@ Uses a Kernel Density Estimation (KDE) to interpolate the density
 at the observation point.
 }
 \examples{
-#TODO
+# in the absence of `at` and `after`, return a data frame with a `score` column
+neglog(
+  create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5))),
+  data.frame(time=1:3, raw=c(-1, 2.5, 5))
+)
+
+# use `at` parameter to specify absolute times
+neglog(
+  create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
+  data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+  at=2
+)
+
+# use `after` parameter to specify times relative to `forecast_time`
+neglog(
+  create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
+  data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+  after=1
+)
 }

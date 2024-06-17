@@ -102,7 +102,7 @@ test_that("accuracy() validates", {
 })
 
 test_that("accuracy() handles NAs", {
-  expect_equal(
+  expect_error(
     accuracy(
       create_forecast(dplyr::tibble(
         time=1:3, raw=list(c(1,NA, 3), c(4, NA, NA), as.numeric(c(NA,NA,NA)))
@@ -110,7 +110,7 @@ test_that("accuracy() handles NAs", {
       data.frame(time=1:3, raw=c(1.5, 3, 100)),
       c(25,75)
     ),
-    0.5
+    "data frame contains row with no raw data"
   )
 
   expect_equal(
@@ -131,7 +131,7 @@ test_that("accuracy() handles NAs", {
     1
   )
 
-  expect_equal(
+  expect_error(
     accuracy(
       create_forecast(dplyr::tibble(
         time=1:4, quant_25=c(10,NA,11,12), quant_75=c(13,14,NA,15)
@@ -139,18 +139,18 @@ test_that("accuracy() handles NAs", {
       data.frame(time=1:4, raw=c(10, 100, 100, 15.1)),
       c(25,75)
     ),
-    0.5
+    "some forecast quantiles are NA"
   )
 
   expect_error(
     accuracy(
       create_forecast(dplyr::tibble(
-        time=1:3, quant_25=c(10, NA, NA), quant_75=c(NA, 11, NA)
+        time=1:3, quant_25=c(10, 11, NA), quant_75=c(20, 21, 22)
       )),
       data.frame(time=1:3, raw=c(10, 11, 100)),
       c(25,75)
     ),
-    "forecast quantiles contain NA in every row"
+    "some forecast quantiles are NA"
   )
 
   expect_error(
@@ -159,7 +159,7 @@ test_that("accuracy() handles NAs", {
       data.frame(time=1:3, raw=4:6),
       c(0,100)
     ),
-    "forecast quantiles contain NA in every row"
+    "data frame contains row with no raw data"
   )
 
   expect_error(
@@ -177,7 +177,7 @@ test_that("accuracy() handles NAs", {
       data.frame(time=2:4, raw=c(5, NA, 10)),
       c(0, 100)
     ),
-    "observations don't overlap with forecast data at all"
+    "data frame contains row with no raw data"
   )
 })
 
