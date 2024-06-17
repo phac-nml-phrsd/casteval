@@ -51,6 +51,10 @@ validate_forecast <- function(fcst) {
         stop("stated data types do not match data frame data types")
     }
 
+    # check `forecast_time` type valid
+    if(!is.null(fcst$forecast_time)) {
+        validate_time(fcst$forecast_time, fcst)
+    }
     NULL
 }
 

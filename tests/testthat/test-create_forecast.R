@@ -19,6 +19,11 @@ test_that("create_forecast() does input validation", {
     )),
     "all data frames must contain raw data"
   )
+
+  expect_error(
+    create_forecast(data.frame(time=1,raw=2), forecast_time=lubridate::ymd("2024-01-01")),
+    "type of `t` does not match `fcst.*time_type`"
+  )
 })
 
 test_that("create_forecast() works with single data frame", {
@@ -71,11 +76,11 @@ test_that("create_forecast() works with list of data frames", {
         dplyr::tibble(time=3:7,raw=8:12)
       ),
       name="salutations",
-      forecast_time=lubridate::ymd("2024-04-01")
+      forecast_time=567
     ),
     list(
       name="salutations",
-      forecast_time=lubridate::ymd("2024-04-01"),
+      forecast_time=567,
       time_type="numeric",
       data_types="raw",
       data=dplyr::tibble(

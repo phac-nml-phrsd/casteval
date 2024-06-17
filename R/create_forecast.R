@@ -87,7 +87,9 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     }
 
     # TODO sort the rows by time?
-    # TODO verify that forecast_time type same as time_type, and do the same in validate_forecast()
+    if(!is.null(forecast$forecast_time)) {
+        validate_time(forecast$forecast_time, forecast)
+    }
 
     forecast
 }

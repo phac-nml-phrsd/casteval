@@ -30,6 +30,13 @@ test_that("validate_forecast() works", {
     ),
     "stated time type does not match data frame time type"
   )
+
+  expect_error(
+    validate_forecast(list(
+      time_type="numeric", data_types="raw", data=data.frame(time=1,raw=4), forecast_time=lubridate::ymd("2024-01-01")
+    )),
+    "type of `t` does not match `fcst.*time_type`"
+  )
 })
 
 test_that("validate_forecast() checks data types properly", {
