@@ -1,6 +1,8 @@
 # generic score-calculating helpers and wrappers
 # the actual scoring functions can be found in `accuracy.R`, `neglog.R`, etc.
 
+# TODO for all additional required arguments in scoring functions, set sane defaults and give a warning if the defaults are used.
+
 #' Isolate projected values from fit values
 #'
 #' Removes rows from forecast data frame which should not be scored,
