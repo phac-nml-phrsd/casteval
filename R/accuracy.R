@@ -114,18 +114,8 @@ accuracy <- function(fcst, obs, interval=NULL) {
         stop("some forecast quantiles are NA")
     }
 
-    # TODO replace with join_fcst_obs()
-    df <- df |>
-        # join observations by time into `obs` column
-        dplyr::inner_join(obs |> dplyr::rename(obs=raw), dplyr::join_by(time)) |>
-        dplyr::filter(!is.na(obs))
-    # make sure still nonempty
-    if(nrow(df) == 0) {
-        stop("observations don't overlap with forecast data at all")
-    }
-
-    df <- df |>
-        # flag the rows where the observations are within the confidence interval
+    # join & calculate accuracy
+    df <- join_fcst_obs(df, obs) |>
         dplyr::mutate(success=dplyr::between(obs, low, high))
     
     # calculate success rate (aka accuracy)
