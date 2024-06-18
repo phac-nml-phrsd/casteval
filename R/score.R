@@ -2,6 +2,7 @@
 # the actual scoring functions can be found in `accuracy.R`, `neglog.R`, etc.
 
 # TODO for all additional required arguments in scoring functions, set sane defaults and give a warning if the defaults are used.
+# TODO move forecast_time filtering out of the scoring functions and into a wrapper?
 
 #' Isolate projected values from fit values
 #'
