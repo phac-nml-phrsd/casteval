@@ -188,13 +188,13 @@ If `interval` is provided, then `accuracy()` will use the corresponding quantile
 ### Examples
 
 ```{r accuracy_examples}
-# forecast with raw data.
+# forecast with raw data
 fc1 <- create_forecast(dplyr::tibble(
   time=1:5,
   raw=list(0:10, 0:10, 0:10, 0:10, 0:10)
 ))
 
-# forecast with quantile data.
+# forecast with quantile data
 fc2 <- create_forecast(dplyr::tibble(
   time=1:5,
   quant_5=c(1,1,1,1,1),
@@ -203,7 +203,7 @@ fc2 <- create_forecast(dplyr::tibble(
   quant_95=c(9.5,9.5,9.5,9.5,9.5)
 ))
 
-# a forecast with less symmetrical quantile data.
+# a forecast with less symmetrical quantile data
 fc3 <- create_forecast(dplyr::tibble(
   time=1:5,
   quant_25=c(2.5,2.5,2.5,2.5,2.5),
@@ -213,14 +213,14 @@ fc3 <- create_forecast(dplyr::tibble(
 
 obs <- data.frame(time=1:5, raw=c(0, 2.4, 5, 9.5, 10))
 
-# calculate accuracy using the 50% confidence interval.
+# calculate accuracy using the 50% confidence interval
 print(accuracy(fc1, obs, interval=c(25, 75)))
-# calculate accuracy using highest and lowest quantiles (5% and 95% in this case).
+# calculate accuracy using highest and lowest quantiles (5% and 95% in this case)
 print(accuracy(fc2, obs))
 # calculate accuracy using provided quantiles.
 print(accuracy(fc2, obs, interval=c(25, 95)))
-# accuracy() refuses to automatically use the highest and lowest quantiles
-# if they are not symmetrical.
+# accuracy() refuses to automatically use the highest and lowest quantiles if
+# they are not symmetrical
 try(
   print(accuracy(fc3, obs))
 )
@@ -231,7 +231,7 @@ print(accuracy(fc3, obs, interval=c(25,95)))
 ## `neglog()`
 `neglog(fcst, obs, at=NULL, after=NULL)` calculates the negative log score of a forecast.
 `fcst` must contain raw data with 2 or more realizations per row.
-It uses a Kernel Density Estimation (KDE) to obtain a probability distribution for each point in time.
+It uses Kernel Density Estimation (KDE) to obtain a probability distribution for each point in time in the forecast.
 If `f(x)` is the calculated probability distribution and `x0` is the corresponding observation, then the negative log score at that point in time is `-log(f(x0))`.
 
 `at` and `after` can be used to specify which point in time to return the score of.
@@ -243,13 +243,25 @@ If both are left `NULL`, then all the calculated scores will be returned as part
 ```{r neglog_examples}
 
 # `rnorm(20) + 10`
-d <- c(10.609344, 10.383797, 11.102006, 10.232616, 11.372632, 11.489963, 10.359282, 10.303749,  7.477219,  9.612921,  8.568241, 11.467244,  9.979756, 10.226105, 9.592584,  9.582751,  8.674618,  8.706757,  9.810594, 10.752879)
+d <- c(10.609344, 10.383797, 11.102006, 10.232616, 11.372632, 11.489963, 10.359282, 10.303749,
+  7.477219,  9.612921,  8.568241, 11.467244,  9.979756, 10.226105, 9.592584,  9.582751,  8.674618,
+  8.706757,  9.810594, 10.752879)
 
-fc <- create_forecast(
+fcst <- create_forecast(
   dplyr::tibble(time=1:5, raw=list(c(d, d, d, d, d))),
-  forecast_time=2)
+  forecast_time=2
+)
 
 obs <- data.frame(time=1:5, raw=c(2, 7, 10, 11, 100))
 
-print(neglog(fc, obs, at=3))
+# get the score at time=3
+print(neglog(fcst, obs, at=3))
+# get the score at `fcst$forecast_time + 2` (4)
+print(neglog(fcst, obs, after=2))
+# get all the scores as part of a data frame
+print(neglog(fcst, obs))
+# `at` and `after` are mutually exclusive
+try(
+  print(neglog(fcst, obs, at=3, after=1))
+)
 ```
