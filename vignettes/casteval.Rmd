@@ -170,7 +170,9 @@ However, the reverse cannot happen (if `fcst` contains time points that `obs` do
 In the future a flag might be added to tell the scoring functions to discard rows with missing observations.
 
 Scoring functions typically return a single number indicating the score.
+
 The currently supported scoring functions are described below.
+Most of the examples are deliberately contrived in order to better illustrate the scoring functionality.
 
 ## `accuracy()`
 
@@ -184,8 +186,6 @@ If the forecast contains quantile data and `interval` is left as `NULL`, then `a
 If `interval` is provided, then `accuracy()` will use the corresponding quantiles in `fcst` to calculate the score.
 
 ### Examples
-
-The examples below are intentionally contrived to make the calculations more clear.
 
 ```{r accuracy_examples}
 # forecast with raw data.
@@ -226,4 +226,30 @@ try(
 )
 # specifying an interval fixes this
 print(accuracy(fc3, obs, interval=c(25,95)))
+```
+
+## `neglog()`
+`neglog(fcst, obs, at=NULL, after=NULL)` calculates the negative log score of a forecast.
+`fcst` must contain raw data with 2 or more realizations per row.
+It uses a Kernel Density Estimation (KDE) to obtain a probability distribution for each point in time.
+If `f(x)` is the calculated probability distribution and `x0` is the corresponding observation, then the negative log score at that point in time is `-log(f(x0))`.
+
+`at` and `after` can be used to specify which point in time to return the score of.
+If both are left `NULL`, then all the calculated scores will be returned as part of a data frame.
+`at` specifies a particular time, while `after` specifies a time relative to `fcst$forecast_time`.
+
+### Examples
+
+```{r neglog_examples}
+
+# `rnorm(20) + 10`
+d <- c(10.609344, 10.383797, 11.102006, 10.232616, 11.372632, 11.489963, 10.359282, 10.303749,  7.477219,  9.612921,  8.568241, 11.467244,  9.979756, 10.226105, 9.592584,  9.582751,  8.674618,  8.706757,  9.810594, 10.752879)
+
+fc <- create_forecast(
+  dplyr::tibble(time=1:5, raw=list(c(d, d, d, d, d))),
+  forecast_time=2)
+
+obs <- data.frame(time=1:5, raw=c(2, 7, 10, 11, 100))
+
+print(neglog(fc, obs, at=3))
 ```
