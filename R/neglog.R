@@ -46,6 +46,7 @@ neglog <- function(fcst, obs, at=NULL, after=NULL) {
     
     # TODO revisit this if we end up adding together scores/whatever
     #df <- filter_forecast_time(fcst$data, fcst$forecast_time)
+    df <- fcst$data
 
     df <- remove_raw_NAs(df)
     # KDE requires at least 2 data points, so check for that after removing NAs
