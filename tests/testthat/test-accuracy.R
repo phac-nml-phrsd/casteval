@@ -116,19 +116,19 @@ test_that("accuracy() handles NAs", {
   expect_equal(
     accuracy(
       create_forecast(dplyr::tibble(time=1:3, raw=list(4:6,7:9,10:12))),
-      data.frame(time=2:4, raw=c(8, 100, 100)),
+      data.frame(time=1:4, raw=c(4, 8, 100, 100)),
       c(0,100)
     ),
-    0.5
+    2/3
   )
 
-  expect_equal(
+  expect_error(
     accuracy(
       create_forecast(dplyr::tibble(time=1:3, raw=list(4:6,7:9,10:12))),
       data.frame(time=1:3, raw=c(NA,8,10)),
       c(0,50)
     ),
-    1
+    "missing observations for some forecast time points"
   )
 
   expect_error(
@@ -168,7 +168,7 @@ test_that("accuracy() handles NAs", {
       data.frame(time=4:6, raw=1:3),
       c(0,100)
     ),
-    "observations don't overlap with forecast data at all"
+    "missing observations for some forecast time points"
   )
 
   expect_error(
