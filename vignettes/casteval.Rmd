@@ -142,3 +142,39 @@ fc5 <- create_forecast(list(a,b,c))
 
 waldo::compare(fc4, fc5)
 ```
+
+# Observations
+
+Observations are formatted like single-realization raw data forecasts.
+That is, they are a data frame with a `time` column and a `raw` column containing observations.
+
+Note how observations are simply data frames, whereas forecasts are encapsulated by a named list.
+My reasoning for this was that forecasts contain certain metadata (such as `forecast_time`) which affect the way they are evaluated.
+This may change in future versions if it turns out that observations require metadata too, or if there is a better way to store metadata.
+
+# Scoring
+
+Scoring functions accept the following arguments:
+
+- A forecast object `fcst` (such as the ones outputted by `create_forecast()`)
+- A data frame of observations `obs` (as described above)
+- Additional arguments specific to particular scoring functions
+
+`fcst` and `obs` must use the same time type for scoring to be possible.
+That is to say, `fcst$data$time` and `obs$time` must contain elements of the same type.
+
+If `fcst$forecast_time` is not `NULL`, then all data prior to `fcst$forecast_time` will be ignored when scoring `fcst`.
+
+Scoring functions typically return a single number indicating the score.
+The currently supported scoring functions are described below.
+
+## `accuracy()`
+
+`accuracy(fcst, obs, interval=NULL)` returns the rate at which the observations fall inside a confidence interval predicted by the forecast.
+It returns a number from 0 to 1.
+
+If the forecast contains raw data, `interval` must be a vector of two percentages.
+The quantiles for these percentages will be calculated from the raw data and used to calculate the score.
+
+If the forecast contains quantile data and `interval` is left as `NULL`, then `accuracy()` will try to use the lowest and highest provided quantiles to calculate the score.
+If `interval` is provided, then `accuracy()` will use the corresponding quantiles in `fcst` to calculate the score.
