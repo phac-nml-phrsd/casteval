@@ -3,4 +3,3 @@
 export(accuracy)
 export(create_forecast)
 export(neglog)
-export(quant_name)

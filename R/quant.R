@@ -50,7 +50,6 @@ get_quant_col <- function(df, num) {
 #' @param num The quantile number.
 #'
 #' @returns The quantile column name.
-#' @export
 #' @autoglobal
 #'
 #' @examples
