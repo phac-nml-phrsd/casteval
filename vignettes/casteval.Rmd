@@ -165,6 +165,10 @@ That is to say, `fcst$data$time` and `obs$time` must contain elements of the sam
 
 If `fcst$forecast_time` is not `NULL`, then all data prior to `fcst$forecast_time` will be ignored when scoring `fcst`.
 
+If `obs` contains data for time points that `fcst` does not have, those time points will be ignored.
+However, the reverse cannot happen (if `fcst` contains time points that `obs` does not have, an error will be raised).
+In the future a flag might be added to tell the scoring functions to discard rows with missing observations.
+
 Scoring functions typically return a single number indicating the score.
 The currently supported scoring functions are described below.
 
@@ -178,3 +182,42 @@ The quantiles for these percentages will be calculated from the raw data and use
 
 If the forecast contains quantile data and `interval` is left as `NULL`, then `accuracy()` will try to use the lowest and highest provided quantiles to calculate the score.
 If `interval` is provided, then `accuracy()` will use the corresponding quantiles in `fcst` to calculate the score.
+
+### Examples
+
+The examples below are intentionally contrived to make the calculations more clear.
+
+```{r accuracy_examples}
+
+# forecast with raw data
+fc1 <- create_forecast(dplyr::tibble(
+  time=1:5,
+  raw=list(0:10, 0:10, 0:10, 0:10, 0:10)
+))
+
+# forecast with quantile data
+fc2 <- create_forecast(dplyr::tibble(
+  time=1:5,
+  quant_5=c(1,1,1,1,1),
+  quant_25=c(2.5,2.5,2.5,2.5,2.5),
+  quant_75=c(7.5,7.5,7.5,7.5,7.5),
+  quant_95=c(9.5,9.5,9.5,9.5,9.5)
+))
+
+# a forecast with less symmetrical quantile data
+fc3 <- create_forecast(dplyr::tibble(
+  time=1:5,
+  quant_25=c(2.5,2.5,2.5,2.5,2.5),
+  quant_50=c(5,5,5,5,5),
+  quant_95=c(9.5,9.5,9.5,9.5,9.5)
+))
+
+obs <- data.frame(time=1:5, raw=c(0, 2.5, 5, 7.5, 10))
+
+# calculate accuracy using the 50% confidence interval
+print(accuracy(fc1, obs, interval=c(25, 75)))
+
+# calculate accuracy using highest and lowest quantiles (5% and 95% in this case)
+print(accuracy(fc2, obs))
+
+```
