@@ -43,7 +43,9 @@
 neglog <- function(fcst, obs, at=NULL, after=NULL) {
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)
-    df <- filter_forecast_time(fcst$data, fcst$forecast_time)
+    
+    # TODO revisit this if we end up adding together scores/whatever
+    #df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
     df <- remove_raw_NAs(df)
     # KDE requires at least 2 data points, so check for that after removing NAs
@@ -56,7 +58,8 @@ neglog <- function(fcst, obs, at=NULL, after=NULL) {
 
     # score using KDE
     df$score <- as.numeric(purrr::map2(df$obs, df$raw, scoringRules::logs_sample))
-    
+    #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
+
     # deal with neither/both cases for `at` and `after`
     if(is.null(at) && is.null(after)) { # return the whole data frame with the score column
         return(df)
