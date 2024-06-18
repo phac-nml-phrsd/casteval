@@ -251,4 +251,15 @@ test_that("accuracy() quant works", {
     ),
     1/3
   )
+
+  expect_equal(
+    accuracy(
+      create_forecast(
+        dplyr::tibble(time=1:5, quant_25=c(6,6,6,6,6), quant_75=c(10,10,10,10,10)),
+        forecast_time=3
+      ),
+      data.frame(time=1:5, raw=c(0, 2.4, 5, 9.5, 10))
+    ),
+    2/3
+  )
 })

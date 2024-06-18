@@ -211,6 +211,16 @@ fc3 <- create_forecast(dplyr::tibble(
   quant_95=c(9.5,9.5,9.5,9.5,9.5)
 ))
 
+# a forecast with non-NULL `forecast_time`
+fc4 <- create_forecast(
+  dplyr::tibble(
+    time=1:5,
+    quant_25=c(6,6,6,6,6),
+    quant_75=c(10,10,10,10,10)
+  ),
+  forecast_time=3
+)
+
 obs <- data.frame(time=1:5, raw=c(0, 2.4, 5, 9.5, 10))
 
 # calculate accuracy using the 50% confidence interval
@@ -226,6 +236,8 @@ try(
 )
 # specifying an interval fixes this
 print(accuracy(fc3, obs, interval=c(25,95)))
+# if `forecast_time` is provided, everything prior to `forecast_time` will be ignored
+print(accuracy(fc4, obs))
 ```
 
 ## `neglog()`
