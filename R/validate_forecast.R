@@ -13,7 +13,26 @@
 #' @returns NULL if valid (error if invalid)
 #'
 #' @examples
-#' #TBD
+#' # incorrect time type
+#' try(casteval:::validate_forecast(list(
+#'   time_type="date", data_types="raw", data=data.frame(time=1:3, raw=4:6)
+#' )))
+#' 
+#' # invalid `forecast_time` type
+#' try(casteval:::validate_forecast(list(
+#'   time_type="numeric",
+#'   data_types="raw",
+#'   data=data.frame(time=1,raw=4),
+#'   forecast_time=lubridate::ymd("2024-01-01")
+#' )))
+#' 
+#' # a valid forecast
+#' casteval:::validate_forecast(list(
+#'   time_type="numeric",
+#'   data_types=c("mean", "quant"),
+#'   data=data.frame(time=1:3, mean=4:6, quant_50=7:9),
+#'   forecast_time=2
+#' ))
 validate_forecast <- function(fcst) {
     # must be list
     if(!is.list(fcst)) {
@@ -51,5 +70,39 @@ validate_forecast <- function(fcst) {
         stop("stated data types do not match data frame data types")
     }
 
+    # check `forecast_time` type valid
+    if(!is.null(fcst$forecast_time)) {
+        validate_time(fcst$forecast_time, fcst)
+    }
     NULL
+}
+
+#' Check that time compatible with forecast
+#'
+#' Check that the type of a given time matches the time type of a given forecast.
+#'
+#' @param t A time (e.x. a number, date, or date-time).
+#' @param fcst A forecast (as returned by `create_forecast()`).
+#'  No input validation is done on `fcst` itself.
+#'
+#' @returns NULL if `t` is compatible with `fcst`. Error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' # both numeric (compatible)
+#' casteval:::validate_time(5, create_forecast(data.frame(time=6,raw=7)))
+#' 
+#' # one date, one date-time (incompatible)
+#' try(casteval:::validate_time(
+#'   lubridate::ymd("2024-01-01"),
+#'   create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
+#' ))
+validate_time <- function(t, fcst) {
+    if((lubridate::is.Date(t) && fcst$time_type == "date") ||
+        (lubridate::is.POSIXt(t) && fcst$time_type == "date-time") ||
+        (is.numeric(t) && fcst$time_type == "numeric")) {
+        return(NULL)
+    } else {
+        stop("type of `t` does not match `fcst$time_type`")
+    }
 }

@@ -24,5 +24,24 @@ If any of these conditions fail, it stops with an appropriate an error message
 }
 }
 \examples{
-#TBD
+# incorrect time type
+try(casteval:::validate_forecast(list(
+  time_type="date", data_types="raw", data=data.frame(time=1:3, raw=4:6)
+)))
+
+# invalid `forecast_time` type
+try(casteval:::validate_forecast(list(
+  time_type="numeric",
+  data_types="raw",
+  data=data.frame(time=1,raw=4),
+  forecast_time=lubridate::ymd("2024-01-01")
+)))
+
+# a valid forecast
+casteval:::validate_forecast(list(
+  time_type="numeric",
+  data_types=c("mean", "quant"),
+  data=data.frame(time=1:3, mean=4:6, quant_50=7:9),
+  forecast_time=2
+))
 }

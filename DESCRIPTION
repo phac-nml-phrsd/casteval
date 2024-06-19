@@ -24,6 +24,8 @@ Imports:
     dplyr,
     lubridate,
     purrr,
+    scoringRules,
+    stats,
     stringr
 Config/roxyglobals/filename: globals.R
 Config/roxyglobals/unique: FALSE
