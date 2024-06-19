@@ -4,12 +4,18 @@
 #'
 #' @param fcst The forecast object (see the output of `create_forecast()`)
 #'
-#' @returns A ggplot graph
+#' @returns A ggplot object.
 #' @export
 #' @autoglobal
 #'
 #' @examples
 #' #TODO
-graph_ensembles <- function(fcst) {
+graph_ensemble <- function(fcst) {
     validate_forecast(fcst)
+
+    if(! "raw" %in% fcst$data_types) {
+        stop("raw data needed to graph ensemble")
+    }
+
+    ggplot2::ggplot()
 }
