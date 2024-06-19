@@ -17,4 +17,17 @@ test_that("wide2long() works", {
     wide2long(data.frame(time=1:3, raw=4:6)),
     dplyr::tibble(time=1:3, realization=c(1,1,1), raw=4:6)
   )
+
+  df2 <- dplyr::tibble(
+    time=1:4,
+    raw=list(c(NA,10,11), c(12,NA,13), c(14,15,NA), c(NA,NA,NA))
+  )
+  expect_equal(
+    wide2long(df2),
+    dplyr::tibble(
+      time=c(1,1,1,2,2,2,3,3,3,4,4,4),
+      realization=c(1,2,3,1,2,3,1,2,3,1,2,3),
+      raw=c(NA,10,11,12,NA,13,14,15,NA,NA,NA,NA)
+    )
+  )
 })
