@@ -24,9 +24,9 @@ wide2long <- function(df) {
                 # recycle the time
                 time=df[[row,"time"]],
                 # number the realizations
-                realization=1:length(df[[row,"raw"]]),
+                realization=1:length(df[[row,"raw"]][[1]]),
                 # and put the raw values in long form
-                raw=df[[row,"raw"]]
+                raw=df[[row,"raw"]][[1]]
             )
         }) |>
         # now combine them back into one data frame
