@@ -37,7 +37,7 @@ graph_ensemble <- function(fcst) {
 #'
 #' @examples
 #' # TODO
-wide2long(df) {
+wide2long <- function(df) {
     # go through every row of the data frame
     1:nrow(df) |>
         purrr::map(\(row) {
