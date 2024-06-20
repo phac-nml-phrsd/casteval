@@ -5,18 +5,18 @@
 #'
 #' @template graph
 #' @param obs An observations data frame.
-#' @param fcst A forecast (see output of `create_forecast()`), or NULL.
+#' @param scores A data frame containing a `time` column and a `score` column.
 #'
 #' @returns A ggplot object.
 #' @autoglobal
 #'
 #' @examples
 #' #TODO
-graph_observations <- function(graph=NULL, obs, fcst=NULL) {
+graph_observations <- function(graph=NULL, obs, scores=NULL) {
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
     }
-    if(!is.null(fcst)) {
 
-    }
+    #if()
+
 }
