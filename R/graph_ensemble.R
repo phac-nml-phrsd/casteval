@@ -17,5 +17,8 @@ graph_ensemble <- function(fcst) {
         stop("raw data needed to graph ensemble")
     }
 
-    num_realizations <- length(fcst$data$raw)
+    # convert to long format for easy ggplot interfacing
+    df <- wide2long(fcst$data)
+
+    ggplot2::ggplot(df, ggplot2::aes(x=time, y=raw, group=realization)) + ggplot2::geom_line()
 }
