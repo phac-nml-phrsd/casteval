@@ -263,3 +263,17 @@ test_that("accuracy() quant works", {
     2/3
   )
 })
+
+test_that("accuracy(..., summarize=FALSE) works", {
+  expect_equal(
+    accuracy(
+      create_forecast(
+        dplyr::tibble(time=1:5, quant_25=c(2,2,2,2,2), quant_75=c(7,7,7,7,7)),
+        forecast_time=3
+      ),
+      data.frame(time=3:5, raw=c(0,5,10)),
+      summarize=FALSE
+    ),
+    dplyr::tibble(time=3:5, low=c(2,2,2), high=c(7,7,7), obs=c(0,5,10), score=c(FALSE,TRUE,FALSE))
+  )
+})
