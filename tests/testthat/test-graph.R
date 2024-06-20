@@ -25,9 +25,9 @@ test_that("wide2long() works", {
   expect_equal(
     wide2long(df2),
     dplyr::tibble(
-      time=c(1,1,1,2,2,2,3,3,3,4,4,4),
-      realization=c(1,2,3,1,2,3,1,2,3,1,2,3),
-      raw=c(NA,10,11,12,NA,13,14,15,NA,NA,NA,NA)
+      time=c(1,1,2,2,3,3),
+      realization=c(2,3,1,3,1,2),
+      raw=c(10,11,12,13,14,15)
     )
   )
 })

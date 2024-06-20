@@ -30,5 +30,7 @@ wide2long <- function(df) {
             )
         }) |>
         # now combine them back into one data frame
-        purrr::reduce(dplyr::bind_rows)
+        purrr::reduce(dplyr::bind_rows) |>
+        # remove NA rows
+        dplyr::filter(!is.na(raw))
 }
