@@ -44,7 +44,7 @@
 #'   )),
 #'   data.frame(time=1:3, raw=c(4, 201, 1000)),
 #' )
-accuracy <- function(fcst, obs, interval=NULL) {
+accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
@@ -116,10 +116,13 @@ accuracy <- function(fcst, obs, interval=NULL) {
 
     # join & calculate accuracy
     df <- join_fcst_obs(df, obs) |>
-        dplyr::mutate(success=dplyr::between(obs, low, high))
-    
+        dplyr::mutate(score=dplyr::between(obs, low, high))
+    if(!summarize) {
+        return df
+    }
+
     # calculate success rate (aka accuracy)
-    mean(df$success)
+    mean(df$score)
 }
 
 #' Validate quantile interval vector
