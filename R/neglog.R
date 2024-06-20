@@ -13,6 +13,7 @@
 #' @param after A number. If specified, the score at
 #'  time `fcst$forecast_time + after` will be returned.
 #'  Mutually exclusive with `at`.
+#' @template summarize
 #'
 #' @returns If `at` and `after` are both unspecified,
 #'  a data frame containing times, raw data, observations, and scores for those times.
@@ -40,7 +41,7 @@
 #'   data.frame(time=1:3, raw=c(-1, 2.5, 5)),
 #'   after=1
 #' )
-neglog <- function(fcst, obs, at=NULL, after=NULL) {
+neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)
     
@@ -61,10 +62,12 @@ neglog <- function(fcst, obs, at=NULL, after=NULL) {
     df$score <- as.numeric(purrr::map2(df$obs, df$raw, scoringRules::logs_sample))
     #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
 
-    # deal with neither/both cases for `at` and `after`
-    if(is.null(at) && is.null(after)) { # return the whole data frame with the score column
+    # TODO clean this up once default values for at/after set
+    if(!summarize || (is.null(at) && is.null(after))) { # return the whole data frame with the score column
         return(df)
-    } else if(!is.null(at) && !is.null(after)) { # mutually exclusive
+    }
+    
+    if(!is.null(at) && !is.null(after)) { # mutually exclusive
         stop("`at` and `after` parameters cannot both be provided")
     }
     
