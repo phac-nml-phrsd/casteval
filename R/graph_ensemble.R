@@ -10,7 +10,10 @@
 #'
 #' @examples
 #' #TODO
-graph_ensemble <- function(fcst) {
+graph_ensemble <- function(graph=NULL, fcst) {
+    if(is.null(graph)) {
+        graph <- ggplot2::ggplot()
+    }
     validate_forecast(fcst)
 
     if(! "raw" %in% fcst$data_types) {
@@ -20,5 +23,5 @@ graph_ensemble <- function(fcst) {
     # convert to long format for easy ggplot interfacing
     df <- wide2long(fcst$data)
 
-    ggplot2::ggplot(df, ggplot2::aes(x=time, y=raw, group=realization)) + ggplot2::geom_line()
+    graph + ggplot2::geom_line(ggplot2::aes(x=time, y=raw, group=realization), df)
 }
