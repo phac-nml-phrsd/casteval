@@ -12,6 +12,7 @@
 #'  used as the confidence interval.
 #'  If `fcst` contains raw data then the corresponding quantiles will be calculated and
 #'  used as a confidence interval.
+#' @template summarize
 #'
 #' @returns A number from 0 to 1,
 #'  the rate at which the observations were inside the specified confidence interval
