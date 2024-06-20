@@ -2,10 +2,10 @@
 #'
 #' Given a forecast with raw realizations, generate a graph displaying all of them.
 #'
+#' @template graph
 #' @param fcst The forecast object (see the output of `create_forecast()`)
 #'
 #' @returns A ggplot object.
-#' @export
 #' @autoglobal
 #'
 #' @examples
