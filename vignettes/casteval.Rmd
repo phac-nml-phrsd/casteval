@@ -145,9 +145,7 @@ waldo::compare(fc4, fc5)
 
 # Observations
 
-Observations are formatted like single-realization raw data forecasts.
-That is, they are a data frame with a `time` column and a `raw` column containing observations.
-
+Observations are data frames with a `time` column and a numeric `obs` column.
 Note how observations are simply data frames, whereas forecasts are encapsulated by a named list.
 My reasoning for this was that forecasts contain certain metadata (such as `forecast_time`) which affect the way they are evaluated.
 This may change in future versions if it turns out that observations require metadata too, or if there is a better way to store metadata.
@@ -221,7 +219,7 @@ fc4 <- create_forecast(
   forecast_time=3
 )
 
-obs <- data.frame(time=1:5, raw=c(0, 2.4, 5, 9.5, 10))
+obs <- data.frame(time=1:5, obs=c(0, 2.4, 5, 9.5, 10))
 
 # calculate accuracy using the 50% confidence interval
 print(accuracy(fc1, obs, interval=c(25, 75)))
@@ -264,7 +262,7 @@ fcst <- create_forecast(
   forecast_time=2
 )
 
-obs <- data.frame(time=1:5, raw=c(2, 7, 10, 11, 100))
+obs <- data.frame(time=1:5, obs=c(2, 7, 10, 11, 100))
 
 # get the score at time=3
 print(neglog(fcst, obs, at=3))
