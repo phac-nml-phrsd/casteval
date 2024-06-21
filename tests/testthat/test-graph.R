@@ -48,6 +48,11 @@ test_that("graph_ensemble() works", {
     raw=c(1:400)
   )
 
+  df3 <- data.frame(
+    time=lubridate::as_datetime(c(0,100,100000)),
+    raw=c(20,30,40)
+  )
+
   vdiffr::expect_doppelganger(
     "ens1",
     graph_ensemble(NULL, create_forecast(df1))
@@ -56,5 +61,10 @@ test_that("graph_ensemble() works", {
   vdiffr::expect_doppelganger(
     "ens2",
     graph_ensemble(NULL, create_forecast(df2))
+  )
+
+  vdiffr::expect_doppelganger(
+    "ens3",
+    graph_ensemble(NULL, create_forecast(df3))
   )
 })
