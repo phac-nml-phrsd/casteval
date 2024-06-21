@@ -106,3 +106,22 @@ validate_time <- function(t, fcst) {
         stop("type of `t` does not match `fcst$time_type`")
     }
 }
+
+
+#' Check that column is in data frame
+#'
+#' Errors of `col` is not a column in data frame.
+#'
+#' @param df A data frame.
+#' @param col A string containing the column name.
+#'
+#' @returns NULL if valid, error otherwise.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+validate_column <- function(df, col) {
+    if(! col %in% colnames(df)) {
+        stop(paste0("column `", col, "` not in data frame"))
+    }
+}
