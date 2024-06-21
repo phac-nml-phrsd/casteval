@@ -6,6 +6,8 @@ utils::globalVariables(c(
   "raw1", # <combine_two_data_frames>
   "time", # <graph_ensemble>
   "realization", # <graph_ensemble>
+  "time", # <graph_observations>
+  "score", # <graph_observations>
   "time", # <neglog>
   "time", # <filter_forecast_time>
   "time", # <join_fcst_obs>

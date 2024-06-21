@@ -26,12 +26,12 @@ Given a forecast and observations, verify that:
 # compatible time types
 casteval:::validate_fcst_obs_pair(
   create_forecast(data.frame(time=1:10, raw=11:20)),
-  data.frame(time=101:110, raw=111:120)
+  data.frame(time=101:110, obs=111:120)
 )
 
 # incompatible time types
 try(casteval:::validate_fcst_obs_pair(
   create_forecast(data.frame(time=1:10, raw=11:20)),
-  data.frame(time=lubridate::ymd("2024-01-01"), raw=5)
+  data.frame(time=lubridate::ymd("2024-01-01"), obs=5)
 ))
 }

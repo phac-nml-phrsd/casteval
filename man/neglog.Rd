@@ -4,7 +4,7 @@
 \alias{neglog}
 \title{Get negative-log score for forecast}
 \usage{
-neglog(fcst, obs, at = NULL, after = NULL)
+neglog(fcst, obs, at = NULL, after = NULL, summarize = TRUE)
 }
 \arguments{
 \item{fcst}{The forecast (see \code{create_forecast()} output).}
@@ -18,6 +18,12 @@ Mutually exclusive with \code{after}.}
 \item{after}{A number. If specified, the score at
 time \code{fcst$forecast_time + after} will be returned.
 Mutually exclusive with \code{at}.}
+
+\item{summarize}{A boolean. If TRUE, a single number will be returned as the score for the forecast.
+If FALSE, a data frame with \code{time} and \code{score} columns (and possibly others) will be returned,
+containing the intermediate values for each time point used to calculate the score.
+The type of the \code{score} column can be anything (numbers, booleans, etc.).
+This can be used by graphing functions to color code observations, for example.}
 }
 \value{
 If \code{at} and \code{after} are both unspecified,
@@ -34,20 +40,20 @@ at the observation point.
 # in the absence of `at` and `after`, return a data frame with a `score` column
 neglog(
   create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5))),
-  data.frame(time=1:3, raw=c(-1, 2.5, 5))
+  data.frame(time=1:3, obs=c(-1, 2.5, 5))
 )
 
 # use `at` parameter to specify absolute times
 neglog(
   create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
-  data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+  data.frame(time=1:3, obs=c(-1, 2.5, 5)),
   at=2
 )
 
 # use `after` parameter to specify times relative to `forecast_time`
 neglog(
   create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
-  data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+  data.frame(time=1:3, obs=c(-1, 2.5, 5)),
   after=1
 )
 }

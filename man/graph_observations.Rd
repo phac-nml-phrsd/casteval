@@ -4,13 +4,17 @@
 \alias{graph_observations}
 \title{Intelligently graph observations}
 \usage{
-graph_observations(graph = NULL, obs, fcst = NULL)
+graph_observations(graph = NULL, obs)
 }
 \arguments{
-\item{name}{desc}
+\item{graph}{A ggplot object, or \code{NULL}. If not \code{NULL},
+it will be added to using \code{ggplot2}'s \code{+} operator.}
+
+\item{obs}{An observations data frame. If it contains a \code{score} column,
+the observation points will be color-coded according to the scores.}
 }
 \value{
-desc
+A ggplot object.
 }
 \description{
 Graph observation points. If provided with a forecast,

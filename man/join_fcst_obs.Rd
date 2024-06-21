@@ -24,19 +24,19 @@ observations for each time point.
 }
 \examples{
 # data.frame(time=1:3, raw=4:6, obs=8:10)
-casteval:::join_fcst_obs(data.frame(time=1:3, raw=4:6), data.frame(time=0:4, raw=7:11))
+casteval:::join_fcst_obs(data.frame(time=1:3, raw=4:6), data.frame(time=0:4, obs=7:11))
 
 # remove rows with missing observations 
 # data.frame(time=3, quant_50=6, obs=7)
 casteval:::join_fcst_obs(
   data.frame(time=1:3, quant_50=4:6),
-  data.frame(time=2:3, raw=c(NA,7)),
+  data.frame(time=2:3, obs=c(NA,7)),
   na.rm=TRUE
 )
 
 # default behaviour is to error if observations are missing
 try(casteval:::join_fcst_obs(
   data.frame(time=1:3, quant_50=4:6),
-  data.frame(time=2:3, raw=c(NA,7))
+  data.frame(time=2:3, obs=c(NA,7))
 ))
 }

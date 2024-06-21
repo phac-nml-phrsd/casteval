@@ -4,7 +4,7 @@
 \alias{accuracy}
 \title{Get accuracy from quantiles}
 \usage{
-accuracy(fcst, obs, interval = NULL)
+accuracy(fcst, obs, interval = NULL, summarize = TRUE)
 }
 \arguments{
 \item{fcst}{The forecast (see \code{create_forecast()} output).
@@ -18,6 +18,12 @@ If \code{fcst} contains quantile data then the corresponding quantile columns wi
 used as the confidence interval.
 If \code{fcst} contains raw data then the corresponding quantiles will be calculated and
 used as a confidence interval.}
+
+\item{summarize}{A boolean. If TRUE, a single number will be returned as the score for the forecast.
+If FALSE, a data frame with \code{time} and \code{score} columns (and possibly others) will be returned,
+containing the intermediate values for each time point used to calculate the score.
+The type of the \code{score} column can be anything (numbers, booleans, etc.).
+This can be used by graphing functions to color code observations, for example.}
 }
 \value{
 A number from 0 to 1,
@@ -32,7 +38,7 @@ compute the accuracy (# within confidence interval / # total) of the forecast.
 # returns 2/3
 accuracy(
   create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
-  data.frame(time=1:3, raw=c(5, 7.4, 11.6)),
+  data.frame(time=1:3, obs=c(5, 7.4, 11.6)),
   interval=c(25, 75)
 )
 
@@ -42,7 +48,7 @@ accuracy(
   create_forecast(dplyr::tibble(
     time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
   )),
-  data.frame(time=1:3, raw=c(4, 201, 1000)),
+  data.frame(time=1:3, obs=c(4, 201, 1000)),
   interval=c(25,50)
 )
 
@@ -51,6 +57,6 @@ accuracy(
   create_forecast(dplyr::tibble(
     time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
   )),
-  data.frame(time=1:3, raw=c(4, 201, 1000)),
+  data.frame(time=1:3, obs=c(4, 201, 1000)),
 )
 }
