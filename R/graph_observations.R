@@ -17,11 +17,6 @@ graph_observations <- function(graph=NULL, obs) {
         graph <- ggplot2::ggplot()
     }
 
-    # TODO rename observations `raw` column to `obs` everywhere, and get rid of this hack
-    if((!"obs" %in% colnames(obs)) && "raw" %in% colnames(obs)) {
-        obs <- obs |> dplyr::rename(obs=raw)
-    }
-
     if("score" %in% colnames(obs)) {return(
         graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs, color=score), obs)
     )} else {return(
