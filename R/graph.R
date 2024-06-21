@@ -1,3 +1,59 @@
+#' Graph ensemble of forecast realizations
+#'
+#' Given a forecast with raw realizations, generate a graph displaying all of them.
+#'
+#' @template graph
+#' @param fcst The forecast object (see the output of `create_forecast()`)
+#'
+#' @returns A ggplot object.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+graph_ensemble <- function(graph=NULL, fcst) {
+    if(is.null(graph)) {
+        graph <- ggplot2::ggplot()
+    }
+    validate_forecast(fcst)
+
+    if(! "raw" %in% fcst$data_types) {
+        stop("raw data needed to graph ensemble")
+    }
+
+    # convert to long format for easy ggplot interfacing
+    df <- wide2long(fcst$data)
+
+    graph + ggplot2::geom_line(ggplot2::aes(x=time, y=raw, group=realization), df)
+}
+
+
+#' Intelligently graph observations
+#'
+#' Graph observation points. If provided with a forecast,
+#'  the points can be color-coded to convey information about score, accuracy, etc.
+#'
+#' @template graph
+#' @param obs An observations data frame. If it contains a `score` column,
+#'  the observation points will be color-coded according to the scores.
+#'
+#' @returns A ggplot object.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+graph_observations <- function(graph=NULL, obs) {
+    if(is.null(graph)) {
+        graph <- ggplot2::ggplot()
+    }
+
+    if("score" %in% colnames(obs)) {return(
+        graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs, color=score), obs)
+    )} else {return(
+        graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs), obs)
+    )}
+}
+
+
 # helper and wrapper functions for graphing functionality
 
 #' Convert raw forecast data to long format
