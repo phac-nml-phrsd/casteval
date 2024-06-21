@@ -6,3 +6,4 @@
 ^doc$
 ^Meta$
 ^\.gitlab-ci\.yml$
+^man-roxygen$
