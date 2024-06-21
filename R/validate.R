@@ -124,4 +124,5 @@ validate_column <- function(df, col) {
     if(! col %in% colnames(df)) {
         stop(paste0("column `", col, "` not in data frame"))
     }
+    NULL
 }
