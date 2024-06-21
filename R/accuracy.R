@@ -24,7 +24,7 @@
 #' # returns 2/3
 #' accuracy(
 #'   create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
-#'   data.frame(time=1:3, raw=c(5, 7.4, 11.6)),
+#'   data.frame(time=1:3, obs=c(5, 7.4, 11.6)),
 #'   interval=c(25, 75)
 #' )
 #' 
@@ -34,7 +34,7 @@
 #'   create_forecast(dplyr::tibble(
 #'     time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
 #'   )),
-#'   data.frame(time=1:3, raw=c(4, 201, 1000)),
+#'   data.frame(time=1:3, obs=c(4, 201, 1000)),
 #'   interval=c(25,50)
 #' )
 #' 
@@ -43,7 +43,7 @@
 #'   create_forecast(dplyr::tibble(
 #'     time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
 #'   )),
-#'   data.frame(time=1:3, raw=c(4, 201, 1000)),
+#'   data.frame(time=1:3, obs=c(4, 201, 1000)),
 #' )
 accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
     validate_fcst_obs_pair(fcst, obs)

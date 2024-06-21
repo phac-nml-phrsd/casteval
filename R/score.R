@@ -49,13 +49,13 @@ filter_forecast_time <- function(df, forecast_time) {
 #' # compatible time types
 #' casteval:::validate_fcst_obs_pair(
 #'   create_forecast(data.frame(time=1:10, raw=11:20)),
-#'   data.frame(time=101:110, raw=111:120)
+#'   data.frame(time=101:110, obs=111:120)
 #' )
 #' 
 #' # incompatible time types
 #' try(casteval:::validate_fcst_obs_pair(
 #'   create_forecast(data.frame(time=1:10, raw=11:20)),
-#'   data.frame(time=lubridate::ymd("2024-01-01"), raw=5)
+#'   data.frame(time=lubridate::ymd("2024-01-01"), obs=5)
 #' ))
 validate_fcst_obs_pair <- function(fcst, obs) {
     # TODO move this and its tests over to validate_forecast.R and rename to validate.R
@@ -114,20 +114,20 @@ remove_raw_NAs <- function(df) {
 #'
 #' @examples
 #' # data.frame(time=1:3, raw=4:6, obs=8:10)
-#' casteval:::join_fcst_obs(data.frame(time=1:3, raw=4:6), data.frame(time=0:4, raw=7:11))
+#' casteval:::join_fcst_obs(data.frame(time=1:3, raw=4:6), data.frame(time=0:4, obs=7:11))
 #' 
 #' # remove rows with missing observations 
 #' # data.frame(time=3, quant_50=6, obs=7)
 #' casteval:::join_fcst_obs(
 #'   data.frame(time=1:3, quant_50=4:6),
-#'   data.frame(time=2:3, raw=c(NA,7)),
+#'   data.frame(time=2:3, obs=c(NA,7)),
 #'   na.rm=TRUE
 #' )
 #' 
 #' # default behaviour is to error if observations are missing
 #' try(casteval:::join_fcst_obs(
 #'   data.frame(time=1:3, quant_50=4:6),
-#'   data.frame(time=2:3, raw=c(NA,7))
+#'   data.frame(time=2:3, obs=c(NA,7))
 #' ))
 join_fcst_obs <- function(df, obs, na.rm=FALSE) {
     # this function does very little input validation because
