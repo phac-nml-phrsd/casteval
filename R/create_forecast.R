@@ -43,6 +43,7 @@
 #' # an already-combined ensemble
 #' create_forecast(dplyr::tibble(time=1:2, raw=list(10:11, 12:13)))
 create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
+    # TODO third option where you provide a list of vertical vectors instead of list of data frames)
     forecast <- list(name=name, forecast_time=forecast_time)
     # we check for data frame first since data frames are also lists
 

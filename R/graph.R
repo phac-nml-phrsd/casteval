@@ -11,6 +11,8 @@
 #' @examples
 #' #TODO
 graph_ensemble <- function(graph=NULL, fcst) {
+    #TODO make the fit data different color
+    #TODO opacity parameter
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
     }
