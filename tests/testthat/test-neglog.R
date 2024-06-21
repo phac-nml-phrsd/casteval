@@ -2,7 +2,7 @@ test_that("neglog() validates", {
   expect_error(
     neglog(
       create_forecast(dplyr::tibble(time=1:3, mean=4:6)),
-      data.frame(time=1:3, raw=4:6)
+      data.frame(time=1:3, obs=4:6)
     ),
     "data frame does not contain `raw` column"
   )
@@ -10,7 +10,7 @@ test_that("neglog() validates", {
   expect_error(
     neglog(
       create_forecast(dplyr::tibble(time=1:2, raw=list(c(NA,2,3), c(NA,NA,4)))),
-      data.frame(time=1:2, raw=3:4)
+      data.frame(time=1:2, obs=3:4)
     ),
     "at least 2 raw data points.*required to calculate KDE"
   )
@@ -18,7 +18,7 @@ test_that("neglog() validates", {
   expect_error(
     neglog(
       create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5))),
-      data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+      data.frame(time=1:3, obs=c(-1, 2.5, 5)),
       at=2,
       after=2
     ),
@@ -28,7 +28,7 @@ test_that("neglog() validates", {
   expect_error(
     neglog(
       create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5))),
-      data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+      data.frame(time=1:3, obs=c(-1, 2.5, 5)),
       after=lubridate::ymd("2024-01-01")
     ),
     "`after` not numeric"
@@ -37,7 +37,7 @@ test_that("neglog() validates", {
   expect_error(
     neglog(
       create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5))),
-      data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+      data.frame(time=1:3, obs=c(-1, 2.5, 5)),
       after=5
     ),
     "`after` cannot be used if `fcst.*forecast_time` is NULL"
@@ -46,7 +46,7 @@ test_that("neglog() validates", {
   expect_error(
     neglog(
       create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=2),
-      data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+      data.frame(time=1:3, obs=c(-1, 2.5, 5)),
       after=2
     ),
     "no rows in data frame with given time"
@@ -57,7 +57,7 @@ test_that("neglog() works", {
   expect_equal(
     neglog(
       create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5))),
-      data.frame(time=1:3, raw=c(-1, 2.5, 5))
+      data.frame(time=1:3, obs=c(-1, 2.5, 5))
     ),
     dplyr::tibble(
       time=1:3, raw=list(1:5, 1:5, 1:5), obs=c(-1, 2.5, 5), score=c(4.03779, 1.649454, 2.004065)
@@ -68,7 +68,7 @@ test_that("neglog() works", {
   expect_equal(
     neglog(
       create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
-      data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+      data.frame(time=1:3, obs=c(-1, 2.5, 5)),
       at=2
     ),
     1.649454,
@@ -78,7 +78,7 @@ test_that("neglog() works", {
   expect_equal(
     neglog(
       create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
-      data.frame(time=1:3, raw=c(-1, 2.5, 5)),
+      data.frame(time=1:3, obs=c(-1, 2.5, 5)),
       after=1
     ),
     1.649454,
@@ -88,7 +88,7 @@ test_that("neglog() works", {
   expect_equal(
     neglog(
       create_forecast(dplyr::tibble(time=1, raw=list(c(1,1)))),
-      data.frame(time=1, raw=1),
+      data.frame(time=1, obs=1),
       at=1
     ),
     -Inf
@@ -97,7 +97,7 @@ test_that("neglog() works", {
   expect_equal(
     neglog(
       create_forecast(dplyr::tibble(time=1, raw=list(c(1,1)))),
-      data.frame(time=1, raw=1.1),
+      data.frame(time=1, obs=1.1),
       at=1
     ),
     Inf
@@ -106,7 +106,7 @@ test_that("neglog() works", {
   expect_equal(
     neglog(
       create_forecast(dplyr::tibble(time=1, raw=list(c(1,2,3)))),
-      data.frame(time=1, raw=27),
+      data.frame(time=1, obs=27),
       at=1
     ),
     715.7497,
@@ -116,7 +116,7 @@ test_that("neglog() works", {
   expect_equal(
     neglog(
       create_forecast(dplyr::tibble(time=1, raw=list(c(1,2,3)))),
-      data.frame(time=1, raw=28),
+      data.frame(time=1, obs=28),
       at=1
     ),
     Inf
@@ -140,7 +140,7 @@ test_that("neglog() works", {
   expect_equal(
     neglog(
       create_forecast(dplyr::tibble(time=1, raw=list(dat))),
-      data.frame(time=1, raw=0),
+      data.frame(time=1, obs=0),
       at=1
     ),
     1.115905,

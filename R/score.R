@@ -134,8 +134,7 @@ join_fcst_obs <- function(df, obs, na.rm=FALSE) {
     # it is meant to be used inside functions like `accuracy()` and `neglog()`,
     # where the forecast and observations are already validated.
 
-    # rename obs `raw` to `obs` and check that no collisions will occur
-    obs <- dplyr::rename(obs, obs=raw)
+    # check that no collisions will occur
     if("obs" %in% colnames(df)) {
         stop("`obs` column already present in forecast data frame")
     }
