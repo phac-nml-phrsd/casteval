@@ -20,5 +20,13 @@ In long format, each row contains a single data point for a single realization,
 and a new column keeps track of the realization number for that row.
 }
 \examples{
-# TODO
+# dplyr::tibble(
+#   time=c(1,1,1,2,2,2,3,3,3),
+#   realization=c(1,2,3,1,2,3,1,2,3),
+#   raw=c(4,5,6,7,8,9,10,11,12)
+# )
+casteval:::wide2long(dplyr::tibble(
+  time=1:3,
+  raw=list(4:6, 7:9, 10:12)
+))
 }

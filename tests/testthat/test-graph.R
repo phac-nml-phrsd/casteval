@@ -22,6 +22,7 @@ test_that("wide2long() works", {
     time=1:4,
     raw=list(c(NA,10,11), c(12,NA,13), c(14,15,NA), c(NA,NA,NA))
   )
+
   expect_equal(
     wide2long(df2),
     dplyr::tibble(

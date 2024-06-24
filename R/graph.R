@@ -9,7 +9,15 @@
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' casteval:::graph_ensemble(
+#'   NULL,
+#'   create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))
+#' ))
+#' 
+#' casteval:::graph_ensemble(
+#'   NULL,
+#'   create_forecast(data.frame(time=lubridate::as_datetime(c(0,20000,100000)), raw=c(20,30,40))
+#' ))
 graph_ensemble <- function(graph=NULL, fcst) {
     #TODO make the fit data different color
     #TODO opacity parameter
@@ -42,7 +50,20 @@ graph_ensemble <- function(graph=NULL, fcst) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' fc <- create_forecast(dplyr::tibble(
+#'   time=1:3,
+#'   raw=list(4:6, 7:9, 10:12)
+#' ))
+#' obs <- data.frame(time=1:3, obs=c(5,9,13))
+#' 
+#' # graph observations on their own
+#' casteval:::graph_observations(NULL, obs)
+#' 
+#' # graph observations alongside forecast data
+#' casteval:::graph_observations(casteval:::graph_ensemble(NULL, fc), obs)
+#' 
+#' # graph observations alongside forecast data, and color-code by score
+#' casteval:::graph_observations(casteval:::graph_ensemble(NULL, fc), neglog(fc, obs))
 graph_observations <- function(graph=NULL, obs) {
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
@@ -55,8 +76,6 @@ graph_observations <- function(graph=NULL, obs) {
     )}
 }
 
-
-# helper and wrapper functions for graphing functionality
 
 #' Convert raw forecast data to long format
 #'
@@ -72,7 +91,15 @@ graph_observations <- function(graph=NULL, obs) {
 #' @autoglobal
 #'
 #' @examples
-#' # TODO
+#' # dplyr::tibble(
+#' #   time=c(1,1,1,2,2,2,3,3,3),
+#' #   realization=c(1,2,3,1,2,3,1,2,3),
+#' #   raw=c(4,5,6,7,8,9,10,11,12)
+#' # )
+#' casteval:::wide2long(dplyr::tibble(
+#'   time=1:3,
+#'   raw=list(4:6, 7:9, 10:12)
+#' ))
 wide2long <- function(df) {
     # go through every row of the data frame
     1:nrow(df) |>

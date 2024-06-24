@@ -74,7 +74,10 @@ quant_name <- function(num) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # c(2, 2, 4.5, 9)
+#' casteval:::raw2quant(list(1:3, 2, 3:6, 7:11), 50)
+#' # 26
+#' casteval:::raw2quant(list(0:100), 26)
 raw2quant <- function(raw, perc) {
     raw |> purrr::map(\(x) stats::quantile(x, perc/100)[[1]]) |> as.numeric()
 }

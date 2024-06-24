@@ -46,6 +46,7 @@
 #'   data.frame(time=1:3, obs=c(4, 201, 1000)),
 #' )
 accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
+    # TODO document `summarize` parameter in vignette
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
