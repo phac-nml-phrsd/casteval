@@ -8,6 +8,9 @@ utils::globalVariables(c(
   "realization", # <graph_ensemble>
   "time", # <graph_observations>
   "score", # <graph_observations>
+  "time", # <graph_quantiles>
+  "value", # <graph_quantiles>
+  "name", # <graph_quantiles>
   "time", # <neglog>
   "time", # <filter_forecast_time>
   "time", # <join_fcst_obs>

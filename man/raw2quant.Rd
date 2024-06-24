@@ -7,7 +7,9 @@
 raw2quant(raw, perc)
 }
 \arguments{
-\item{raw}{A list of non-empty numeric vectors. The vectors should not contain NA values.}
+\item{raw}{A numeric vector, or a list of non-empty numeric vectors. The vectors should not contain NA values.
+Functions that use \code{raw2quant()} should make sure not to provide it NA values,
+for example by using \code{remove_raw_NAs()}.}
 
 \item{perc}{A percentage, from 0 to 100.}
 }

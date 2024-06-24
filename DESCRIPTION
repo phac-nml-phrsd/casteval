@@ -28,7 +28,8 @@ Imports:
     purrr,
     scoringRules,
     stats,
-    stringr
+    stringr,
+    tidyr
 Config/roxyglobals/filename: globals.R
 Config/roxyglobals/unique: FALSE
 VignetteBuilder: knitr

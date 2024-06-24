@@ -4,7 +4,7 @@
 \alias{graph_quantiles}
 \title{Graph forecast quantiles}
 \usage{
-graph_quantiles(graph = NULL, fcst, quant = NULL)
+graph_quantiles(graph = NULL, fcst, quants = NULL)
 }
 \arguments{
 \item{graph}{A ggplot object, or \code{NULL}. If not \code{NULL},
@@ -12,7 +12,7 @@ it will be added to using \code{ggplot2}'s \code{+} operator.}
 
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
-\item{quant}{A numeric vector containing the quantiles to be graphed, as percentages.
+\item{quants}{A numeric vector containing the quantiles to be graphed, as percentages.
 If \code{NULL}, all quantiles present in the forecast data frame will be graphed.}
 }
 \value{
