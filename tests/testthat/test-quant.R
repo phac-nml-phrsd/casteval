@@ -31,6 +31,9 @@ test_that("quant_name() works", {
 })
 
 test_that("raw2quant() works", {
+  expect_error(raw2quant(list(c(1,2,NA),4:6)), "raw data contains NA values")
+  expect_error(raw2quant(c(1,NA,3)), "raw data contains NA values")
+  expect_error(raw2quant(list(1, NA, 3), "raw data contains NA values"))
   expect_equal(raw2quant(list(), 50), numeric(0))
   expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 50), c(2, 2, 4.5, 9))
   expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 0), c(1, 2, 3, 7))
@@ -56,5 +59,15 @@ test_that("get_quantile() works", {
   expect_equal(
     get_quantile(df |> dplyr::select(time, quant_50), 50),
     c(1000,2000,3000)
+  )
+
+  expect_equal(
+    get_quantile(dplyr::tibble(time=1:2, raw=list(c(1,2,NA), 4:6)), 50),
+    c(1.5, 5)
+  )
+
+  expect_error(
+    get_quantile(dplyr::tibble(time=1:2, raw=c(NA,2)), 50),
+    "forecast data frame contains row with no raw data"
   )
 })

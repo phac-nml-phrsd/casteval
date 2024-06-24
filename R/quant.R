@@ -71,7 +71,9 @@ quant_name <- function(num) {
 #'
 #' Given a column of raw data, calculate a given quantile.
 #'
-#' @param raw A list of non-empty numeric vectors. The vectors should not contain NA values.
+#' @param raw A numeric vector, or a list of non-empty numeric vectors. The vectors should not contain NA values.
+#'  Functions that use `raw2quant()` should make sure not to provide it NA values,
+#'  for example by using `remove_raw_NAs()`.
 #' @param perc A percentage, from 0 to 100.
 #'
 #' @returns A numeric vector with the same length as `raw`.
@@ -83,6 +85,9 @@ quant_name <- function(num) {
 #' # 26
 #' casteval:::raw2quant(list(0:100), 26)
 raw2quant <- function(raw, perc) {
+    if(anyNA(raw, recursive=TRUE)) {
+        stop("raw data contains NA values")
+    }
     raw |> purrr::map(\(x) stats::quantile(x, perc/100)[[1]]) |> as.numeric()
 }
 
@@ -110,6 +115,7 @@ raw2quant <- function(raw, perc) {
 get_quantile <- function(df, perc) {
     # if raw present, compute quantile from raw, regardless of whether quantile columns present
     if("raw" %in% colnames(df)) {
+        df <- remove_raw_NAs(df)
         return(raw2quant(df$raw, perc))
     }
 
