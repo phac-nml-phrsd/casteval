@@ -54,18 +54,15 @@ test_that("graph_ensemble() works", {
     raw=c(20,30,40)
   )
 
-  vdiffr::expect_doppelganger(
-    "ens1",
+  vdiffr::expect_doppelganger("ens1",
     graph_ensemble(NULL, create_forecast(df1))
   )
 
-  vdiffr::expect_doppelganger(
-    "ens2",
+  vdiffr::expect_doppelganger("ens2",
     graph_ensemble(NULL, create_forecast(df2))
   )
 
-  vdiffr::expect_doppelganger(
-    "ens3",
+  vdiffr::expect_doppelganger("ens3",
     graph_ensemble(NULL, create_forecast(df3))
   )
 })
@@ -87,13 +84,42 @@ test_that("graph_observations() works", {
 
   vdiffr::expect_doppelganger("obs1", graph_observations(NULL, obs))
   vdiffr::expect_doppelganger("obs2", graph_observations(NULL, neglog(fc1, obs)))
-  vdiffr::expect_doppelganger(
-    "obs3",
+  vdiffr::expect_doppelganger("obs3",
     graph_observations(graph_ensemble(NULL, fc1), obs)
   )
-  vdiffr::expect_doppelganger(
-    "obs4",
+  vdiffr::expect_doppelganger("obs4",
     graph_observations(graph_ensemble(NULL, fc1), neglog(fc1, obs))
   )
 
+})
+
+test_that("graph_quantiles() works", {
+  fc1 <- create_forecast(dplyr::tibble(
+    time=1:3,
+    raw=list(0:4, 5:9, 10:14)
+  ))
+
+  fc2 <- create_forecast(dplyr::tibble(
+    time=1:3,
+    quant_0=c(4:6),
+    quant_2.5=c(7:9),
+    quant_50=c(10:12)
+  ))
+
+  vdiffr::expect_doppelganger("quant1",
+    graph_quantiles(NULL, fc1, quants=c(0,50,100))
+  )
+
+  vdiffr::expect_doppelganger("quant2",
+    graph_quantiles(graph_ensemble(NULL, fc1), fc1, c(2.5, 25,51,75))
+  )
+
+  vdiffr::expect_doppelganger("quant3",
+    graph_quantiles(NULL, fc2, c(0, 2.5))
+  )
+
+  expect_error(
+    graph_quantiles(NULL, fc2, c(2.5,50,75)),
+    "could not compute/obtain.*quantile from data frame"
+  )
 })

@@ -1,3 +1,5 @@
+# TODO legends, axes, plot titles, scales. some graphs will have multiple legends so that has to be taken into consideration.
+
 #' Graph ensemble of forecast realizations
 #'
 #' Given a forecast with raw realizations, generate a graph displaying all of them.
@@ -115,7 +117,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
             # append time column
             dplyr::mutate(time=fcst$data$time) |>
             # convert to long format for ggplot2
-            tidyr::pivot_longer(cols=quants)
+            tidyr::pivot_longer(cols=as.character(quants))
 
         # graph it
         return(
