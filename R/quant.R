@@ -99,7 +99,14 @@ raw2quant <- function(raw, perc) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' df1 <- dplyr::tibble(time=1:3, quant_50=c(1000,2000,3000), raw=list(4:6, 7:9, 10:12))
+#' df2 <- dplyr::select(df1, time, quant_50)
+#' 
+#' # c(5, 8, 11)
+#' casteval:::get_quantile(df1, 50)
+#' 
+#' # c(1000, 3000, 3000)
+#' casteval:::get_quantile(df2, 50)
 get_quantile <- function(df, perc) {
     # if raw present, compute quantile from raw, regardless of whether quantile columns present
     if("raw" %in% colnames(df)) {

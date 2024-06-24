@@ -12,7 +12,7 @@ raw2quant(raw, perc)
 \item{perc}{A percentage, from 0 to 100.}
 }
 \value{
-A numeric vector with the same length as \code{raw}
+A numeric vector with the same length as \code{raw}.
 }
 \description{
 Given a column of raw data, calculate a given quantile.

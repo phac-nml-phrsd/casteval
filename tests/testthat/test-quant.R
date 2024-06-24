@@ -45,7 +45,7 @@ test_that("get_quantile() works", {
     "could not compute/obtain.*quantile from data frame"
   )
 
-  df <- dplyr::tibble(time=1:3, quant_50=c(1000,1000,1000), raw=list(4:6, 7:9, 10:12))
+  df <- dplyr::tibble(time=1:3, quant_50=c(1000,2000,3000), raw=list(4:6, 7:9, 10:12))
 
   # raw supersedes quant_*
   expect_equal(
@@ -55,6 +55,6 @@ test_that("get_quantile() works", {
 
   expect_equal(
     get_quantile(df |> dplyr::select(time, quant_50), 50),
-    c(1000,1000,1000)
+    c(1000,2000,3000)
   )
 })
