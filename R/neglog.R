@@ -44,11 +44,8 @@
 neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)
+    df <- filter_forecast_time(fcst$data, fcst$forecast_time)
     
-    # TODO revisit this if we end up adding together scores/whatever
-    #df <- filter_forecast_time(fcst$data, fcst$forecast_time)
-    df <- fcst$data
-
     df <- remove_raw_NAs(df)
     # KDE requires at least 2 data points, so check for that after removing NAs
     if(any(as.logical(purrr::map(df$raw, ~ length(.x) < 2)))) {
