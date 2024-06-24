@@ -9,8 +9,7 @@ validate_time(t, fcst)
 \arguments{
 \item{t}{A time (e.x. a number, date, or date-time).}
 
-\item{fcst}{A forecast (as returned by \code{create_forecast()}).
-No input validation is done on \code{fcst} itself.}
+\item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 }
 \value{
 NULL if \code{t} is compatible with \code{fcst}. Error otherwise

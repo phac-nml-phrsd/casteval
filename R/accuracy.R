@@ -2,11 +2,11 @@
 #'
 #' Given a forecast and set of observations,
 #'  compute the accuracy (# within confidence interval / # total) of the forecast.
-#'
-#' @param fcst The forecast (see `create_forecast()` output).
 #'  If quantiles are provided, they will be used to compute the accuracy.
 #'  If raw data is provided, quantiles will be calculated according to the `interval` parameter.
-#' @param obs The observations data frame.
+#'
+#' @template fcst
+#' @param obs An observations data frame.
 #' @param interval Either NULL or a vector of two numbers from 0 to 100.
 #'  If `fcst` contains quantile data then the corresponding quantile columns will be
 #'  used as the confidence interval.

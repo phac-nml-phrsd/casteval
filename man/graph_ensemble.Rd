@@ -10,7 +10,7 @@ graph_ensemble(graph = NULL, fcst)
 \item{graph}{A ggplot object, or \code{NULL}. If not \code{NULL},
 it will be added to using \code{ggplot2}'s \code{+} operator.}
 
-\item{fcst}{The forecast object (see the output of \code{create_forecast()})}
+\item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 }
 \value{
 A ggplot object.

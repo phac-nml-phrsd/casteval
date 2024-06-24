@@ -7,9 +7,9 @@
 neglog(fcst, obs, at = NULL, after = NULL, summarize = TRUE)
 }
 \arguments{
-\item{fcst}{The forecast (see \code{create_forecast()} output).}
+\item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
-\item{obs}{The observations data frame.}
+\item{obs}{An observations data frame.}
 
 \item{at}{A time (compatible with \code{fcst} and \code{obs}).
 If specified, the score for this time point will be returned.

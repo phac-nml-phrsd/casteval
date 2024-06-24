@@ -7,9 +7,9 @@
 validate_fcst_obs_pair(fcst, obs)
 }
 \arguments{
-\item{fcst}{The forecast object (a named list, such as the output of \code{create_forecast()})}
+\item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
-\item{obs}{The observations (a data frame)}
+\item{obs}{An observations data frame.}
 }
 \value{
 NULL if valid. Error otherwise

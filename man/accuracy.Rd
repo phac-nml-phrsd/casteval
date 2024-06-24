@@ -7,11 +7,9 @@
 accuracy(fcst, obs, interval = NULL, summarize = TRUE)
 }
 \arguments{
-\item{fcst}{The forecast (see \code{create_forecast()} output).
-If quantiles are provided, they will be used to compute the accuracy.
-If raw data is provided, quantiles will be calculated according to the \code{interval} parameter.}
+\item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
-\item{obs}{The observations data frame.}
+\item{obs}{An observations data frame.}
 
 \item{interval}{Either NULL or a vector of two numbers from 0 to 100.
 If \code{fcst} contains quantile data then the corresponding quantile columns will be
@@ -32,6 +30,8 @@ the rate at which the observations were inside the specified confidence interval
 \description{
 Given a forecast and set of observations,
 compute the accuracy (# within confidence interval / # total) of the forecast.
+If quantiles are provided, they will be used to compute the accuracy.
+If raw data is provided, quantiles will be calculated according to the \code{interval} parameter.
 }
 \examples{
 # calculate quantiles and accuracy from raw data

@@ -5,8 +5,8 @@
 #' Uses a Kernel Density Estimation (KDE) to interpolate the density
 #'  at the observation point.
 #'
-#' @param fcst The forecast (see `create_forecast()` output).
-#' @param obs The observations data frame.
+#' @template fcst
+#' @param obs An observations data frame.
 #' @param at A time (compatible with `fcst` and `obs`).
 #'  If specified, the score for this time point will be returned.
 #'  Mutually exclusive with `after`.

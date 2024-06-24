@@ -39,8 +39,8 @@ filter_forecast_time <- function(df, forecast_time) {
 #' - observations are valid
 #' - forecast time type matches observations time type
 #'
-#' @param fcst The forecast object (a named list, such as the output of `create_forecast()`)
-#' @param obs The observations (a data frame)
+#' @template fcst
+#' @param obs An observations data frame.
 #'
 #' @returns NULL if valid. Error otherwise
 #' @autoglobal

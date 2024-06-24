@@ -3,7 +3,7 @@
 #' Given a forecast with raw realizations, generate a graph displaying all of them.
 #'
 #' @template graph
-#' @param fcst The forecast object (see the output of `create_forecast()`)
+#' @template fcst
 #'
 #' @returns A ggplot object.
 #' @autoglobal
@@ -80,10 +80,10 @@ graph_observations <- function(graph=NULL, obs) {
 
 #' Graph forecast quantiles
 #'
-#' Graph lines indicating quantiles of a forecast
+#' Graph lines indicating quantiles of a forecast.
 #'
 #' @template graph
-#' @param fcst The forecast object (see output of `create_forecast()`).
+#' @template fcst
 #' @param quant A numeric vector containing the quantiles to be graphed, as percentages.
 #'  If `NULL`, all quantiles present in the forecast data frame will be graphed.
 #'
@@ -99,12 +99,12 @@ graph_quantiles <- function(graph=NULL, fcst, quant=NULL) {
 
 #' Graph forecast confidence intervals
 #'
-#' Graph shaded bands indicating confidence intervals of a forecast
+#' Graph shaded bands indicating confidence intervals of a forecast.
 #'
 #' @template graph
-#' @param fcst A forecast object (see output of `create_forecast`).
+#' @template fcst
 #' @param conf A numeric vector containing the confidence intervals to be displayed, as percentages.
-#'  # If `NULL`, the confidence intervals will be inferred from the quantiles present in the forecast data frame.
+#'  If `NULL`, the confidence intervals will be inferred from the quantiles present in the forecast data frame.
 #'
 #' @returns A ggplot object.
 #' @autoglobal

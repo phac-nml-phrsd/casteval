@@ -82,8 +82,7 @@ validate_forecast <- function(fcst) {
 #' Check that the type of a given time matches the time type of a given forecast.
 #'
 #' @param t A time (e.x. a number, date, or date-time).
-#' @param fcst A forecast (as returned by `create_forecast()`).
-#'  No input validation is done on `fcst` itself.
+#' @template fcst
 #'
 #' @returns NULL if `t` is compatible with `fcst`. Error otherwise
 #' @autoglobal

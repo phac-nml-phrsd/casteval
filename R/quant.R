@@ -25,6 +25,7 @@ get_quantiles <- function(df) {
         sort()
 }
 
+
 #' Get quantile column from data frame
 #'
 #' Given a data frame and a quantile number, returns the corresponding
@@ -42,6 +43,7 @@ get_quantiles <- function(df) {
 get_quant_col <- function(df, num) {
     as.numeric(df[[quant_name(num)]])
 }
+
 
 #' Turn quantile number into column name
 #'
