@@ -14,10 +14,10 @@
 #'
 #' @examples
 #' # returns c(2.5, 50, 97.5)
-#' casteval:::get_quantile_percentages(
+#' casteval:::get_quant_percentages(
 #'   data.frame(time=1:3, quant_2.5=4:6, quant_50=7:9, quant_97.5=10:12)
 #' )
-get_quantile_percentages <- function(df) {
+get_quant_percentages <- function(df) {
     cols <- colnames(df)
     quant_cols <- stringr::str_subset(cols, "^quant_")
     
@@ -74,7 +74,7 @@ quant_name <- function(num) {
 #' @param raw A list of non-empty numeric vectors. The vectors should not contain NA values.
 #' @param perc A percentage, from 0 to 100.
 #'
-#' @returns A numeric vector with the same length as `raw`
+#' @returns A numeric vector with the same length as `raw`.
 #' @autoglobal
 #'
 #' @examples
@@ -84,4 +84,33 @@ quant_name <- function(num) {
 #' casteval:::raw2quant(list(0:100), 26)
 raw2quant <- function(raw, perc) {
     raw |> purrr::map(\(x) stats::quantile(x, perc/100)[[1]]) |> as.numeric()
+}
+
+
+#' Obtain quantiles from data frame
+#'
+#' Given a forecast data frame, compute quantiles from raw data or existing quantile columns,
+#'  depending on what is present.
+#'
+#' @param df A forecast data frame. It should contain raw and/or quantile data.
+#' @param perc A percentage, from 0 to 100.
+#'
+#' @returns A numeric vector with one entry for each row in `df`.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+get_quantile <- function(df, perc) {
+    # if raw present, compute quantile from raw, regardless of whether quantile columns present
+    if("raw" %in% colnames(df)) {
+        return(raw2quant(df$raw, perc))
+    }
+    
+    else if(perc %in% get_quant_percentages(df)) {
+        return(df$quant)
+    }
+
+    else {
+        stop(paste0("could not compute/obtain quantile ", perc, " from data frame"))
+    } 
 }

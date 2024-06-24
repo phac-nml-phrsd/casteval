@@ -68,7 +68,7 @@ accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
         lowname <- "low"
         highname <- "high"
     } else if("quant" %in% fcst$data_types) {
-        quants <- get_quantile_percentages(df)
+        quants <- get_quant_percentages(df)
 
         # can't do anything with a single quantile
         if(length(quants) < 2) {
