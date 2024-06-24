@@ -29,3 +29,11 @@ test_that("quant_name() works", {
   expect_equal(quant_name(2.5), "quant_2.5")
   expect_equal(quant_name(1.2345), "quant_1.2345")
 })
+
+test_that("raw2quant() works", {
+  expect_equal(raw2quant(list(), 50), numeric(0))
+  expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 50), c(2, 2, 4.5, 9))
+  expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 0), c(1, 2, 3, 7))
+  expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 100), c(3, 2, 6, 11))
+  expect_equal(raw2quant(list(0:100), 26), 26)
+})

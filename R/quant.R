@@ -61,3 +61,20 @@ get_quant_col <- function(df, num) {
 quant_name <- function(num) {
     paste0("quant_", as.character(num))
 }
+
+
+#' Compute quantile data from raw data
+#'
+#' Given a column of raw data, calculate a given quantile.
+#'
+#' @param raw A list of non-empty numeric vectors. The vectors should not contain NA values.
+#' @param perc A percentage, from 0 to 100.
+#'
+#' @returns A numeric vector with the same length as `raw`
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+raw2quant <- function(raw, perc) {
+    raw |> purrr::map(\(x) stats::quantile(x, perc/100)[[1]]) |> as.numeric()
+}
