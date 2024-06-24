@@ -60,10 +60,8 @@ accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
         df <- remove_raw_NAs(df)
 
         # compute quantiles using raw & interval
-        # TODO extract this into a function for computing a given quantile from raw
-        quants <- df$raw |> purrr::map(~ stats::quantile(.x, c(interval[[1]]/100, interval[[2]]/100)))
-        lows <- as.numeric(purrr::map(quants, ~ .x[[1]]))
-        highs <- as.numeric(purrr::map(quants, ~ .x[[2]]))
+        lows <- raw2quant(df$raw, interval[[1]])
+        highs <- raw2quant(df$raw, interval[[2]])
         df <- df |> dplyr::mutate(time, low=lows, high=highs, .keep="none")
 
         lowname <- "low"

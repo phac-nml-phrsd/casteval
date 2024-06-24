@@ -65,6 +65,7 @@ graph_ensemble <- function(graph=NULL, fcst) {
 #' # graph observations alongside forecast data, and color-code by score
 #' casteval:::graph_observations(casteval:::graph_ensemble(NULL, fc), neglog(fc, obs))
 graph_observations <- function(graph=NULL, obs) {
+    # TODO figure out where to eliminate pre-forecast-date observations
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
     }
