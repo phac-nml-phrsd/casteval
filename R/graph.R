@@ -88,7 +88,7 @@ graph_observations <- function(graph=NULL, obs) {
 #'
 #' @template graph
 #' @template fcst
-#' @param quant A numeric vector containing the quantiles to be graphed, as percentages.
+#' @param quants A numeric vector containing the quantiles to be graphed, as percentages.
 #'  If `NULL`, all quantiles present in the forecast data frame will be graphed.
 #'
 #' @returns A ggplot object.
@@ -96,14 +96,36 @@ graph_observations <- function(graph=NULL, obs) {
 #'
 #' @examples
 #' #TODO
-graph_quantiles <- function(graph=NULL, fcst, quant=NULL) {
+graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
     validate_forecast(fcst)
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
     }
     
-    if(!is.null(quant)) {
-        
+    # quantile percentages provided
+    if(!is.null(quants)) {
+        # compile quantile data into a data frame
+        quant_data <- quants |> 
+            # get all specified quantiles from forecast as a list of vectors
+            purrr::map(\(x) get_quantile(fcst$data, x)) |>
+            # name according to quantile
+            stats::setNames(quants) |>
+            # convert to data frame
+            dplyr::as_tibble() |>
+            # append time column
+            dplyr::mutate(time=fcst$data$time) |>
+            # convert to long format for ggplot2
+            tidyr::pivot_longer(cols=quants)
+
+        # graph it
+        return(
+            graph + ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=name), quant_data)
+        )
+    }
+
+    # infer quantile percentages from data frame
+    else {
+        #TODO
     }
 }
 
