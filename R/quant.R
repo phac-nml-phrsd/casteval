@@ -105,12 +105,12 @@ get_quantile <- function(df, perc) {
     if("raw" %in% colnames(df)) {
         return(raw2quant(df$raw, perc))
     }
-    
+
     else if(perc %in% get_quant_percentages(df)) {
-        return(df$quant)
+        return(get_quant_col(df, perc))
     }
 
     else {
-        stop(paste0("could not compute/obtain quantile ", perc, " from data frame"))
+        stop(paste0("could not compute/obtain ", perc, "% quantile from data frame"))
     } 
 }

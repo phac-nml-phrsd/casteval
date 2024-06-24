@@ -37,3 +37,24 @@ test_that("raw2quant() works", {
   expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 100), c(3, 2, 6, 11))
   expect_equal(raw2quant(list(0:100), 26), 26)
 })
+
+test_that("get_quantile() works", {
+  # error if not found
+  expect_error(
+    get_quantile(data.frame(time=1:3, quant_51=6:8), 50),
+    "could not compute/obtain.*quantile from data frame"
+  )
+
+  df <- dplyr::tibble(time=1:3, quant_50=c(1000,1000,1000), raw=list(4:6, 7:9, 10:12))
+
+  # raw supersedes quant_*
+  expect_equal(
+    get_quantile(df, 50),
+    c(5, 8, 11)
+  )
+
+  expect_equal(
+    get_quantile(df |> dplyr::select(time, quant_50), 50),
+    c(1000,1000,1000)
+  )
+})
