@@ -78,6 +78,43 @@ graph_observations <- function(graph=NULL, obs) {
 }
 
 
+#' Graph forecast quantiles
+#'
+#' Graph lines indicating quantiles of a forecast
+#'
+#' @template graph
+#' @param fcst The forecast object (see output of `create_forecast()`).
+#' @param quant A numeric vector containing the quantiles to be graphed, as percentages.
+#'  If `NULL`, all quantiles present in the forecast data frame will be graphed.
+#'
+#' @returns A ggplot object.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+graph_quantiles <- function(graph=NULL, fcst, quant=NULL) {
+
+}
+
+
+#' Graph forecast confidence intervals
+#'
+#' Graph shaded bands indicating confidence intervals of a forecast
+#'
+#' @template graph
+#' @param fcst A forecast object (see output of `create_forecast`).
+#' @param conf A numeric vector containing the confidence intervals to be displayed, as percentages.
+#'  # If `NULL`, the confidence intervals will be inferred from the quantiles present in the forecast data frame.
+#'
+#' @returns A ggplot object.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+graph_confidence_intervals <- function(graph=NULL, fcst, conf=NULL) {
+
+}
+
 #' Convert raw forecast data to long format
 #'
 #' Given a data frame with raw data, convert it to long format.
