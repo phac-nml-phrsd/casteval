@@ -104,31 +104,34 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
         graph <- ggplot2::ggplot()
     }
     
-    # quantile percentages provided
-    if(!is.null(quants)) {
-        # compile quantile data into a data frame
-        quant_data <- quants |> 
-            # get all specified quantiles from forecast as a list of vectors
-            purrr::map(\(x) get_quantile(fcst$data, x)) |>
-            # name according to quantile
-            stats::setNames(quants) |>
-            # convert to data frame
-            dplyr::as_tibble() |>
-            # append time column
-            dplyr::mutate(time=fcst$data$time) |>
-            # convert to long format for ggplot2
-            tidyr::pivot_longer(cols=as.character(quants))
-
-        # graph it
-        return(
-            graph + ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=name), quant_data)
-        )
+    # if not specified, use all present quantile columns
+    if(is.null(quants)) {
+        quants <- get_quant_percentages(fcst$data)
     }
 
-    # infer quantile percentages from data frame
-    else {
-        #TODO
+    if(length(quants) == 0) {
+        # could possibly be made a warning
+        # TODO: set defaults for quantiles?
+        stop("no quantiles specified and none found in data frame")
     }
+
+    # compile quantile data into a data frame
+    quant_data <- quants |>
+        # get all specified quantiles from forecast as a list of vectors
+        purrr::map(\(x) get_quantile(fcst$data, x)) |>
+        # name according to quantile
+        stats::setNames(quants) |>
+        # convert to data frame
+        dplyr::as_tibble() |>
+        # append time column
+        dplyr::mutate(time=fcst$data$time) |>
+        # convert to long format for ggplot2
+        tidyr::pivot_longer(cols=as.character(quants))
+
+    # graph it
+    return(
+        graph + ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=name), quant_data)
+    )
 }
 
 

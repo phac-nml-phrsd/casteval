@@ -122,4 +122,13 @@ test_that("graph_quantiles() works", {
     graph_quantiles(NULL, fc2, c(2.5,50,75)),
     "could not compute/obtain.*quantile from data frame"
   )
+
+  expect_error(
+    graph_quantiles(NULL, fc1),
+    "no quantiles specified and none found in data frame"
+  )
+
+  vdiffr::expect_doppelganger("quant4",
+    graph_quantiles(NULL, fc2)
+  )
 })
