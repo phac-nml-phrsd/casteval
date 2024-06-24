@@ -48,9 +48,9 @@ graph_observations <- function(graph=NULL, obs) {
         graph <- ggplot2::ggplot()
     }
 
-    if("score" %in% colnames(obs)) {return(
+    if("score" %in% colnames(obs)) { return(
         graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs, color=score), obs)
-    )} else {return(
+    )} else { return(
         graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs), obs)
     )}
 }
