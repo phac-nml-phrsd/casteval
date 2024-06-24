@@ -150,7 +150,9 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 #' @examples
 #' #TODO
 graph_confidence_intervals <- function(graph=NULL, fcst, conf=NULL) {
-
+    # TODO
+    # we have to vary alpha manually because ggplot2 does not supported varying ribbon aesthetics
+    # (https://github.com/tidyverse/ggplot2/issues/4690)
 }
 
 #' Convert raw forecast data to long format
