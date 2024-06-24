@@ -14,8 +14,10 @@
 #'
 #' @examples
 #' # returns c(2.5, 50, 97.5)
-#' casteval:::get_quantiles(data.frame(time=1:3, quant_2.5=4:6, quant_50=7:9, quant_97.5=10:12))
-get_quantiles <- function(df) {
+#' casteval:::get_quantile_percentages(
+#'   data.frame(time=1:3, quant_2.5=4:6, quant_50=7:9, quant_97.5=10:12)
+#' )
+get_quantile_percentages <- function(df) {
     cols <- colnames(df)
     quant_cols <- stringr::str_subset(cols, "^quant_")
     

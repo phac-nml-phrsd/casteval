@@ -47,6 +47,7 @@
 #' )
 accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
     # TODO document `summarize` parameter in vignette
+    # TODO invert the raw/quant -> interval control flow. check for interval first and act accordingly
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
@@ -67,7 +68,7 @@ accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
         lowname <- "low"
         highname <- "high"
     } else if("quant" %in% fcst$data_types) {
-        quants <- get_quantiles(df)
+        quants <- get_quantile_percentages(df)
 
         # can't do anything with a single quantile
         if(length(quants) < 2) {

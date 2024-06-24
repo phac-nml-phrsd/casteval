@@ -1,6 +1,6 @@
-test_that("get_quantiles() works", {
+test_that("get_quantile_percentages() works", {
   expect_equal(
-    get_quantiles(data.frame(quant_0=0, quant_2.5=1, quant_50=2, quant_97.5=3, quant_100=4)),
+    get_quantile_percentages(data.frame(quant_0=0, quant_2.5=1, quant_50=2, quant_97.5=3, quant_100=4)),
     c(0, 2.5, 50, 97.5, 100)
   )
 })
