@@ -47,7 +47,7 @@
 #' )
 accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
     # TODO document `summarize` parameter in vignette
-    # TODO invert the raw/quant -> interval control flow. check for interval first and act accordingly
+    # TODO redo using get_quantile()
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
