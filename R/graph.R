@@ -105,7 +105,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
     }
     
     # if not specified, use all present quantile columns
-    if(is.null(quants)) {
+    if(length(quants) == 0) {
         quants <- get_quant_percentages(fcst$data)
     }
 
@@ -141,7 +141,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 #'
 #' @template graph
 #' @template fcst
-#' @param conf A numeric vector containing the confidence intervals to be displayed, as percentages.
+#' @param confs A numeric vector containing the confidence intervals to be displayed, as percentages.
 #'  If `NULL`, the confidence intervals will be inferred from the quantiles present in the forecast data frame.
 #'
 #' @returns A ggplot object.
@@ -149,10 +149,30 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 #'
 #' @examples
 #' #TODO
-graph_confidence_intervals <- function(graph=NULL, fcst, conf=NULL) {
-    # TODO
-    # we have to vary alpha manually because ggplot2 does not supported varying ribbon aesthetics
+graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
+    if(length(confs) == 0) {
+        stop("TODO")
+    }
+
+    # sort intervals from narrowest to widest
+    confs <- sort(confs)
+    alpha = .5 / length(confs)
+
+    # we have to do this manually because ggplot2 does not support varying
+    # ribbon aesthetics (alpha in this case)
     # (https://github.com/tidyverse/ggplot2/issues/4690)
+    for(conf in confs) {
+        # acquire the quantiles for the confidence interval
+        lo <- get_quantile(fcst$data, 50 - conf/2)
+        hi <- get_quantile(fcst$data, 50 + conf/2)
+        # put in a data frame
+        df <- dplyr::tibble(time=fcst$data$time, lo=lo, hi=hi)
+
+        # draw a ribbon
+        graph <- graph + geom_ribbon(aes(x=time, ymin=lo, ymax=hi, alpha=alpha), df)
+    }
+
+    graph
 }
 
 #' Convert raw forecast data to long format
