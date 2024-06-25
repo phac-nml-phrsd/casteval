@@ -105,7 +105,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
     }
     
     # if not specified, use all present quantile columns
-    if(length(quants) == 0) {
+    if(is.null(quants)) {
         quants <- get_quant_percentages(fcst$data)
     }
 
@@ -155,8 +155,15 @@ graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
         graph <- ggplot2::ggplot()
     }
     
+    if(is.null(confs)) {
+        # get sorted quantiles
+        quants <- get_quant_percentages(fcst$data)
+        # convert to confidence intervals
+        confs <- quants2confs(quants)
+    }
+
     if(length(confs) == 0) {
-        stop("TODO")
+        stop("no confidence intervals specified and none inferrable from data frame")
     }
 
     alpha = .5 / length(confs)
@@ -225,4 +232,37 @@ wide2long <- function(df) {
         purrr::reduce(dplyr::bind_rows) |>
         # remove NA rows
         dplyr::filter(!is.na(raw))
+}
+
+
+#' Get confidence intervals from quantiles
+#'
+#' Helper function for graph_confidence_intervals().
+#' Errors if the given quantiles are not sufficient to infer confidence intervals.
+#'
+#' @param quants Numeric vector containing quantile percentages.
+#'
+#' @returns Numeric vector containing confidence intervals.
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+quants2confs <- function(quants) {
+    # sort quantiles in case they aren't already sorted
+    quants <- sort(quants)
+
+    # we need an even amount
+    len <- length(quants)
+    if(len %% 2 != 0) {
+        stop("even number of quantiles needed to infer confidence intervals")
+    }
+
+    # they must be symmetric around the median
+    if(any(quants != rev(100-quants))) {
+        stop("quantiles must be symmetric around median to infer confidence intervals")
+    }
+
+    # calculate confidence intervals
+    sort(2 * (50 - quants[1:(len/2)]))
 }
