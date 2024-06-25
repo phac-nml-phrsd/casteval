@@ -22,5 +22,10 @@ A ggplot object.
 Graph lines indicating quantiles of a forecast.
 }
 \examples{
-#TODO
+fc1 <- create_forecast(dplyr::tibble(
+time=1:3,
+raw=list(0:5, 5:10, 10:15)
+))
+
+NULL |> casteval:::graph_ensemble(fc1) |> casteval:::graph_quantiles(fc1, c(2.5, 25,51,75))
 }

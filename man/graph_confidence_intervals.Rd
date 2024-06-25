@@ -4,7 +4,7 @@
 \alias{graph_confidence_intervals}
 \title{Graph forecast confidence intervals}
 \usage{
-graph_confidence_intervals(graph = NULL, fcst, conf = NULL)
+graph_confidence_intervals(graph = NULL, fcst, confs = NULL)
 }
 \arguments{
 \item{graph}{A ggplot object, or \code{NULL}. If not \code{NULL},
@@ -12,7 +12,7 @@ it will be added to using \code{ggplot2}'s \code{+} operator.}
 
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
-\item{conf}{A numeric vector containing the confidence intervals to be displayed, as percentages.
+\item{confs}{A numeric vector containing the confidence intervals to be displayed, as percentages.
 If \code{NULL}, the confidence intervals will be inferred from the quantiles present in the forecast data frame.}
 }
 \value{
@@ -22,5 +22,9 @@ A ggplot object.
 Graph shaded bands indicating confidence intervals of a forecast.
 }
 \examples{
-#TODO
+fc <- create_forecast(dplyr::tibble(
+  time=1:3,
+  raw=list(c(3,5,6,7,3), c(6,8,7,8,7), c(11,15,13,14,17))
+))
+NULL |> casteval:::graph_ensemble(fc) |> casteval:::graph_confidence_intervals(fc, c(90,50))
 }

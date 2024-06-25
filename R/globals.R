@@ -11,6 +11,10 @@ utils::globalVariables(c(
   "time", # <graph_quantiles>
   "value", # <graph_quantiles>
   "name", # <graph_quantiles>
+  "conf", # <graph_confidence_intervals>
+  "time", # <graph_confidence_intervals>
+  "lo", # <graph_confidence_intervals>
+  "hi", # <graph_confidence_intervals>
   "time", # <neglog>
   "time", # <filter_forecast_time>
   "time", # <join_fcst_obs>

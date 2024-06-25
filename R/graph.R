@@ -157,7 +157,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 #'   time=1:3,
 #'   raw=list(c(3,5,6,7,3), c(6,8,7,8,7), c(11,15,13,14,17))
 #' ))
-#' NULL |> graph_ensemble(fc) |> graph_confidence_intervals(fc, c(90,50))
+#' NULL |> casteval:::graph_ensemble(fc) |> casteval:::graph_confidence_intervals(fc, c(90,50))
 graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
     validate_forecast(fcst)
     if(is.null(graph)) {
@@ -185,7 +185,7 @@ graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
             conf=x # prepare for the reduction below
         )) |>
         # bind together in long form
-        purrr::reduce(bind_rows) |>
+        purrr::reduce(dplyr::bind_rows) |>
         # make `conf` into factor, largest first
         dplyr::mutate(conf = as.factor(conf) |> forcats::fct_rev())
 
@@ -255,10 +255,10 @@ wide2long <- function(df) {
 #'
 #' @examples
 #' # c(50,80,90,95,100)
-#' quants2confs(c(0,2.5,5,10,25,75,90,95,97.5,100)
+#' casteval:::quants2confs(c(0,2.5,5,10,25,75,90,95,97.5,100))
 #' 
 #' # c(50,80)
-#' quants2confs(c(25,10,90,75))
+#' casteval:::quants2confs(c(25,10,90,75))
 quants2confs <- function(quants) {
     # sort quantiles in case they aren't already sorted
     quants <- sort(quants)

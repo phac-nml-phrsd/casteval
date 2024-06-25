@@ -3,3 +3,4 @@
 export(accuracy)
 export(create_forecast)
 export(neglog)
+export(quants2confs)
