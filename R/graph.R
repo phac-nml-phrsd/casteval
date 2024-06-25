@@ -166,8 +166,6 @@ graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
         stop("no confidence intervals specified and none inferrable from data frame")
     }
 
-    alpha = .5 / length(confs)
-
     # for each confidence interval...
     conf_data <- confs |>
         # make a data frame containing its high and low quantiles
