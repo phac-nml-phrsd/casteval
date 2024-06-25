@@ -21,7 +21,7 @@
 #'   create_forecast(data.frame(time=lubridate::as_datetime(c(0,20000,100000)), raw=c(20,30,40))
 #' ))
 graph_ensemble <- function(graph=NULL, fcst) {
-    #TODO make the fit data different color
+    #TODO make the fit data points instead of lines
     #TODO opacity parameter
     validate_forecast(fcst)
     if(is.null(graph)) {
@@ -97,7 +97,12 @@ graph_observations <- function(graph=NULL, obs) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' fc1 <- create_forecast(dplyr::tibble(
+#' time=1:3,
+#' raw=list(0:5, 5:10, 10:15)
+#' ))
+#' 
+#' NULL |> casteval:::graph_ensemble(fc1) |> casteval:::graph_quantiles(fc1, c(2.5, 25,51,75))
 graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
     validate_forecast(fcst)
     if(is.null(graph)) {
@@ -148,7 +153,11 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' fc <- create_forecast(dplyr::tibble(
+#'   time=1:3,
+#'   raw=list(c(3,5,6,7,3), c(6,8,7,8,7), c(11,15,13,14,17))
+#' ))
+#' NULL |> graph_ensemble(fc) |> graph_confidence_intervals(fc, c(90,50))
 graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
     validate_forecast(fcst)
     if(is.null(graph)) {
@@ -245,7 +254,11 @@ wide2long <- function(df) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # c(50,80,90,95,100)
+#' quants2confs(c(0,2.5,5,10,25,75,90,95,97.5,100)
+#' 
+#' # c(50,80)
+#' quants2confs(c(25,10,90,75))
 quants2confs <- function(quants) {
     # sort quantiles in case they aren't already sorted
     quants <- sort(quants)
