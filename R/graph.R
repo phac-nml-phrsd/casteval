@@ -159,8 +159,6 @@ graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
         stop("TODO")
     }
 
-    # sort intervals from widest to narrowest
-    confs <- sort(confs, decreasing=TRUE)
     alpha = .5 / length(confs)
 
     # for each confidence interval...
@@ -181,9 +179,9 @@ graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
     graph + 
         ggplot2::geom_ribbon(
             ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=conf),
-            alpha=.5/length(confs), conf_data
+            alpha=0.5/length(confs), conf_data
         ) +
-        ggplot2::scale_fill_brewer(palette="Reds")
+        ggplot2::scale_fill_brewer()
 }
 
 #' Convert raw forecast data to long format
