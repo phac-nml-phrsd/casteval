@@ -133,6 +133,16 @@ test_that("graph_quantiles() works", {
   )
 })
 
+
+test_that("quants2confs() works", {
+  expect_equal(quants2confs(numeric(0)), numeric(0))
+  expect_error(quants2confs(c(25,50,75)), "even number of quantiles needed")
+  expect_error(quants2confs(c(25,75,100), "quantiles must be symmetric around median"))
+  expect_error(quants2confs(c(5,25), "quantiles must be symmetric around median"))
+  expect_equal(quants2confs(c(0,2.5,5,10,25,75,90,95,97.5,100)), c(50,80,90,95,100))
+  expect_equal(quants2confs(c(25,10,90,75)), c(50,80))
+})
+
 test_that("get_confidence_intervals()", {
   fc1 <- create_forecast(dplyr::tibble(
     time=1:3,
