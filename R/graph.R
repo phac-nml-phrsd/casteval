@@ -150,29 +150,40 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 #' @examples
 #' #TODO
 graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
+    validate_forecast(fcst)
+    if(is.null(graph)) {
+        graph <- ggplot2::ggplot()
+    }
+    
     if(length(confs) == 0) {
         stop("TODO")
     }
 
-    # sort intervals from narrowest to widest
-    confs <- sort(confs)
+    # sort intervals from widest to narrowest
+    confs <- sort(confs, decreasing=TRUE)
     alpha = .5 / length(confs)
 
-    # we have to do this manually because ggplot2 does not support varying
-    # ribbon aesthetics (alpha in this case)
-    # (https://github.com/tidyverse/ggplot2/issues/4690)
-    for(conf in confs) {
-        # acquire the quantiles for the confidence interval
-        lo <- get_quantile(fcst$data, 50 - conf/2)
-        hi <- get_quantile(fcst$data, 50 + conf/2)
-        # put in a data frame
-        df <- dplyr::tibble(time=fcst$data$time, lo=lo, hi=hi)
+    # for each confidence interval...
+    conf_data <- confs |>
+        # make a data frame containing its high and low quantiles
+        purrr::map(\(x) dplyr::tibble(
+            time=fcst$data$time,
+            lo=get_quantile(fcst$data, 50-x/2),
+            hi=get_quantile(fcst$data, 50+x/2),
+            conf=x # prepare for the reduction below
+        )) |>
+        # bind together in long form
+        purrr::reduce(bind_rows) |>
+        # make `conf` into factor, largest first
+        dplyr::mutate(conf = as.factor(conf) |> forcats::fct_rev())
 
-        # draw a ribbon
-        graph <- graph + geom_ribbon(aes(x=time, ymin=lo, ymax=hi, alpha=alpha), df)
-    }
-
-    graph
+    # graph it
+    graph + 
+        ggplot2::geom_ribbon(
+            ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=conf),
+            alpha=.5/length(confs), conf_data
+        ) +
+        ggplot2::scale_fill_brewer(palette="Reds")
 }
 
 #' Convert raw forecast data to long format
