@@ -132,3 +132,16 @@ test_that("graph_quantiles() works", {
     graph_quantiles(NULL, fc2)
   )
 })
+
+test_that("get_confidence_intervals()", {
+  fc1 <- create_forecast(dplyr::tibble(
+    time=1:3,
+    quant_5=8:6, quant_95=22:20,
+    quant_10=10:8, quant_90=20:18,
+    quant_25=14:12, quant_75=16:14
+  ))
+  
+  vdiffr::expect_doppelganger("conf1",
+    graph_confidence_intervals(NULL, fc1, c(90,50,80))
+  )
+})
