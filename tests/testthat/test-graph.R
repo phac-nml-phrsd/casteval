@@ -113,6 +113,20 @@ test_that("graph_observations() works", {
   vdiffr::expect_doppelganger("obs7",
     NULL |> graph_confidence_intervals(fc3, c(50)) |> graph_observations(accuracy(fc3, obs3, interval=c(25,75), summarize=FALSE))
   )
+
+  fc4 <- create_forecast(dplyr::tibble(
+    time=1:10,
+    raw=list(
+      c(1,2,4,5,2), c(3,5,4,6,3), c(7,6,5,8,8), c(9,8,7,6,8), c(3,5,8,7,6),
+      c(9,8,7,10,8), c(10,11,13,12,9), c(15,14,15,20,10), c(9,8,10,15,14), c(6,8,7,7,5)
+    )
+  ))
+
+  obs4 <- data.frame(time=1:10, obs=1:10)
+
+  vdiffr::expect_doppelganger("obs8",
+    NULL |> graph_ensemble(fc4) |> graph_observations(neglog(fc4, obs4, summarize=FALSE))
+  )
 })
 
 test_that("graph_quantiles() works", {
