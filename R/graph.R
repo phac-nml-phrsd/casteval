@@ -120,6 +120,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
         stop("no quantiles specified and none found in data frame")
     }
 
+    # TODO maybe make this map->reduce instead of map->wide->long
     # compile quantile data into a data frame
     quant_data <- quants |>
         # get all specified quantiles from forecast as a list of vectors
