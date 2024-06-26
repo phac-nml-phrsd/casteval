@@ -7,7 +7,7 @@
 #'
 #' @template fcst
 #' @param obs An observations data frame.
-#' @param interval Either NULL or a vector of two numbers from 0 to 100.
+#' @param interval (Optional) A vector of two numbers from 0 to 100.
 #'  If `fcst` contains quantile data then the corresponding quantile columns will be
 #'  used as the confidence interval.
 #'  If `fcst` contains raw data then the corresponding quantiles will be calculated and

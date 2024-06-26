@@ -1,2 +1,3 @@
-#' @param graph A ggplot object, or `NULL`. If not `NULL`,
-#'  it will be added to using `ggplot2`'s `+` operator.
+#' @param graph (Optional) A ggplot object.
+#'  it will be added to using the `+` operator.
+#'  Defaults to NULL, in which case a blank ggplot object will be created.

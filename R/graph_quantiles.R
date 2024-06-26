@@ -63,7 +63,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 #'
 #' @template graph
 #' @template fcst
-#' @param confs A numeric vector containing the confidence intervals to be displayed, as percentages.
+#' @param confs (Optional) A numeric vector containing the confidence intervals to be displayed, as percentages.
 #'  If `NULL`, the confidence intervals will be inferred from the quantiles present in the forecast data frame.
 #'
 #' @returns A ggplot object.

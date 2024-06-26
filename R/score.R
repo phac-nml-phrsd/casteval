@@ -105,7 +105,7 @@ remove_raw_NAs <- function(df) {
 #'
 #' @param df The forecast data frame.
 #' @param obs The observations data frame.
-#' @param na.rm A boolean. If FALSE, then an error will be raised when
+#' @param na.rm A boolean. Defaults to FALSE. If FALSE, then an error will be raised when
 #'  observations are missing for any forecast time points.
 #'  If TRUE, any time points with missing observations will be removed from the data frame.
 #'

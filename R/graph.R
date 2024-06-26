@@ -5,11 +5,11 @@
 #' Graph one or more forecasts, along with corresponding observations, quantiles, etc.
 #'
 #' @param fcsts A single forecast object, or a list of forecast objects (see output of `create_forecast()`).
-#' @param obs An observations data frame.
+#' @param obs (Optional) An observations data frame.
 #'  If provided, they will be overlaid over the forecast(s) as points.
-#' @param confs NULL, or a vector of numbers from 0 to 100.
+#' @param confs (Optional) A vector of numbers from 0 to 100.
 #'  The corresponding confidence intervals will be displayed in the resulting graph(s)
-#' @param score NULL, or a scoring function.
+#' @param score (Optional) A scoring function.
 #'  The function will be used to score the `obs` against the forecast(s).
 #'
 #' @returns desc

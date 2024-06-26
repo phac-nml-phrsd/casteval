@@ -11,8 +11,8 @@
 #'  or as summaries such as mean-and-quantiles, using the `mean` column as well as columns that are named "quant_" followed by a percentage,
 #'  e.x. "quant_50" for the median.
 #' See [get_format()] for further details.
-#' @param name A string specifying the name of the forecast/model.
-#' @param forecast_time An integer, date, or date-time specifying when the forecast was created.
+#' @param name (Optional) A string specifying the name of the forecast/model.
+#' @param forecast_time (Optional) An integer, date, or date-time specifying when the forecast was created.
 #'  Its type should match the type of values in the `time` column(s) of `data`
 #'  If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to `forecast_time`.
 #'  Additionally, graphs of this forecast may highlight the `forecast_time` using a vertical line.

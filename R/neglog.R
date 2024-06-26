@@ -7,10 +7,10 @@
 #'
 #' @template fcst
 #' @param obs An observations data frame.
-#' @param at A time (compatible with `fcst` and `obs`).
+#' @param at (Optional) A time (compatible with `fcst` and `obs`).
 #'  If specified, the score for this time point will be returned.
 #'  Mutually exclusive with `after`.
-#' @param after A number. If specified, the score at
+#' @param after (Optional) A number. If specified, the score at
 #'  time `fcst$forecast_time + after` will be returned.
 #'  Mutually exclusive with `at`.
 #' @template summarize
