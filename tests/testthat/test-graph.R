@@ -73,12 +73,6 @@ test_that("graph_observations() works", {
     raw=list(4:6, 7:9, 10:12)
   )
 
-  # TODO tests with quantiles & accuracy & raw->quantiles->accuracy
-  # df2 <- dplyr::tibble(
-  #   time=1:3,
-  #   quant_25=c(10,20,10),
-  # )
-
   obs <- data.frame(time=1:3, obs=c(5,9,13))
   fc1 <- create_forecast(df1)
 
@@ -91,6 +85,34 @@ test_that("graph_observations() works", {
     graph_observations(graph_ensemble(NULL, fc1), neglog(fc1, obs))
   )
 
+  # TODO tests with quantiles & accuracy & raw->quantiles->accuracy
+  fc2 <- create_forecast(dplyr::tibble(
+    time=1:12,
+    quant_25=c(5,4,6,5,7,8,5,4,3,5,5,7),
+    quant_75=c(13,14,12,15,12,12,20,17,15,16,13,13)
+  ))
+
+  obs2 <- data.frame(time=1:12, obs=3:14)
+
+  vdiffr::expect_doppelganger("obs5",
+    NULL |> graph_quantiles(fc2) |> graph_observations(obs2)
+  )
+  vdiffr::expect_doppelganger("obs6",
+    NULL |> graph_quantiles(fc2) |> graph_observations(accuracy(fc2, obs2, summarize=FALSE))
+  )
+
+  fc3 <- create_forecast(dplyr::tibble(
+    time=1:3,
+    raw=list(c(3,5,6,7,3), c(6,8,7,8,7), c(11,15,13,14,17))
+  ))
+
+  obs3 <- data.frame(
+    time=1:3,
+    obs=c(4,10,14)
+  )
+  vdiffr::expect_doppelganger("obs7",
+    NULL |> graph_confidence_intervals(fc3, c(50)) |> graph_observations(accuracy(fc3, obs3, interval=c(25,75), summarize=FALSE))
+  )
 })
 
 test_that("graph_quantiles() works", {
@@ -192,7 +214,7 @@ test_that("legends work", {
     time=1:3,
     raw=list(c(3,5,6,7,3), c(6,8,7,8,7), c(11,15,13,14,17))
   ))
-  vdiffr::expect_doppelganger("legend1"
+  vdiffr::expect_doppelganger("legend1",
     NULL |> graph_quantiles(fc, c(25,75)) |> graph_confidence_intervals(fc, c(50,90))
   )
 })
