@@ -11,13 +11,13 @@ accuracy(fcst, obs, interval = NULL, summarize = TRUE)
 
 \item{obs}{An observations data frame.}
 
-\item{interval}{Either NULL or a vector of two numbers from 0 to 100.
+\item{interval}{(Optional) A vector of two numbers from 0 to 100.
 If \code{fcst} contains quantile data then the corresponding quantile columns will be
 used as the confidence interval.
 If \code{fcst} contains raw data then the corresponding quantiles will be calculated and
 used as a confidence interval.}
 
-\item{summarize}{A boolean. If TRUE, a single number will be returned as the score for the forecast.
+\item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
 If FALSE, a data frame with \code{time} and \code{score} columns (and possibly others) will be returned,
 containing the intermediate values for each time point used to calculate the score.
 The type of the \code{score} column can be anything (numbers, booleans, etc.).

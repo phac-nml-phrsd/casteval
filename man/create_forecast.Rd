@@ -16,9 +16,9 @@ or as summaries such as mean-and-quantiles, using the \code{mean} column as well
 e.x. "quant_50" for the median.
 See \code{\link[=get_format]{get_format()}} for further details.}
 
-\item{name}{A string specifying the name of the forecast/model.}
+\item{name}{(Optional) A string specifying the name of the forecast/model.}
 
-\item{forecast_time}{An integer, date, or date-time specifying when the forecast was created.
+\item{forecast_time}{(Optional) An integer, date, or date-time specifying when the forecast was created.
 Its type should match the type of values in the \code{time} column(s) of \code{data}
 If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to \code{forecast_time}.
 Additionally, graphs of this forecast may highlight the \code{forecast_time} using a vertical line.}

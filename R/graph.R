@@ -17,7 +17,7 @@
 #' @autoglobal
 #'
 #' @examples
-#' 
+#' #TODO
 graph_forecasts <- function(fcsts, obs=NULL, confs=NULL, score=NULL) {
 
 }

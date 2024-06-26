@@ -11,7 +11,7 @@ join_fcst_obs(df, obs, na.rm = FALSE)
 
 \item{obs}{The observations data frame.}
 
-\item{na.rm}{A boolean. If FALSE, then an error will be raised when
+\item{na.rm}{A boolean. Defaults to FALSE. If FALSE, then an error will be raised when
 observations are missing for any forecast time points.
 If TRUE, any time points with missing observations will be removed from the data frame.}
 }

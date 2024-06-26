@@ -2,5 +2,6 @@
 
 export(accuracy)
 export(create_forecast)
+export(graph_forecasts)
 export(neglog)
 export(quants2confs)

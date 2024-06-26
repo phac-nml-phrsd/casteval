@@ -11,15 +11,15 @@ neglog(fcst, obs, at = NULL, after = NULL, summarize = TRUE)
 
 \item{obs}{An observations data frame.}
 
-\item{at}{A time (compatible with \code{fcst} and \code{obs}).
+\item{at}{(Optional) A time (compatible with \code{fcst} and \code{obs}).
 If specified, the score for this time point will be returned.
 Mutually exclusive with \code{after}.}
 
-\item{after}{A number. If specified, the score at
+\item{after}{(Optional) A number. If specified, the score at
 time \code{fcst$forecast_time + after} will be returned.
 Mutually exclusive with \code{at}.}
 
-\item{summarize}{A boolean. If TRUE, a single number will be returned as the score for the forecast.
+\item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
 If FALSE, a data frame with \code{time} and \code{score} columns (and possibly others) will be returned,
 containing the intermediate values for each time point used to calculate the score.
 The type of the \code{score} column can be anything (numbers, booleans, etc.).

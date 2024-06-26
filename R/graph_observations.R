@@ -30,7 +30,7 @@ graph_observations <- function(graph=NULL, obs) {
         graph <- ggplot2::ggplot()
     }
 
-    if("score" %in% colnames(obs)) { 
+    if("score" %in% colnames(obs)) {
         # TODO print debugging reveals that this code is covered by tests, but covr::report() marks it as untested. This is likely a problem with either vdiffr or covr
         return(
             graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs, color=score), obs)
