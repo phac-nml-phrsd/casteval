@@ -7,20 +7,21 @@
 create_forecast(dat, name = NULL, forecast_time = NULL)
 }
 \arguments{
-\item{dat}{Forecast data. It can be one of the following:
+\item{dat}{Forecast data. Currently, the following formats for \code{dat} are supported:
 \itemize{
 \item A single data frame containing raw or summary data.
 \item A list of data frames each containing raw data.
-\item A named list containing a numeric vector \code{time} and a list of vectors \code{data}.
+\item A named list containing a numeric vector \code{time} and a list of vectors \code{realizations}.
 Each vector corresponds to a realization in a forecast ensemble.
-The \code{time} vector and \code{data} vectors must all have the same length.
+The \code{time} vector and \code{realizations} vectors must all have the same length.
 }
 
 All data frames in \code{dat} must additionally have a \code{time} column containing either integers, dates, or date-times.
 
-Raw data columns should be named \code{raw}.
+Raw data columns should be named \code{raw}, and should contain numeric vectors of length 1 or more.
+The lengths of the vectors must all be the same.
+
 Summary data columns may be named \code{mean}, or \code{quant_} followed by a number from 0 to 100 (e.x. \code{quant_2.5}, \code{quant_50}, etc.).
-All raw or summary data must be numeric.
 
 See below for examples.
 
@@ -42,7 +43,7 @@ The types of the data columns (a character vector containing "mean", "quant", an
 }
 \description{
 \code{create_forecast()} creates a forecast object given data and optional metadata.
-It accepts a variety of forecast formats as input and intelligently converts them into a standardized format.
+It accepts a variety of forecast formats as input and intelligently converts them into a standard format.
 }
 \examples{
 # forecast with numeric times and raw data

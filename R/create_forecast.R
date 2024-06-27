@@ -1,21 +1,22 @@
 #' Create a forecast
 #'
 #' `create_forecast()` creates a forecast object given data and optional metadata.
-#' It accepts a variety of forecast formats as input and intelligently converts them into a standardized format.
+#' It accepts a variety of forecast formats as input and intelligently converts them into a standard format.
 #'
-#' @param dat Forecast data. It can be one of the following:
+#' @param dat Forecast data. Currently, the following formats for `dat` are supported:
 #' - A single data frame containing raw or summary data.
 #' - A list of data frames each containing raw data.
-#' - A named list containing a numeric vector `time` and a list of vectors `data`.
+#' - A named list containing a numeric vector `time` and a list of vectors `realizations`.
 #' Each vector corresponds to a realization in a forecast ensemble.
-#'  The `time` vector and `data` vectors must all have the same length.
+#'  The `time` vector and `realizations` vectors must all have the same length.
 #' 
 #' All data frames in `dat` must additionally have a `time` column containing either integers, dates, or date-times.
 #' 
-#' Raw data columns should be named `raw`.
-#' Summary data columns may be named `mean`, or `quant_` followed by a number from 0 to 100 (e.x. `quant_2.5`, `quant_50`, etc.).
-#' All raw or summary data must be numeric.
+#' Raw data columns should be named `raw`, and should contain numeric vectors of length 1 or more.
+#' The lengths of the vectors must all be the same.
 #' 
+#' Summary data columns may be named `mean`, or `quant_` followed by a number from 0 to 100 (e.x. `quant_2.5`, `quant_50`, etc.).
+#'
 #' See below for examples.
 #' 
 #' See [get_format()] for further details on data frame formatting.
@@ -59,22 +60,33 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     # TODO third option where you provide a list of vertical vectors instead of list of data frames)
     # TODO support even more input data formats
     # TODO consider changing the format so that each realization is its own column
-
     # TODO update vignette
-    # we check for data frame first since data frames are also lists
-
     # TODO detect lists that should be vectors and convert them to vectors
 
-    # A single data frame
-    if(is.data.frame(dat)) {
+    ## Figure out the format of `dat` and dispatch the corresponding helper function
+
+    # we check for data frame first since data frames are also lists
+    if(is.data.frame(dat)) { # A single data frame
         forecast <- create_forecast_single(dat, name, forecast_time)
     }
     
-    # A list of data frames, to be combined.
     else if(is.list(dat)) {
-        forecast <- create_forecast_multiple(dat, name, forecast_time)
+        if(length(names(dat)) > 0) {
+            # times-and-realizations
+            if("time" %in% names(dat) && "realizations" %in% names(dat)) {
+                forecast <- create_forecast_realizations(dat, name, forecast_time)
+            }
+            else {
+                stop("expected `time` and `realizations` to be in `dat`")
+            }
+        }
+
+        else { # A list of data frames, to be combined.
+            forecast <- create_forecast_multiple(dat, name, forecast_time)
+        }
     } else {
-        stop("`dat` has invalid type. Must be data frame or list of data frames")
+        # TODO figure out the vignette command and put it in the message
+        stop("`dat` has invalid type. See ?create_forecast() or vignette for proper format")
     }
 
     # TODO sort the rows by time?
@@ -153,4 +165,56 @@ create_forecast_multiple <- function(dfs, name, forecast_time) {
     forecast$data_types <- "raw"
     forecast$data <- combine_data_frames(dfs)
     forecast
+}
+
+
+#' Create forecast from time vector and realizations
+#'
+#' Helper for `create_forecast()`.
+#'
+#' @param dat A named list containing `time` and `realizations`
+#' @param name A string
+#' @param forecast_time A number, date, or date-time
+#'
+#' @returns A forecast object
+#' @autoglobal
+#'
+#' @examples
+#' # See `create_forecast()`
+create_forecast_realizations <- function(dat, name, forecast_time) {
+    forecast <- list(name=name, forecast_time=forecast_time)
+    
+    ## do input validation
+    tm <- dat$time
+    reals <- dat$realizations
+
+    if(!is.numeric(tm)) {
+        stop("`dat$time` must be numeric vector")
+    }
+    
+    if(!is.list(reals)) {
+        stop("`dat$realizations` must be list")
+    }
+
+    if(lenghth(tm) == 0) {
+        stop("`dat$time` is empty")
+    }
+
+    if(length(reals) == 0) {
+        stop("`dat$realizations` is empty")
+    }
+
+    if(!all(as.logical(purrr::map(reals, is.numeric)))) {
+        stop("`dat$realizations` must be list of numeric vectors")
+    }
+
+    lens <- reals |> purrr::map(length) |> as.logical()
+    if(any(length(tm) != lens)) {
+        stop("all vectors in `dat$realizations` must have the same length as `dat$time`")
+    }
+
+    # transpose list of vectors
+    raw <- reals |> purrr::transpose() |> purrr::map(as.numeric)
+    # build data frame
+    dplyr::tibble(time=tm, raw=raw)
 }
