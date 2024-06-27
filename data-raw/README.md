@@ -7,7 +7,7 @@ Dependencies:
 
 ```
 git clone https://github.com/jonassjuul/curvestat.git
-cp -i raw-data/getdata.py /path/to/curvestat/
-cd /path/to/curvestat/
+cd curvestat
+cp -i /path/to/casteval/data-raw/getdata.py .
 python getdata.py
 ```
