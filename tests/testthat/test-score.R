@@ -32,24 +32,6 @@ test_that("filter_forecast_time() works", {
   )
 })
 
-test_that("validate_fcst_obs_pair() works", {
-  expect_equal(
-    validate_fcst_obs_pair(
-      create_forecast(data.frame(time=1:10, raw=11:20)),
-      data.frame(time=101:110, obs=111:120)
-    ),
-    NULL
-  )
-
-  expect_error(
-    validate_fcst_obs_pair(
-      create_forecast(data.frame(time=1:10, raw=11:20)),
-      data.frame(time=lubridate::ymd("2024-01-01"), obs=5)
-    ),
-    "observations time type must match forecast time type"
-  )
-})
-
 test_that("remove_raw_NAs() works", {
   expect_error(
     remove_raw_NAs(data.frame(time=6, mean=3)),

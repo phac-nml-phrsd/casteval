@@ -125,3 +125,39 @@ validate_column <- function(df, col) {
     }
     NULL
 }
+
+
+#' Validate a forecast-observations pair
+#'
+#' Given a forecast and observations, verify that:
+#' - forecast is valid
+#' - observations are valid
+#' - forecast time type matches observations time type
+#'
+#' @template fcst
+#' @param obs An observations data frame.
+#'
+#' @returns NULL if valid. Error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' # compatible time types
+#' casteval:::validate_fcst_obs_pair(
+#'   create_forecast(data.frame(time=1:10, raw=11:20)),
+#'   data.frame(time=101:110, obs=111:120)
+#' )
+#' 
+#' # incompatible time types
+#' try(casteval:::validate_fcst_obs_pair(
+#'   create_forecast(data.frame(time=1:10, raw=11:20)),
+#'   data.frame(time=lubridate::ymd("2024-01-01"), obs=5)
+#' ))
+validate_fcst_obs_pair <- function(fcst, obs) {
+    # TODO move this and its tests over to validate_forecast.R and rename to validate.R
+    validate_forecast(fcst)
+    obs_time_type <- get_obs_format(obs)
+    if(obs_time_type != fcst$time_type) {
+        stop("observations time type must match forecast time type")
+    }
+    NULL
+}
