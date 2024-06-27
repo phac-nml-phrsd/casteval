@@ -19,5 +19,8 @@
 #' @examples
 #' #TODO
 graph_forecasts <- function(fcsts, obs=NULL, confs=NULL, score=NULL) {
-
+    if(!is.null(obs)) {
+        stop("TODO")
+        #validate_fcst_obs_pair()
+    }
 }

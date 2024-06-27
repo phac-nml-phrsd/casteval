@@ -3,7 +3,11 @@
 
 library(dplyr)
 library(readr)
+library(purrr)
 
 ens <- read_csv("data-raw/ensemble.csv") |> select(-...1)
+n <- ncol(ens)
+ens <- ens |> mutate(raw = c_across(1:n))
+    
 hst <- read_csv("data-raw/historic.csv") |> select(-...1)
 
