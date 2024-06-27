@@ -7,7 +7,7 @@
 create_forecast_realizations(dat, name, forecast_time)
 }
 \arguments{
-\item{dat}{A named list containing \code{time} and \code{realizations}}
+\item{dat}{A named list containing \code{time} and \code{real}}
 
 \item{name}{A string}
 

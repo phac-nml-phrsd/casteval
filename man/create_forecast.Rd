@@ -11,9 +11,9 @@ create_forecast(dat, name = NULL, forecast_time = NULL)
 \itemize{
 \item A single data frame containing raw or summary data.
 \item A list of data frames each containing raw data.
-\item A named list containing a numeric vector \code{time} and a list of vectors \code{realizations}.
+\item A named list containing a numeric vector \code{time} and a list of vectors \code{real}.
 Each vector corresponds to a realization in a forecast ensemble.
-The \code{time} vector and \code{realizations} vectors must all have the same length.
+The \code{time} vector and \code{real} vectors must all have the same length.
 }
 
 All data frames in \code{dat} must additionally have a \code{time} column containing either integers, dates, or date-times.
