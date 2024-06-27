@@ -7,21 +7,31 @@
 create_forecast(dat, name = NULL, forecast_time = NULL)
 }
 \arguments{
-\item{dat}{Forecast data. Either a data frame or list of data frames.
-An ensemble of forecasts can be provided as a list of data frames with raw data, in which case it will be aggregated into a single data frame.
-The data frame(s) should contain a column named \code{time}, which may be of integers, dates, or date-times.
-No mixing of types is allowed (e.g. \code{time} may not contain both integers and date-times).
-The predicted forecast values can be stored the \code{raw} column (for vectors of 1 or more realizations),
-or as summaries such as mean-and-quantiles, using the \code{mean} column as well as columns that are named "quant_" followed by a percentage,
-e.x. "quant_50" for the median.
-See \code{\link[=get_format]{get_format()}} for further details.}
+\item{dat}{Forecast data. It can be one of the following:
+\itemize{
+\item A single data frame containing raw or summary data.
+\item A list of data frames each containing raw data.
+\item A named list containing a numeric vector \code{time} and a list of vectors \code{data}.
+Each vector corresponds to a realization in a forecast ensemble.
+The \code{time} vector and \code{data} vectors must all have the same length.
+}
+
+All data frames in \code{dat} must additionally have a \code{time} column containing either integers, dates, or date-times.
+
+Raw data columns should be named \code{raw}.
+Summary data columns may be named \code{mean}, or \code{quant_} followed by a number from 0 to 100 (e.x. \code{quant_2.5}, \code{quant_50}, etc.).
+All raw or summary data must be numeric.
+
+See below for examples.
+
+See \code{\link[=get_format]{get_format()}} for further details on data frame formatting.}
 
 \item{name}{(Optional) A string specifying the name of the forecast/model.}
 
 \item{forecast_time}{(Optional) An integer, date, or date-time specifying when the forecast was created.
 Its type should match the type of values in the \code{time} column(s) of \code{data}
 If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to \code{forecast_time}.
-Additionally, graphs of this forecast may highlight the \code{forecast_time} using a vertical line.}
+Additionally, plots of this forecast may graphically distinguish between values to the left and right of \code{forecast_time}.}
 }
 \value{
 A named list containing the forecast and its metadata.
@@ -42,14 +52,18 @@ create_forecast(data.frame(time=1:3, raw=10:12), name="a forecast", forecast_tim
 create_forecast(
   data.frame(
     time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")),
-    mean=10:11, quant_2.5=5:6, quant_97.5=15:16), name="another forecast")
+    mean=10:11, quant_2.5=5:6, quant_97.5=15:16
+  ),
+  name="another forecast"
+)
 
 # combining an ensemble of realizations into one
 create_forecast(list(
   dplyr::tibble(time=1:5,raw=6:10),
   dplyr::tibble(time=2:6,raw=7:11),
-  dplyr::tibble(time=3:7,raw=8:12)))
+  dplyr::tibble(time=3:7,raw=8:12)
+))
 
 # an already-combined ensemble
-create_forecast(dplyr::tibble(time=1:2, raw=list(10:11, 12:13)))
+create_forecast(dplyr::tibble(time=1:2, raw=list(10:15, 20:25)))
 }
