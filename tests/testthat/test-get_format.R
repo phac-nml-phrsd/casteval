@@ -135,6 +135,7 @@ test_that("get_format() returns correct format", {
 test_that("get_obs_format() validates", {
   expect_error(get_obs_format(data.frame(time=1:3, raw=4:6)), "column `obs` not in data frame")
   expect_error(get_obs_format(dplyr::tibble(time=1:3, obs=list(1:2, 3:4, 5:6))), "`obs` column must be numeric")
+  expect_error(get_obs_format(data.frame(time=NULL,raw=NULL)), "data frame empty")
 })
 
 test_that("get_obs_format() works", {

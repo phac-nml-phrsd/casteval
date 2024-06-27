@@ -6,9 +6,9 @@
 #' @param dat Forecast data. Currently, the following formats for `dat` are supported:
 #' - A single data frame containing raw or summary data.
 #' - A list of data frames each containing raw data.
-#' - A named list containing a numeric vector `time` and a list of vectors `realizations`.
+#' - A named list containing a numeric vector `time` and a list of vectors `real`.
 #' Each vector corresponds to a realization in a forecast ensemble.
-#'  The `time` vector and `realizations` vectors must all have the same length.
+#'  The `time` vector and `real` vectors must all have the same length.
 #' 
 #' All data frames in `dat` must additionally have a `time` column containing either integers, dates, or date-times.
 #' 
@@ -73,11 +73,11 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     else if(is.list(dat)) {
         if(length(names(dat)) > 0) {
             # times-and-realizations
-            if("time" %in% names(dat) && "realizations" %in% names(dat)) {
+            if("time" %in% names(dat) && "real" %in% names(dat)) {
                 forecast <- create_forecast_realizations(dat, name, forecast_time)
             }
             else {
-                stop("expected `time` and `realizations` to be in `dat`")
+                stop("expected `time` and `real` to be in `dat`")
             }
         }
 
@@ -86,7 +86,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
         }
     } else {
         # TODO figure out the vignette command and put it in the message
-        stop("`dat` has invalid type. See ?create_forecast() or vignette for proper format")
+        stop("`dat` has invalid type. See ?create_forecast() or vignette for proper usage")
     }
 
     # TODO sort the rows by time?
@@ -172,7 +172,7 @@ create_forecast_multiple <- function(dfs, name, forecast_time) {
 #'
 #' Helper for `create_forecast()`.
 #'
-#' @param dat A named list containing `time` and `realizations`
+#' @param dat A named list containing `time` and `real`
 #' @param name A string
 #' @param forecast_time A number, date, or date-time
 #'
@@ -186,35 +186,39 @@ create_forecast_realizations <- function(dat, name, forecast_time) {
     
     ## do input validation
     tm <- dat$time
-    reals <- dat$realizations
+    real <- dat$real
 
     if(!is.numeric(tm)) {
         stop("`dat$time` must be numeric vector")
     }
     
-    if(!is.list(reals)) {
-        stop("`dat$realizations` must be list")
+    if(!is.list(real)) {
+        stop("`dat$real` must be list")
     }
 
-    if(lenghth(tm) == 0) {
+    if(length(tm) == 0) {
         stop("`dat$time` is empty")
     }
 
-    if(length(reals) == 0) {
-        stop("`dat$realizations` is empty")
+    if(length(real) == 0) {
+        stop("`dat$real` is empty")
     }
 
-    if(!all(as.logical(purrr::map(reals, is.numeric)))) {
-        stop("`dat$realizations` must be list of numeric vectors")
+    if(!all(as.logical(purrr::map(real, is.numeric)))) {
+        stop("`dat$real` must be list of numeric vectors")
     }
 
-    lens <- reals |> purrr::map(length) |> as.logical()
+    lens <- real |> purrr::map(length) |> as.numeric()
     if(any(length(tm) != lens)) {
-        stop("all vectors in `dat$realizations` must have the same length as `dat$time`")
+        stop("all vectors in `dat$real` must have the same length as `dat$time`")
     }
 
     # transpose list of vectors
-    raw <- reals |> purrr::transpose() |> purrr::map(as.numeric)
+    raw <- real |> purrr::transpose() |> purrr::map(as.numeric)
     # build data frame
-    dplyr::tibble(time=tm, raw=raw)
+    df <- dplyr::tibble(time=tm, raw=raw)
+    forecast$time_type <- get_time_type(tm)
+    forecast$data_types <- "raw"
+    forecast$data <- df
+    forecast
 }
