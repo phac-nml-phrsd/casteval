@@ -4,6 +4,7 @@
 #'
 #' @template graph
 #' @template fcst
+#' @param alpha (Optional) The alpha value to be passed to `ggplot2::geom_line()`.
 #'
 #' @returns A ggplot object.
 #' @autoglobal
@@ -18,7 +19,7 @@
 #'   NULL,
 #'   create_forecast(data.frame(time=lubridate::as_datetime(c(0,20000,100000)), raw=c(20,30,40))
 #' ))
-graph_ensemble <- function(graph=NULL, fcst) {
+graph_ensemble <- function(graph=NULL, fcst, alpha=NULL) {
     #TODO make the fit data points instead of lines
     #TODO opacity parameter
     validate_forecast(fcst)
@@ -30,10 +31,19 @@ graph_ensemble <- function(graph=NULL, fcst) {
         stop("raw data needed to graph ensemble")
     }
 
+    if(is.null(alpha)) {
+        if(length(fcst$data$raw[[1]]) > 10) {
+            alpha <- 0.2
+        } else {
+            alpha <- 0.5
+        }
+
+    }
+
     # convert to long format for easy ggplot interfacing
     df <- wide2long(fcst$data)
 
-    graph + ggplot2::geom_line(ggplot2::aes(x=time, y=raw, group=realization), df)
+    graph + ggplot2::geom_line(ggplot2::aes(x=time, y=raw, group=realization), alpha=alpha, df)
 }
 
 
