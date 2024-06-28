@@ -124,7 +124,6 @@ graph_confidence_intervals <- function(graph=NULL, fcst, confs=NULL) {
 #' @param quants Numeric vector containing quantile percentages.
 #'
 #' @returns Numeric vector containing confidence intervals.
-#' @export
 #' @autoglobal
 #'
 #' @examples
