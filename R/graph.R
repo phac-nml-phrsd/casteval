@@ -24,3 +24,5 @@ graph_forecasts <- function(fcsts, obs=NULL, confs=NULL, score=NULL) {
         #validate_fcst_obs_pair()
     }
 }
+
+# TODO <1 default alpha in every graphing function
