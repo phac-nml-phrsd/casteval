@@ -19,10 +19,53 @@
 #' @examples
 #' #TODO
 graph_forecasts <- function(fcsts, obs=NULL, confs=NULL, score=NULL) {
-    if(!is.null(obs)) {
+    # in case fcsts is a single forecast, wrap it in a list for consistency
+    if(is.data.frame(fcsts)) {
         stop("TODO")
-        #validate_fcst_obs_pair()
+        fcsts <- list(fcsts)
+    }
+
+    if(length(fcsts) == 0) {
+        stop("0 forecasts provided")
+    }
+
+    # if obs provided, validate against every forecast
+    if(!is.null(obs)) {
+        fcsts |> purrr::map(\(fc) validate_fcst_obs_pair(fc, obs))
+    }
+
+    # check that all forecast time types are the same
+    time_types <- fcsts |> purrr::map(\(fc) fc$time_type) |> unique()
+    if(length(time_types) > 1) {
+        # this could be changed into a warning
+        stop("provided forecasts with different time types")
+    }
+
+    # get all the names (strings and NULLs)
+    names <- fcsts |> purrr::map(\(fc) fc$name)
+
+    # complain if there are duplicate names
+    if(names |> purrr::discard(is.null) |> duplicates() |> any()) {
+        stop("provided duplicate forecast names")
+    }
+
+    # come up with placeholder names for all the NULLs
+    n <- 1
+    for(i in seq_along(names)) {
+        if(!is.null(names[[i]])) {
+            next
+        }
+
+        # increase n until "Forecast {n}" is available
+        name <- paste("Forecast", n)
+        while(name %in% names) {
+            n <- n + 1
+            name <- paste("Forecast", n)
+        }
+
+        names[[i]] <- name
     }
 }
 
+# TODO make long-form scenarios, provinces, etc. work with facets & everything else
 # TODO <1 default alpha in every graphing function
