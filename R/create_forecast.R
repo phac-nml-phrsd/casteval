@@ -56,6 +56,12 @@
 #' 
 #' # an already-combined ensemble
 #' create_forecast(dplyr::tibble(time=1:2, raw=list(10:15, 20:25)))
+#' 
+#' # a forecast with 4 realizations over 3 days
+#' create_forecast(list(
+#'   time=1:3,
+#'   real=list(4:6, 7:9, 10:12, 13:15)
+#' ))
 create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     # TODO third option where you provide a list of vertical vectors instead of list of data frames)
     # TODO support even more input data formats
@@ -191,7 +197,7 @@ create_forecast_realizations <- function(dat, name, forecast_time) {
     if(!is.numeric(tm)) {
         stop("`dat$time` must be numeric vector")
     }
-    
+
     if(!is.list(real)) {
         stop("`dat$real` must be list")
     }

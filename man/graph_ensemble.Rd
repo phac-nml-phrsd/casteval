@@ -4,7 +4,7 @@
 \alias{graph_ensemble}
 \title{Graph ensemble of forecast realizations}
 \usage{
-graph_ensemble(graph = NULL, fcst)
+graph_ensemble(graph = NULL, fcst, alpha = NULL)
 }
 \arguments{
 \item{graph}{(Optional) A ggplot object.
@@ -12,6 +12,8 @@ it will be added to using the \code{+} operator.
 Defaults to NULL, in which case a blank ggplot object will be created.}
 
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
+
+\item{alpha}{(Optional) The alpha value to be passed to \code{ggplot2::geom_line()}.}
 }
 \value{
 A ggplot object.

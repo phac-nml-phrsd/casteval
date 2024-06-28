@@ -67,4 +67,10 @@ create_forecast(list(
 
 # an already-combined ensemble
 create_forecast(dplyr::tibble(time=1:2, raw=list(10:15, 20:25)))
+
+# a forecast with 4 realizations over 3 days
+create_forecast(list(
+  time=1:3,
+  real=list(4:6, 7:9, 10:12, 13:15)
+))
 }
