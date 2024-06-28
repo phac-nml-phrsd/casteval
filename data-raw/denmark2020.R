@@ -4,10 +4,19 @@
 library(dplyr)
 library(readr)
 library(purrr)
+devtools::load_all()
 
-ens <- read_csv("data-raw/ensemble.csv") |> select(-...1)
-n <- ncol(ens)
-ens <- ens |> mutate(raw = c_across(1:n))
+ens <- read_csv("data-raw/ensemble.csv") |>
+    select(-...1) |>
+    as.list()
+n <- length(ens[[1]])
+
+fc <- create_forecast(list(time=0:(n-1), real=ens), name="Denmark 5 May to 1 October 2020", forecast_time=0)
     
 hst <- read_csv("data-raw/historic.csv") |> select(-...1)
 
+m <- -length(hst[[1]])
+
+obs <- tibble(time=m:-1, obs=hst[[1]])
+
+# NULL |> graph_ensemble(fc) |> graph_observations(obs)
