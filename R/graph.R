@@ -20,6 +20,7 @@
 #' @examples
 #' #TODO
 graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
+    # TODO more rigorous error checking for this function
     # in case fcsts is a single forecast, wrap it in a list for consistency
     if(is.data.frame(fcsts)) {
         stop("TODO")
@@ -76,7 +77,17 @@ graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
         fcsts[[i]]$name <- name
     }
 
+    # score each data frame
+    fcsts <- fcsts |> purrr::map(\(fc) score(fc, obs, summarize=FALSE))
 
+    # combine rows
+    df <- do.call(dplyr::bind_rows, fcsts)
+
+    graph <- ggplot2::ggplot()
+    if(raw) {
+        graph <- graph |> graph_ensemble(create_forecast(fc)) + ggplot2::facet_wrap(~name)
+    }
+    graph
 }
 
 # TODO make long-form scenarios, provinces, etc. work with facets & everything else
