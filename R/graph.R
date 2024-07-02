@@ -7,6 +7,7 @@
 #' @param fcsts A single forecast object, or a list of forecast objects (see output of `create_forecast()`).
 #' @param obs (Optional) An observations data frame.
 #'  If provided, they will be overlaid over the forecast(s) as points.
+#' @param raw (Optional) A boolean. Defaults to TRUE, in which case raw ensemble curves will be displayed.
 #' @param confs (Optional) A vector of numbers from 0 to 100.
 #'  The corresponding confidence intervals will be displayed in the resulting graph(s)
 #' @param score (Optional) A scoring function.
@@ -18,7 +19,7 @@
 #'
 #' @examples
 #' #TODO
-graph_forecasts <- function(fcsts, obs=NULL, confs=NULL, score=NULL) {
+graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
     # in case fcsts is a single forecast, wrap it in a list for consistency
     if(is.data.frame(fcsts)) {
         stop("TODO")
@@ -32,6 +33,14 @@ graph_forecasts <- function(fcsts, obs=NULL, confs=NULL, score=NULL) {
     # if obs provided, validate against every forecast
     if(!is.null(obs)) {
         fcsts |> purrr::map(\(fc) validate_fcst_obs_pair(fc, obs))
+    } else {
+        fcsts |> purrr::map(\(fc) validate_forecast(fc))
+    }
+
+    if(raw) {
+        if(any(purrr::map(fcsts, \(fc) ! "raw" %in% fc$data_types))) {
+            stop("`raw` parameter set to TRUE but not all forecasts contain raw data")
+        }
     }
 
     # check that all forecast time types are the same
@@ -64,7 +73,10 @@ graph_forecasts <- function(fcsts, obs=NULL, confs=NULL, score=NULL) {
         }
 
         names[[i]] <- name
+        fcsts[[i]]$name <- name
     }
+
+
 }
 
 # TODO make long-form scenarios, provinces, etc. work with facets & everything else
