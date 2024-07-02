@@ -109,16 +109,16 @@ accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
     }
 
     # isolate/rename the time and relevant quantile columns
-    df <- df |> dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname))
+    temp <- df |> dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname))
     
     # check for any NAs that make proceeding impossible without removing rows
-    if(NA %in% df$low || NA %in% df$high) {
+    if(NA %in% temp$low || NA %in% temp$high) {
         stop("some forecast quantiles are NA")
     }
 
     # join & calculate accuracy
     df <- join_fcst_obs(df, obs) |>
-        dplyr::mutate(score=dplyr::between(obs, low, high))
+        dplyr::mutate(score=dplyr::between(obs, temp$low, temp$high))
     if(!summarize) {
         return(df)
     }
