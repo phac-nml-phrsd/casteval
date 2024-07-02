@@ -46,13 +46,13 @@ test_that("validate_interval() works", {
 })
 
 test_that("accuracy() validates", {
-  expect_error(
+  expect_equal(
     accuracy(
         create_forecast(data.frame(time=1:3, raw=4:6)),
         data.frame(time=1:3, obs=4:6),
         NULL
     ),
-    "`interval` parameter required for computing accuracy from raw data"
+    1
   )
 
   expect_error(

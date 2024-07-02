@@ -54,7 +54,8 @@ accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
     if("raw" %in% fcst$data_types) {
         # perform input validation
         if(is.null(interval)) {
-            stop("`interval` parameter required for computing accuracy from raw data")
+            interval <- c(2.5, 97.5)
+            message("interval not provided. defaulting to `c(2.5, 97.5)`")
         }
         validate_interval(interval)
 
