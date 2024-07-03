@@ -106,6 +106,8 @@
 #'  The corresponding confidence interval(s) will be displayed in the resulting graph.
 #' @param score (Optional) A scoring function.
 #'  The function will be used to score the `obs` against the forecast.
+#'  A scoring function should accept a forecast object, an observations data frame, as well as a `summarize` argument.
+#'  See `accuracy()`, `neglog()` for examples
 #'
 #' @returns desc
 #' @export
@@ -114,7 +116,49 @@
 #' @examples
 #' 
 graph_forecast <- function(fcst, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
+    # validate forecast and/or observations
+    if(is.null(obs)) {
+        validate_forecast(fcst)
+    } else {
+        validate_fcst_obs_pair(fcst, obs)
+    }
 
+    # check for raw data if necessary
+    if(raw && ! "raw" %in% fcst$data_types) {
+        stop("`raw` parameter TRUE but forecast does not contain raw data")
+    }
+
+    # score if necessary
+    if(!is.null(score)) {
+        if(is.null(obs)) {
+            # could be converted to warning
+            stop("scoring function provided without observations")
+        }
+
+        obs <- score(fcst$data, obs, summarize=FALSE)
+    }
+
+    # graph everything according to the parameters
+    graph <- NULL
+    if(raw) {
+        graph <- graph |> graph_ensemble(fcst)
+    }
+
+    if(!is.null(confs)) {
+        graph <- graph |> graph_confidence_intervals(fcst, confs)
+    }
+
+    if(!is.null(obs)) {
+        graph <- graph |> graph_observations(obs)
+    }
+
+    # error if we didn't end up graphing anything
+    if(is.null(graph)) {
+        # could be turned into a warning
+        stop("parameters did not specify anything to be graphed")
+    }
+
+    graph
 }
 
 # TODO make long-form scenarios, provinces, etc. work with facets & everything else
