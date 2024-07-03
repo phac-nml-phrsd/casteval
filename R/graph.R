@@ -78,7 +78,9 @@ graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
     }
 
     # score each data frame
-    fcsts <- fcsts |> purrr::map(\(fc) score(fc, obs, summarize=FALSE))
+    if(!is.null(obs) && !is.null(score)) {
+        fcsts <- fcsts |> purrr::map(\(fc) score(fc, obs, summarize=FALSE))
+    }
 
     # combine rows
     df <- do.call(dplyr::bind_rows, purrr::map(fcsts, dplyr::select(time, raw)))
