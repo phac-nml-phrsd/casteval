@@ -81,13 +81,19 @@ graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
     fcsts <- fcsts |> purrr::map(\(fc) score(fc, obs, summarize=FALSE))
 
     # combine rows
-    df <- do.call(dplyr::bind_rows, fcsts)
+    df <- do.call(dplyr::bind_rows, purrr::map(fcsts, dplyr::select(time, raw)))
+    fc <- create_forecast(df)
 
     graph <- ggplot2::ggplot()
     if(raw) {
-        graph <- graph |> graph_ensemble(create_forecast(fc)) + ggplot2::facet_wrap(~name)
+        graph <- graph |> graph_ensemble(fc)
     }
-    graph
+
+    if(!is.null(conf)) {
+        graph <- graph |> graph_confidence_intervals(fc, conf)
+    }
+
+    graph + ggplot2::facet_wrap(~name)
 }
 
 # TODO make long-form scenarios, provinces, etc. work with facets & everything else
