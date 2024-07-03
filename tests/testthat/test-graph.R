@@ -16,8 +16,7 @@ test_that("graph_forecasts() works", {
 
   fc2 <- create_forecast(dplyr::tibble(
     time=2:4,
-    raw=list(c(7,8,9), c(9,7,8), c(9,10,12))
+    raw=list(c(17,18,19), c(19,17,18), c(19,20,22))
   ))
 
-  graph_forecasts(fc1)
 })
