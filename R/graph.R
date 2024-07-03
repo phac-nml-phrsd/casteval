@@ -22,8 +22,7 @@
 graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
     # TODO more rigorous error checking for this function
     # in case fcsts is a single forecast, wrap it in a list for consistency
-    if(is.data.frame(fcsts)) {
-        stop("TODO")
+    if("data" %in% names(fcsts)) {
         fcsts <- list(fcsts)
     }
 
@@ -39,7 +38,7 @@ graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
     }
 
     if(raw) {
-        if(any(purrr::map(fcsts, \(fc) ! "raw" %in% fc$data_types))) {
+        if(any(as.logical(purrr::map(fcsts, \(fc) ! "raw" %in% fc$data_types)))) {
             stop("`raw` parameter set to TRUE but not all forecasts contain raw data")
         }
     }
@@ -74,7 +73,7 @@ graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
         }
 
         names[[i]] <- name
-        fcsts[[i]]$name <- name
+        fcsts[[i]]$data$name <- name
     }
 
     # score each data frame
@@ -83,16 +82,16 @@ graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
     }
 
     # combine rows
-    df <- do.call(dplyr::bind_rows, purrr::map(fcsts, dplyr::select(time, raw)))
+    df <- do.call(dplyr::bind_rows, purrr::map(fcsts, \(fc) fc$data))
     fc <- create_forecast(df)
 
-    graph <- ggplot2::ggplot()
+    graph <- ggplot2::ggplot(df)
     if(raw) {
         graph <- graph |> graph_ensemble(fc)
     }
 
-    if(!is.null(conf)) {
-        graph <- graph |> graph_confidence_intervals(fc, conf)
+    if(!is.null(confs)) {
+        graph <- graph |> graph_confidence_intervals(fc, confs)
     }
 
     graph + ggplot2::facet_wrap(~name)
