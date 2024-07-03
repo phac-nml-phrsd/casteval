@@ -55,7 +55,7 @@ graph_forecasts <- function(fcsts, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
     names <- fcsts |> purrr::map(\(fc) fc$name)
 
     # complain if there are duplicate names
-    if(names |> purrr::discard(is.null) |> duplicates() |> any()) {
+    if(names |> purrr::discard(is.null) |> duplicated() |> any()) {
         stop("provided duplicate forecast names")
     }
 

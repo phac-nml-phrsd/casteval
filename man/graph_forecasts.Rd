@@ -4,13 +4,15 @@
 \alias{graph_forecasts}
 \title{Graph one or more forecasts}
 \usage{
-graph_forecasts(fcsts, obs = NULL, confs = NULL, score = NULL)
+graph_forecasts(fcsts, obs = NULL, raw = TRUE, confs = NULL, score = NULL)
 }
 \arguments{
 \item{fcsts}{A single forecast object, or a list of forecast objects (see output of \code{create_forecast()}).}
 
 \item{obs}{(Optional) An observations data frame.
 If provided, they will be overlaid over the forecast(s) as points.}
+
+\item{raw}{(Optional) A boolean. Defaults to TRUE, in which case raw ensemble curves will be displayed.}
 
 \item{confs}{(Optional) A vector of numbers from 0 to 100.
 The corresponding confidence intervals will be displayed in the resulting graph(s)}

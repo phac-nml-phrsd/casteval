@@ -4,6 +4,8 @@ utils::globalVariables(c(
   "time", # <accuracy>
   "time", # <combine_two_data_frames>
   "raw1", # <combine_two_data_frames>
+  "time", # <graph_forecasts>
+  "conf", # <graph_forecasts>
   "time", # <graph_ensemble>
   "realization", # <graph_ensemble>
   "time", # <graph_observations>
