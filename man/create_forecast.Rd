@@ -11,9 +11,9 @@ create_forecast(dat, name = NULL, forecast_time = NULL)
 \itemize{
 \item A single data frame containing raw or summary data.
 \item A list of data frames each containing raw data.
-\item A named list containing a numeric vector \code{time} and a list of vectors \code{real}.
+\item A named list containing a numeric vector \code{time} and a list of vectors \code{ensemble}.
 Each vector corresponds to a realization in a forecast ensemble.
-The \code{time} vector and \code{real} vectors must all have the same length.
+The \code{time} vector and \code{ensemble} vectors must all have the same length.
 }
 
 All data frames in \code{dat} must additionally have a \code{time} column containing either integers, dates, or date-times.
@@ -58,7 +58,7 @@ create_forecast(
   name="another forecast"
 )
 
-# combining an ensemble of realizations into one
+# an ensemble of 3 realizations, each represented by a data frame
 create_forecast(list(
   dplyr::tibble(time=1:5,raw=6:10),
   dplyr::tibble(time=2:6,raw=7:11),
@@ -68,9 +68,9 @@ create_forecast(list(
 # an already-combined ensemble
 create_forecast(dplyr::tibble(time=1:2, raw=list(10:15, 20:25)))
 
-# a forecast with 4 realizations over 3 days
+# an ensemble of 4 realizations, each represented by a vector
 create_forecast(list(
   time=1:3,
-  real=list(4:6, 7:9, 10:12, 13:15)
+  ensemble=list(4:6, 7:9, 10:12, 13:15)
 ))
 }

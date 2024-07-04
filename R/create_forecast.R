@@ -6,9 +6,9 @@
 #' @param dat Forecast data. Currently, the following formats for `dat` are supported:
 #' - A single data frame containing raw or summary data.
 #' - A list of data frames each containing raw data.
-#' - A named list containing a numeric vector `time` and a list of vectors `real`.
+#' - A named list containing a numeric vector `time` and a list of vectors `ensemble`.
 #' Each vector corresponds to a realization in a forecast ensemble.
-#'  The `time` vector and `real` vectors must all have the same length.
+#'  The `time` vector and `ensemble` vectors must all have the same length.
 #' 
 #' All data frames in `dat` must additionally have a `time` column containing either integers, dates, or date-times.
 #' 
@@ -47,7 +47,7 @@
 #'   name="another forecast"
 #' )
 #'
-#' # combining an ensemble of realizations into one
+#' # an ensemble of 3 realizations, each represented by a data frame
 #' create_forecast(list(
 #'   dplyr::tibble(time=1:5,raw=6:10),
 #'   dplyr::tibble(time=2:6,raw=7:11),
@@ -57,10 +57,10 @@
 #' # an already-combined ensemble
 #' create_forecast(dplyr::tibble(time=1:2, raw=list(10:15, 20:25)))
 #' 
-#' # a forecast with 4 realizations over 3 days
+#' # an ensemble of 4 realizations, each represented by a vector
 #' create_forecast(list(
 #'   time=1:3,
-#'   real=list(4:6, 7:9, 10:12, 13:15)
+#'   ensemble=list(4:6, 7:9, 10:12, 13:15)
 #' ))
 create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     # TODO third option where you provide a list of vertical vectors instead of list of data frames)
@@ -78,12 +78,12 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     
     else if(is.list(dat)) {
         if(length(names(dat)) > 0) {
-            # times-and-realizations
-            if("time" %in% names(dat) && "real" %in% names(dat)) {
-                forecast <- create_forecast_realizations(dat, name, forecast_time)
+            # time + ensemble
+            if("time" %in% names(dat) && "ensemble" %in% names(dat)) {
+                forecast <- create_forecast_ensemble(dat, name, forecast_time)
             }
             else {
-                stop("expected `time` and `real` to be in `dat`")
+                stop("expected `time` and `ensemble` to be in `dat`")
             }
         }
 
@@ -174,11 +174,11 @@ create_forecast_multiple <- function(dfs, name, forecast_time) {
 }
 
 
-#' Create forecast from time vector and realizations
+#' Create forecast from time vector and ensemble of realizations
 #'
 #' Helper for `create_forecast()`.
 #'
-#' @param dat A named list containing `time` and `real`
+#' @param dat A named list containing names `time` and `ensemble`
 #' @param name A string
 #' @param forecast_time A number, date, or date-time
 #'
@@ -187,40 +187,40 @@ create_forecast_multiple <- function(dfs, name, forecast_time) {
 #'
 #' @examples
 #' # See `create_forecast()`
-create_forecast_realizations <- function(dat, name, forecast_time) {
+create_forecast_ensemble <- function(dat, name, forecast_time) {
     forecast <- list(name=name, forecast_time=forecast_time)
     
     ## do input validation
     tm <- dat$time
-    real <- dat$real
+    ens <- dat$ensemble
 
     if(!is.numeric(tm)) {
         stop("`dat$time` must be numeric vector")
     }
 
-    if(!is.list(real)) {
-        stop("`dat$real` must be list")
+    if(!is.list(ens)) {
+        stop("`dat$ensemble` must be list")
     }
 
     if(length(tm) == 0) {
         stop("`dat$time` is empty")
     }
 
-    if(length(real) == 0) {
-        stop("`dat$real` is empty")
+    if(length(ens) == 0) {
+        stop("`dat$ensemble` is empty")
     }
 
-    if(!all(as.logical(purrr::map(real, is.numeric)))) {
-        stop("`dat$real` must be list of numeric vectors")
+    if(!all(as.logical(purrr::map(ens, is.numeric)))) {
+        stop("`dat$ensemble` must be list of numeric vectors")
     }
 
-    lens <- real |> purrr::map(length) |> as.numeric()
+    lens <- ens |> purrr::map(length) |> as.numeric()
     if(any(length(tm) != lens)) {
-        stop("all vectors in `dat$real` must have the same length as `dat$time`")
+        stop("all vectors in `dat$ensemble` must have the same length as `dat$time`")
     }
 
     # transpose list of vectors
-    raw <- real |> purrr::transpose() |> purrr::map(as.numeric)
+    raw <- ens |> purrr::transpose() |> purrr::map(as.numeric)
     # build data frame
     df <- dplyr::tibble(time=tm, raw=raw)
     forecast$time_type <- get_time_type(tm)
