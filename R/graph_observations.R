@@ -41,3 +41,4 @@ graph_observations <- function(graph=NULL, obs) {
         )
     }
 }
+# TODO make TRUE consistently one color and FALSE consistently another

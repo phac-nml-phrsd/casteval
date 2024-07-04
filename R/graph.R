@@ -151,7 +151,7 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
     # error if we didn't end up graphing anything
     if(is.null(graph)) {
         # could be turned into a warning
-        stop("nothing was graphed")
+        stop("nothing was graphed. Consider specifying confidence intervals, observations, raw data, etc.")
     }
 
     graph
