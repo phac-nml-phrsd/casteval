@@ -153,15 +153,15 @@ fc2 <- create_forecast(B)
 fc3 <- create_forecast(C, name="Mean-and-quantiles forecast", forecast_time=2)
 
 # Metadata and data are easily accessible
-print(fc3$name)
-print(fc3$forecast_time)
-print(fc3$time_type)
-print(fc3$data_types)
-print(fc3$data)
+fc3$name
+fc3$forecast_time
+fc3$time_type
+fc3$data_types
+fc3$data
 
 # A forecast of 3 realizations over 4 days
 fc4 <- create_forecast(D)
-print(fc4$data)
+fc4$data
 
 # Same as fc4
 fc5 <- create_forecast(E)
@@ -257,15 +257,12 @@ fc3 <- create_forecast(dplyr::tibble(
   quant_95=c(9.5,9.5,9.5,9.5,9.5)
 ))
 
-# A forecast with non-NULL `forecast_time`
-fc4 <- create_forecast(
-  dplyr::tibble(
+# Another forecast with quantile data
+fc4 <- create_forecast(dplyr::tibble(
     time=1:5,
     quant_25=c(6,6,6,6,6),
     quant_75=c(10,10,10,10,10)
-  ),
-  forecast_time=3
-)
+))
 
 obs <- data.frame(time=1:5, obs=c(0, 2.4, 5, 9.5, 10))
 
@@ -284,17 +281,25 @@ try(accuracy(fc3, obs))
 
 # Specifying an interval fixes this
 accuracy(fc3, obs, interval=c(25,95))
-# If `forecast_time` is provided, everything prior to `forecast_time` will be ignored
+
+# If `forecast_time` is NULL, every time point in the forecast will be scored
 accuracy(fc4, obs)
-fc4$forecast_time <- NULL
+
+# Otherwise, everything prior to `forecast_time` will be ignored
+fc4$forecast_time <- 3
 accuracy(fc4, obs)
+
+# We can see what is happening behind the scenes by passing `summarize=FALSE`
+df <- accuracy(fc4, obs, summarize=FALSE)
+df
+mean(df$score)
 ```
 
 ## `neglog()`
 `neglog(fcst, obs, at=NULL, after=NULL)` calculates the negative log score of a forecast.
 `fcst` must contain raw data with 2 or more realizations per row.
 It uses Kernel Density Estimation (KDE) to obtain a probability distribution for each point in time in the forecast.
-If `f(x)` is the calculated probability distribution and `x0` is the corresponding observation, then the negative log score at that point in time is `-log(f(x0))`.
+If `f(x)` is the calculated probability distribution and `x0` is the corresponding observation, then the negative log score at that point in time is `-log(f(x0))`, where `log` is the natural logarithm.
 
 `at` and `after` can be used to specify which point in time to return the score of.
 If both are left `NULL`, then all the calculated scores will be returned as part of a data frame.
@@ -317,15 +322,16 @@ fcst <- create_forecast(
 obs <- data.frame(time=1:5, obs=c(2, 7, 10, 11, 100))
 
 # get the score at time=3
-print(neglog(fcst, obs, at=3))
+neglog(fcst, obs, at=3)
+
 # get the score at `fcst$forecast_time + 2` (4)
-print(neglog(fcst, obs, after=2))
+neglog(fcst, obs, after=2)
+
 # get all the scores as part of a data frame
-print(neglog(fcst, obs))
+neglog(fcst, obs, summarize=FALSE)
+
 # `at` and `after` are mutually exclusive
-try(
-  print(neglog(fcst, obs, at=3, after=1))
-)
+try(neglog(fcst, obs, at=3, after=1))
 ```
 
 ## Defining your own scoring functions
