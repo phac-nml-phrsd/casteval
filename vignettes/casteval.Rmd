@@ -136,6 +136,8 @@ This function:
 The named list contains fields such as `$name` (the name of the forecast), `$forecast_time` (when the forecast was generated), and `$data`, which is a data frame containing the formatted forecast data.
 This named list can then be passed to any function in `{casteval}` which accepts a forecast.
 
+## Examples
+
 ```{r create_forecast}
 # A forecast with a name
 fc1 <- create_forecast(A, name="Jan 1 to Jan 3 2024 forecast")
@@ -173,9 +175,15 @@ As demonstrated above, raw data can be entered in multiple different formats, de
 # Observations
 
 Observations are data frames with a `time` column and a numeric `obs` column.
-Note how observations are simply data frames, whereas forecasts are encapsulated by a named list.
-My reasoning for this was that forecasts contain certain metadata (such as `forecast_time`) which affect the way they are evaluated.
-This may change in future versions if it turns out that observations require metadata too, or if there is a better way to store metadata.
+Note how observations are simply data frames, whereas forecasts are encapsulated in a named list.
+The reasoning for this is that forecasts contain certain metadata (such as `forecast_time`) which affect the way they are evaluated.
+
+*Note: This may change in future versions if it turns out that observations require metadata too, or if there is a better way to store metadata.*
+
+```{r observations}
+# An observations data frame with numeric times
+obs <- data.frame(time=1:3, obs=c(10,15,12))
+```
 
 # Scoring
 
@@ -192,9 +200,17 @@ If `fcst$forecast_time` is not `NULL`, then all data prior to `fcst$forecast_tim
 
 If `obs` contains data for time points that `fcst` does not have, those time points will be ignored.
 However, the reverse cannot happen (if `fcst` contains time points that `obs` does not have, an error will be raised).
-In the future a flag might be added to tell the scoring functions to discard rows with missing observations.
 
-Scoring functions typically return a single number indicating the score.
+*Note: In the future a flag might be added to tell the scoring functions to discard rows with missing observations.*
+
+Many scoring functions calculate intermediate values for each time point, and then select/summarize those scores as a single value.
+These functions accept a `summarize` parameter.
+
+If `summarize` is set to `TRUE` (the default), the scoring function will return the score as a single number.
+
+Otherwise, it will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point.
+The type of the `score` column is not necessarily numeric (for example, in `accuracy()`, it contains booleans).
+One use of these unsummarized values is for color-coding observation points when graphing them.
 
 The currently supported scoring functions are described below.
 Most of the examples are deliberately contrived in order to better illustrate the scoring functionality.
@@ -302,3 +318,6 @@ try(
   print(neglog(fcst, obs, at=3, after=1))
 )
 ```
+
+## Defining your own scoring functions
+TODO

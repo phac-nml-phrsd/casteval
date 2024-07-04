@@ -60,7 +60,7 @@ test_that("neglog() works", {
       data.frame(time=1:3, obs=c(-1, 2.5, 5))
     ),
     dplyr::tibble(
-      time=1:3, raw=list(1:5, 1:5, 1:5), obs=c(-1, 2.5, 5), score=c(4.03779, 1.649454, 2.004065)
+      time=1:3, obs=c(-1, 2.5, 5), score=c(4.03779, 1.649454, 2.004065)
     ),
     tolerance=0.0001
   )

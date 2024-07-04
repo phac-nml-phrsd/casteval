@@ -120,7 +120,7 @@ accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
     df <- join_fcst_obs(df, obs) |>
         dplyr::mutate(score=dplyr::between(obs, temp$low, temp$high))
     if(!summarize) {
-        return(df)
+        return(dplyr::select(df, time, obs, score))
     }
 
     # calculate success rate (aka accuracy)

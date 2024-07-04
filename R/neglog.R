@@ -61,7 +61,7 @@ neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
 
     # TODO clean this up once default values for at/after set
     if(!summarize || (is.null(at) && is.null(after))) { # return the whole data frame with the score column
-        return(df)
+        return(dplyr::select(df, time, obs, score))
     }
     
     if(!is.null(at) && !is.null(after)) { # mutually exclusive

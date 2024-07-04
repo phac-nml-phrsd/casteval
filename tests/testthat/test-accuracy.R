@@ -274,6 +274,6 @@ test_that("accuracy(..., summarize=FALSE) works", {
       data.frame(time=3:5, obs=c(0,5,10)),
       summarize=FALSE
     ),
-    dplyr::tibble(time=3:5, quant_25=c(2,2,2), quant_75=c(7,7,7), obs=c(0,5,10), score=c(FALSE,TRUE,FALSE))
+    dplyr::tibble(time=3:5, obs=c(0,5,10), score=c(FALSE,TRUE,FALSE))
   )
 })

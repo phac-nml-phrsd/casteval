@@ -1,10 +1,10 @@
 An R package for automating forecast scoring/evaluation. Work in progress.
 
 # Installation
-TBD
+TODO
 
 # Usage
-TBD
+TODO
 
 # Development
 

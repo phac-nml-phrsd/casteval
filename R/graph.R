@@ -57,6 +57,7 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
             stop("scoring function provided without observations")
         }
 
+        # TODO: wrap in error handler. scoring functions which don't support the summarize flag should error when passed it
         obs <- score(fcst, obs, summarize=FALSE)
     }
 
