@@ -17,7 +17,7 @@
 #'  A scoring function should accept a forecast object, an observations data frame, as well as a `summarize` argument.
 #'  See `accuracy()`, `neglog()` for examples
 #'
-#' @returns desc
+#' @returns A ggplot2 object
 #' @export
 #' @autoglobal
 #'

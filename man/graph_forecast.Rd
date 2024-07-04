@@ -21,7 +21,7 @@ A scoring function should accept a forecast object, an observations data frame, 
 See \code{accuracy()}, \code{neglog()} for examples}
 }
 \value{
-desc
+A ggplot2 object
 }
 \description{
 Graph a forecast, along with corresponding observations, confidence intervals, etc.
