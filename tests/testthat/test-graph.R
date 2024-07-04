@@ -20,3 +20,24 @@ test_that("legends work", {
 #   ))
 
 # })
+
+test_that("graph_forecast() works", {
+  expect_error(
+    graph_forecast(
+      create_forecast(data.frame(time=1,mean=1)),
+      score=accuracy
+    ),
+    "scoring function provided without observations"
+  )
+
+  expect_error(
+    graph_forecast(
+      create_forecast(data.frame(time=1,quant_25=1,quant_75=2))
+    ),
+    "nothing was graphed"
+  )
+
+  # fc1 <- create_forecast(dplyr::tibble(
+
+  # ))
+})

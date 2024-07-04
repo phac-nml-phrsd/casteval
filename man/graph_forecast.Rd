@@ -28,3 +28,6 @@ desc
 \description{
 Graph a forecast, along with corresponding observations, confidence intervals, etc.
 }
+\examples{
+#TODO
+}

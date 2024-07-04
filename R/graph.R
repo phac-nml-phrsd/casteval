@@ -101,7 +101,6 @@
 #' @template fcst
 #' @param obs (Optional) An observations data frame.
 #'  If provided, they will be overlaid over the forecast as points.
-#' @param raw (Optional) A boolean. Defaults to TRUE, in which case raw ensemble curves will be displayed.
 #' @param confs (Optional) A vector of numbers from 0 to 100.
 #'  The corresponding confidence interval(s) will be displayed in the resulting graph.
 #' @param score (Optional) A scoring function.
@@ -114,18 +113,13 @@
 #' @autoglobal
 #'
 #' @examples
-#' 
-graph_forecast <- function(fcst, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
+#' #TODO
+graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
     } else {
         validate_fcst_obs_pair(fcst, obs)
-    }
-
-    # check for raw data if necessary
-    if(raw && ! "raw" %in% fcst$data_types) {
-        stop("`raw` parameter TRUE but forecast does not contain raw data")
     }
 
     # score if necessary
@@ -135,14 +129,16 @@ graph_forecast <- function(fcst, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
             stop("scoring function provided without observations")
         }
 
-        obs <- score(fcst$data, obs, summarize=FALSE)
+        obs <- score(fcst, obs, summarize=FALSE)
     }
 
     # graph everything according to the parameters
     graph <- NULL
-    if(raw) {
+    if("raw" %in% fcst$data_types) {
         graph <- graph |> graph_ensemble(fcst)
     }
+
+    # TODO graph mean if present
 
     if(!is.null(confs)) {
         graph <- graph |> graph_confidence_intervals(fcst, confs)
@@ -155,11 +151,12 @@ graph_forecast <- function(fcst, obs=NULL, raw=TRUE, confs=NULL, score=NULL) {
     # error if we didn't end up graphing anything
     if(is.null(graph)) {
         # could be turned into a warning
-        stop("parameters did not specify anything to be graphed")
+        stop("nothing was graphed")
     }
 
     graph
 }
-
+# TODO title the graph
 # TODO make long-form scenarios, provinces, etc. work with facets & everything else
 # TODO <1 default alpha in every graphing function
+# TODO if function provided data frame instead of forecast object, call create_forecast() on it (with warning/message)
