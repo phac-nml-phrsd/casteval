@@ -22,7 +22,26 @@
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' fc <- create_forecast(dplyr::tibble(
+#'   time=1:3,
+#'   raw=list(c(4,5,4), c(7,6,6), c(8,7,6))
+#' ))
+#' obs <- data.frame(time=1:3, obs=5:7)
+#' 
+#' # graph forecast
+#' graph_forecast(fc)
+#' 
+#' # graph forecast and observations
+#' graph_forecast(fc, obs)
+#' 
+#' # graph forecast and confidence interval(s)
+#' graph_forecast(fc, confs=c(50,95))
+#' 
+#' # highlight the observations inside the 95% confidence interval
+#' graph_forecast(fc, obs, confs=95, score=\(...) accuracy(..., interval=c(2.5, 97.5)))
+#' 
+#' # show the negative log score of each observation
+#' graph_forecast(fc, obs, score=neglog)
 graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
     # validate forecast and/or observations
     if(is.null(obs)) {
