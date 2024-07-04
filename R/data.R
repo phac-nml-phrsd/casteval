@@ -21,3 +21,5 @@
 #' @source <https://www.nature.com/articles/s41567-020-01121-y>
 #' @source <https://github.com/jonassjuul/curvestat>
 "denmark2020obs"
+
+# TODO document denmark2020ens
