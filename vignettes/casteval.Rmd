@@ -22,6 +22,8 @@ library(casteval)
 `{casteval}` is an R package that helps you automate the evaluation of time series forecasts.
 It provides functionality for formatting, processing, scoring, and visualizing forecasts.
 
+*Note: Many examples in this vignette are deliberately contrived/simplified in order to better illustrate functionality. For a more realistic start-to-finish demonstration of the package's usage, see [this vignette](denmark2020.html).*
+
 # Input formatting
 *Note: As this is a work in progress, the number of formats supported is still limited*
 
@@ -193,6 +195,7 @@ Scoring functions accept the following arguments:
 - A data frame of observations `obs` (as described above)
 - Additional arguments specific to particular scoring functions
 
+### Forecast-observations compatibility
 `fcst` and `obs` must use the same time type for scoring to be possible.
 That is to say, `fcst$data$time` and `obs$time` must contain elements of the same type.
 
@@ -203,6 +206,7 @@ However, the reverse cannot happen (if `fcst` contains time points that `obs` do
 
 *Note: In the future a flag might be added to tell the scoring functions to discard rows with missing observations.*
 
+### `summarize` flag
 Many scoring functions calculate intermediate values for each time point, and then select/summarize those scores as a single value.
 These functions accept a `summarize` parameter.
 
@@ -213,29 +217,30 @@ The type of the `score` column is not necessarily numeric (for example, in `accu
 One use of these unsummarized values is for color-coding observation points when graphing them.
 
 The currently supported scoring functions are described below.
-Most of the examples are deliberately contrived in order to better illustrate the scoring functionality.
 
 ## `accuracy()`
 
-`accuracy(fcst, obs, interval=NULL)` returns the rate at which the observations fall inside a confidence interval predicted by the forecast.
+TODO revise this section after fixing `accuracy()`
+
+`accuracy(fcst, obs, interval=NULL, summarize=TRUE)` calculates the rate at which the observations fall inside a confidence interval predicted by the forecast.
 It returns a number from 0 to 1.
 
-If the forecast contains raw data, `interval` must be a vector of two percentages.
-The quantiles for these percentages will be calculated from the raw data and used to calculate the score.
+If `fcst` contains raw data, `interval` must be a vector of two percentages from 0 to 100.
+The corresponding quantiles will be calculated from the raw data and used to calculate the score.
 
-If the forecast contains quantile data and `interval` is left as `NULL`, then `accuracy()` will try to use the lowest and highest provided quantiles to calculate the score.
+If `fcst` contains quantile data and `interval` is left as `NULL`, then `accuracy()` will try to use the lowest and highest provided quantiles to calculate the score.
 If `interval` is provided, then `accuracy()` will use the corresponding quantiles in `fcst` to calculate the score.
 
 ### Examples
 
 ```{r accuracy_examples}
-# forecast with raw data
+# A forecast with raw data
 fc1 <- create_forecast(dplyr::tibble(
   time=1:5,
   raw=list(0:10, 0:10, 0:10, 0:10, 0:10)
 ))
 
-# forecast with quantile data
+# A forecast with quantile data
 fc2 <- create_forecast(dplyr::tibble(
   time=1:5,
   quant_5=c(1,1,1,1,1),
@@ -244,7 +249,7 @@ fc2 <- create_forecast(dplyr::tibble(
   quant_95=c(9.5,9.5,9.5,9.5,9.5)
 ))
 
-# a forecast with less symmetrical quantile data
+# A forecast with less symmetrical quantile data
 fc3 <- create_forecast(dplyr::tibble(
   time=1:5,
   quant_25=c(2.5,2.5,2.5,2.5,2.5),
@@ -252,7 +257,7 @@ fc3 <- create_forecast(dplyr::tibble(
   quant_95=c(9.5,9.5,9.5,9.5,9.5)
 ))
 
-# a forecast with non-NULL `forecast_time`
+# A forecast with non-NULL `forecast_time`
 fc4 <- create_forecast(
   dplyr::tibble(
     time=1:5,
@@ -264,21 +269,25 @@ fc4 <- create_forecast(
 
 obs <- data.frame(time=1:5, obs=c(0, 2.4, 5, 9.5, 10))
 
-# calculate accuracy using the 50% confidence interval
-print(accuracy(fc1, obs, interval=c(25, 75)))
-# calculate accuracy using highest and lowest quantiles (5% and 95% in this case)
-print(accuracy(fc2, obs))
-# calculate accuracy using provided quantiles.
-print(accuracy(fc2, obs, interval=c(25, 95)))
-# accuracy() refuses to automatically use the highest and lowest quantiles if
+# Calculate accuracy using the 50% confidence interval
+accuracy(fc1, obs, interval=c(25, 75))
+
+# Calculate accuracy using highest and lowest quantiles (5% and 95% in this case)
+accuracy(fc2, obs)
+
+# Calculate accuracy using provided quantiles.
+accuracy(fc2, obs, interval=c(25, 95))
+
+# `accuracy()` refuses to automatically use the highest and lowest quantiles if
 # they are not symmetrical
-try(
-  print(accuracy(fc3, obs))
-)
-# specifying an interval fixes this
-print(accuracy(fc3, obs, interval=c(25,95)))
-# if `forecast_time` is provided, everything prior to `forecast_time` will be ignored
-print(accuracy(fc4, obs))
+try(accuracy(fc3, obs))
+
+# Specifying an interval fixes this
+accuracy(fc3, obs, interval=c(25,95))
+# If `forecast_time` is provided, everything prior to `forecast_time` will be ignored
+accuracy(fc4, obs)
+fc4$forecast_time <- NULL
+accuracy(fc4, obs)
 ```
 
 ## `neglog()`
