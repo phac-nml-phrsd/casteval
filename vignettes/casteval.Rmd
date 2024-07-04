@@ -10,7 +10,8 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  strip.white=TRUE
 )
 
 library(casteval)
@@ -22,95 +23,130 @@ library(casteval)
 It provides functionality for formatting, processing, scoring, and visualizing forecasts.
 
 # Input formatting
-*NB: As this is a work in progress, the number of formats supported is still limited*
+*Note: As this is a work in progress, the number of formats supported is still limited*
 
-`{casteval}` can take various forecast formats as input. Each forecast must at minimum be a data frame with a `time` column and one or more data columns.
+`{casteval}` accepts the following forecast formats as input:
 
-## Time column
+- A single data frame with a `time` column and one or more data columns (see below)
+- A list of data frames, each with a `time` column and a `raw` data column
+- A named list `l`, where `l$time` is a vector of times and `l$ensemble` is a list of vectors, each one the same length as `l$time`
 
-The current supported `time` column types are:
+Times can be one of the following types:
 
-- `numeric` (-1, 0, 1, 1.5, etc.),
-- `Date` (_e.g._ from `{lubridate}`),
-- date-time formats `POSIXct` and `POSIXt`.
+- `numeric` (-1, 0, 1, 1.5, etc.)
+- `Date` (_e.g._ from `{lubridate}`)
+- date-time formats `POSIXct` and `POSIXt`
 
-## Data columns
-
-All data columns must contain `numeric` data.
-
+All data columns must contain numeric data.
 The current supported data columns are:
 
 - `raw`: values for individual realisations of a forecast
 - `mean`: mean value for each time point of an ensemble
-- `quant_x`: quantile for each time point of an ensemble, where `x` is a percentage from 0 to 100 (_e.g._, `quant_50` would represent the 50th quantile, or median)
+- `quant_x`: quantile for each time point of an ensemble, where `x` is a percentage from 0 to 100 (_e.g._, `quant_50`, `quant_2.5`, `quant_97.5`, etc.)
 
 ## Examples
 
-The following are examples of valid forecast input formats to `{casteval}`:
+The following are examples of valid forecast inputs to `{casteval}`:
 
 ```{r input_formats}
 # Create some dates and date-times for convenience
 dates <- c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02"), lubridate::ymd("2024-01-03"))
-datetimes <- c(lubridate::ymd_hms("2024-02-01_12:00:00"), lubridate::ymd_hms("2024-02-01_13:00:00"), lubridate::ymd_hms("2024-02-01_14:00:00"))
+datetimes <- c(lubridate::ymd_hms("2024-02-01_12:00:00"),
+  lubridate::ymd_hms("2024-02-01_13:00:00"),
+  lubridate::ymd_hms("2024-02-01_14:00:00"))
 
-# A forecast with date-times and raw data points
-df1 <- data.frame(
-  time=datetimes, 
+## Single data frame format
+
+# A forecast with dates and raw data points
+A <- data.frame(
+  time=dates,
   raw=c(400, 450, 500)
 )
-head(df1)
+A
 
-# A forecast with dates and quartiles
-df2 <- data.frame(
-  time=dates, 
-  quant_25=c(50, 60, 70), 
-  quant_50=c(100, 110, 120), 
+# A forecast with date-times and quartiles
+B <- data.frame(
+  time=datetimes,
+  quant_25=c(50, 60, 70),
+  quant_50=c(100, 110, 120),
   quant_75=c(150, 160, 170)
 )
-head(df2)
+B
 
 # A forecast with numeric times, the mean, and 95% confidence interval
-df3 <- data.frame(
-  time=c(1, 2, 3), 
-  mean=c(1000, 900, 800), 
-  quant_2.5=c(950, 850, 750), 
+C <- data.frame(
+  time=c(1, 2, 3),
+  mean=c(1000, 900, 800),
+  quant_2.5=c(950, 850, 750),
   quant_97.5=c(1050, 950, 850)
 )
-head(df3)
+C
 
-# A forecast with raw data over multiple realizations of the model/simulation
+# A forecast with raw data containing 3 realizations over 4 days
 # We use tibbles here to make entering the list-column easier
-time_vec <- c(1, 2, 3)
+time_vec <- 1:4
 realized_t1 <- c(100, 200, 300)
 realized_t2 <- c(102, 195, 301)
 realized_t3 <- c(110, 197, 300)
-df4 <- dplyr::tibble(
-  time=time_vec, 
-  raw=list(realized_t1, realized_t2, realized_t3)
+realized_t4 <- c(108, 196, 302)
+D <- dplyr::tibble(
+  time=time_vec,
+  raw=list(realized_t1, realized_t2, realized_t3, realized_t4)
 )
+D
+
+## List of data frames format
+
+# A forecast with the same data as D, but with one data frame for each realization
+df1 = dplyr::tibble(time=1:4, raw=c(100, 102, 110, 108))
+df2 = dplyr::tibble(time=1:4, raw=c(200, 195, 197, 196))
+df3 = dplyr::tibble(time=1:4, raw=c(300, 301, 300, 302))
+E <- list(df1, df2, df3)
+E
+
+## Ensemble of realizations format
+
+# A forecast with the same data as D, but with one vector for each realization
+F <- list(
+  time=1:4,
+  ensemble=list(
+    c(100, 102, 110, 108),
+    c(200, 195, 197, 196),
+    c(300, 301, 300, 302)
+  )
+)
+F
 ```
 
-As demonstrated above, raw data can contain multiple realizations in a single day by storing a list of projected values in each row instead of a single value.
-For instance, the `j`th value of the vector stored in row `i` of the input data frame would give the value of the `j`th realisation for time `i`. In this format, `{casteval}` expects that all vectors in such a list-column are the same length (every time point contains data for the same number of realisations).
+*Note: The format of the `raw` column may change in future versions of the package*
+
+As demonstrated above, the `raw` column can store multiple realizations as a list of vectors, where each vector corresponds to a time point in the forecast.
+For instance, the `j`th value of the vector stored in row `i` of the input data frame would give the value of the `j`th realisation for time `i`. In this format, `{casteval}` expects that all vectors in such a list-column are the same length (missing values can be specified using `NA`).
 
 # Passing forecasts to `{casteval}`
 
-We start by passing our forecast to the `create_forecast()` function.
-This function performs input validation and infers the format of the given forecast (_e.g._, raw realisations, ensemble summarised by mean and quantiles, etc.)
-It then returns a named list containing metadata about the forecast as well as the given forecast data to pass to other package functions.
-In addition to the data frame itself, `create_forecast()` accepts optional arguments, as illustrated in the examples below.
+We start by passing our forecast to `create_forecast()`, which accepts a forecast in any of the above formats, as well as several optional arguments.
+This function:
+
+- Performs input validation
+- Infers the format of the given data
+- Converts the data into a standardized format
+- Returns the forecast and its metadata as a named list
+
+The named list contains fields such as `$name` (the name of the forecast), `$forecast_time` (when the forecast was generated), and `$data`, which is a data frame containing the formatted forecast data.
+This named list can then be passed to any function in `{casteval}` which accepts a forecast.
 
 ```{r create_forecast}
 # A forecast with a name
-fc1 <- create_forecast(df1, name="forecast 1")
+fc1 <- create_forecast(A, name="Jan 1 to Jan 3 2024 forecast")
 
 # `name` and `forecast_time` are optional, and default to NULL
-fc2 <- create_forecast(df2)
+fc2 <- create_forecast(B)
 
 # A forecast with a name and a forecast time
-# All data from before the given time will be ignored when scoring the forecast
+# All data from before the forecast time will be ignored when scoring the forecast
 # The given forecast time must have the same type as the values in the `time` column
-fc3 <- create_forecast(df3, name="forecast 3", forecast_time=2)
+fc3 <- create_forecast(C, name="Mean-and-quantiles forecast", forecast_time=2)
 
 # Metadata and data are easily accessible
 print(fc3$name)
@@ -118,30 +154,21 @@ print(fc3$forecast_time)
 print(fc3$time_type)
 print(fc3$data_types)
 print(fc3$data)
-```
 
-## Auto-aggregation
+# A forecast of 3 realizations over 4 days
+fc4 <- create_forecast(D)
+print(fc4$data)
 
-Raw realizations can be passed to `create_forecast()` in two ways:
-- As one data frame
-- As a list of data frames, one per realization
-
-`create_forecast()` will automatically combine the list of data frames into one, provided that they have the same time types and all contain raw data.
-For example, the two calls to `create_forecast()` below will have the same output.
-
-```{r create_forecast_aggregation}
-# Passing a single data frame with realizations already aggregated
-fc4 <- create_forecast(df4)
-
-a <- dplyr::tibble(time=time_vec, raw=c(realized_t1[1], realized_t2[1], realized_t3[1]))
-b <- dplyr::tibble(time=time_vec, raw=c(realized_t1[2], realized_t2[2], realized_t3[2]))
-c <- dplyr::tibble(time=time_vec, raw=c(realized_t1[3], realized_t2[3], realized_t3[3]))
-
-# Passing a list of data frames to be automatically aggregated
-fc5 <- create_forecast(list(a,b,c))
-
+# Same as fc4
+fc5 <- create_forecast(E)
 waldo::compare(fc4, fc5)
+
+# Same as fc4 
+fc6 <- create_forecast(F)
+waldo::compare(fc4, fc6)
 ```
+
+As demonstrated above, raw data can be entered in multiple different formats, depending on which is most convenient for you.
 
 # Observations
 

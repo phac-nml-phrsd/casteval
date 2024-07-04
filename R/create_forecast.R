@@ -220,7 +220,7 @@ create_forecast_ensemble <- function(dat, name, forecast_time) {
     }
 
     # transpose list of vectors
-    raw <- ens |> purrr::transpose() |> purrr::map(as.numeric)
+    raw <- ens |> purrr::list_transpose() |> purrr::map(as.numeric)
     # build data frame
     df <- dplyr::tibble(time=tm, raw=raw)
     forecast$time_type <- get_time_type(tm)
