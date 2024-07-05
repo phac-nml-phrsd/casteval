@@ -8,7 +8,7 @@
 #' Acquired from the below paper/repository.
 #' 
 #' @source <https://www.nature.com/articles/s41567-020-01121-y>
-#' @source <https://github.com/jonassjuul/curvestat> 
+#' @source <https://github.com/jonassjuul/curvestat>
 "denmark2020fc"
 
 #' Denmark 2020 COVID-19 observations
@@ -22,4 +22,10 @@
 #' @source <https://github.com/jonassjuul/curvestat>
 "denmark2020obs"
 
-# TODO document denmark2020ens
+#' Denmark 2020 COVID-19 forecast ensemble
+#'
+#' The data used to create `denmark2020fc`, as a list of realization vectors.
+#'
+#' @source <https://www.nature.com/articles/s41567-020-01121-y>
+#' @source <https://github.com/jonassjuul/curvestat>
+"denmark2020ens"
