@@ -48,6 +48,7 @@
 accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
     # TODO document `summarize` parameter in vignette
     # TODO redo using get_quantile()
+    # TODO ask modellers if it would be better to just have `confs` instead of `interval`, if intervals are always going to be symmetrical
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 

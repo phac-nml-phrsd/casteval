@@ -2,6 +2,7 @@
 
 utils::globalVariables(c(
   "time", # <accuracy>
+  "score", # <accuracy>
   "time", # <combine_two_data_frames>
   "raw1", # <combine_two_data_frames>
   "time", # <graph_ensemble>
@@ -16,6 +17,7 @@ utils::globalVariables(c(
   "lo", # <graph_confidence_intervals>
   "hi", # <graph_confidence_intervals>
   "time", # <neglog>
+  "score", # <neglog>
   "time", # <filter_forecast_time>
   "time", # <join_fcst_obs>
   "time", # <get_time_point>
