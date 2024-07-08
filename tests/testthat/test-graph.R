@@ -114,6 +114,6 @@ test_that("labels work", {
 
   obs2 <- data.frame(time=1:3, obs=c(4,6,8))
 
-  vdiffr::expect_doppelganger("title1", graph_forecast(fc1, obs1))
-  vdiffr::expect_doppelganger("title2", graph_forecast(fc2, obs2))
+  vdiffr::expect_doppelganger("lab1", graph_forecast(fc1, obs1))
+  vdiffr::expect_doppelganger("lab2", graph_forecast(fc2, obs2))
 })

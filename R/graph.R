@@ -84,6 +84,8 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL, title=NULL) {
         stop("nothing was graphed. Please specify raw data, confidence intervals, and/or observations to be graphed.")
     }
 
+    ## set labels and secondary features
+
     # mark the forecast time if provided
     if(!is.null(fcst$forecast_time)) {
         graph <- graph + ggplot2::geom_vline(alpha=0.2, xintercept=fcst$forecast_time)
@@ -93,6 +95,9 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL, title=NULL) {
     if(!is.null(fcst$name)) {
         graph <- graph + ggplot2::labs(title=fcst$name)
     }
+
+    # name the axes
+    graph <- graph + ggplot2::xlab("time") + ggplot2::ylab("value")
 
     graph
 }
