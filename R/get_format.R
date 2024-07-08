@@ -200,15 +200,15 @@ get_time_type <- function(timecol) {
 }
 
 
-#' Check everything in a column
+#' Check everything in a vector/list
 #'
-#' `all_of()` checks that all elements of a given column pass a given predicate function.
+#' `all_of()` checks that all elements of a given vector or list pass a given predicate function.
 #' Useful for checking types.
 #'
-#' @param col A list or vector, presumably a column in a data frame.
+#' @param v A list or vector, presumably a column in a data frame.
 #' @param f A predicate function (accepts one argument and returns a boolean).
 #'
-#' @returns TRUE if everything in col passes `f()`, FALSE otherwise
+#' @returns TRUE if everything in `v` passes `f()`, FALSE otherwise
 #'
 #' @examples
 #' # returns TRUE
@@ -222,6 +222,6 @@ get_time_type <- function(timecol) {
 #' 
 #' # NA gets coerced to NA_real_, because it's in a numeric vector. Returns TRUE
 #' casteval:::all_of(c(1,NA), is.numeric)
-all_of <- function(col, f) {
-    all(as.logical(purrr::map(col, f)))
+all_of <- function(v, f) {
+    all(as.logical(purrr::map(v, f)))
 }
