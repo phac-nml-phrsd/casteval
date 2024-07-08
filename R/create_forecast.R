@@ -100,6 +100,12 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
         validate_time(forecast$forecast_time, forecast)
     }
 
+    # make sure time column is vector and not list
+    # probably not necessary but it might prevent some bugs
+    if(is.list(forecast$data$time)) {
+        forecast$data$time <- purrr::list_simplify(forecast$data$time)
+    }
+
     forecast
 }
 

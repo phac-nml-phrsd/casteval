@@ -31,6 +31,7 @@
 #' # numeric times, mean-and-quantiles data
 #' casteval:::get_format(data.frame(time=1:3, quant_5=4:6, quant_95=7:9, mean=10:12))
 get_format <- function(df) {
+    #TODO streamline the data columns/data types checking. make a list of column names and iterate
     # empty data frames trip up some of the checks below
     if(nrow(df) == 0) {
         stop("data frame is empty")
@@ -84,8 +85,8 @@ get_format <- function(df) {
     # if no raw, then check for other data columns (usually summaries)
     else {
         if(mean_exists) {
-            if(!all_of(df$mean, is.numeric)) {
-                stop("mean column not all numeric")
+            if(!is.numeric(df$mean)) {
+                stop("mean column not numeric")
             }
             data_types <- c(data_types, "mean")
         }
@@ -94,8 +95,8 @@ get_format <- function(df) {
         if(quant_exists) {
             for(col in quant_cols) {
                 # check numeric
-                if(!all_of(df[[col]], is.numeric)) {
-                    stop(paste(col, "column not all numeric"))
+                if(!is.numeric(df[[col]])) {
+                    stop(paste(col, "column not numeric"))
                 }
 
                 # check valid quantile number provided
@@ -186,15 +187,23 @@ get_time_type <- function(timecol) {
         stop("no times present")
     }
 
+    if(is.list(timecol)) {
+        timecol <- purrr::list_simplify(timecol, strict=FALSE)
+        # strict=FALSE -> return unchanged on failure
+        if(is.list(timecol)) {
+            stop("time column contains multiple types")
+        }
+    }
+
     # validate time column & get type
-    if(all_of(timecol, lubridate::is.Date)) { # all dates
+    if(lubridate::is.Date(timecol)) { # all dates
         time_type <- "date"
-    } else if(all_of(timecol, lubridate::is.POSIXt)) { # all date-times
+    } else if(lubridate::is.POSIXt(timecol) || lubridate::is.POSIXct(timecol)) { # all date-times
         time_type <- "date-time"
-    } else if(all_of(timecol, is.numeric)) { # all numbers
+    } else if(is.numeric(timecol)) { # all numbers
         time_type <- "numeric"
     } else {
-        stop("time column has inconsistent/unsupported types")
+        stop("time column has unsupported type")
     }
     time_type
 }

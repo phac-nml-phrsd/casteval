@@ -33,11 +33,11 @@ test_that("get_time_type() works", {
   )
   expect_error(
     get_time_type(list(1, lubridate::ymd("2024-01-01"))),
-    "time column has.*inconsistent.*types"
+    "time column contains multiple types"
   )
   expect_error(
     get_time_type(list("January 1", "January 2")),
-    "time column has.*unsupported.*types"
+    "time column has unsupported type"
   )
 })
 
@@ -69,11 +69,11 @@ test_that("get_format() validates", {
   )
   expect_error(
     get_format(dplyr::tibble(time=1:3, mean=list(1,2,FALSE))),
-    "mean column not all numeric"
+    "mean column not numeric"
   )
   expect_error(
     get_format(dplyr::tibble(time=1:3, quant_25=list(1,2,"hi"))),
-    "quant.*column not all numeric"
+    "quant.*column not numeric"
   )
   expect_error(
     get_format(data.frame(time=1, quant_=2)),
