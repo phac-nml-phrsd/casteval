@@ -65,7 +65,6 @@
 create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     # TODO support even more input data formats
     # TODO consider changing the format so that each realization is its own column
-    # TODO detect lists that should be vectors and convert them to vectors
 
     ## Figure out the format of `dat` and dispatch the corresponding helper function
 
@@ -89,11 +88,11 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
             forecast <- create_forecast_multiple(dat, name, forecast_time)
         }
     } else {
-        # TODO figure out the vignette command and put it in the message
-        stop("`dat` has invalid type. See ?create_forecast() or vignette for proper usage")
+        # TODO reference the vignette in appropriate error messages in exported functions
+        stop("`dat` has invalid type. See `?create_forecast` or `vignette(topic='casteval', package='casteval')` for proper usage")
     }
 
-    # TODO sort the rows by time?
+    # TODO? sort the rows by time
 
     # check forecast_time type consistency
     if(!is.null(forecast$forecast_time)) {

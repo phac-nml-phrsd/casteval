@@ -20,7 +20,7 @@
 #'   create_forecast(data.frame(time=lubridate::as_datetime(c(0,20000,100000)), raw=c(20,30,40))
 #' ))
 graph_ensemble <- function(graph=NULL, fcst, alpha=NULL) {
-    #TODO make the fit data points instead of lines, or just don't plot the fit data?
+    #TODO? make the fit data points instead of lines, or just don't plot the fit data
     validate_forecast(fcst)
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()

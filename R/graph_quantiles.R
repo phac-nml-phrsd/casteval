@@ -32,7 +32,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 
     if(length(quants) == 0) {
         # could possibly be made a warning
-        # TODO: set defaults for quantiles?
+        # TODO? set defaults for quantiles
         stop("no quantiles specified and none found in data frame")
     }
 

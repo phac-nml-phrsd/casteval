@@ -4,7 +4,7 @@
 # TODO score() functional (accepts 1 or more forecasts and a scoring function)
 
 # TODO for all additional required arguments in scoring functions, set sane defaults and give a warning if the defaults are used.
-# TODO move forecast_time filtering out of the scoring functions and into a wrapper?
+# TODO? move forecast_time filtering out of the scoring functions and into a wrapper
 
 #' Isolate projected values from fit values
 #'
