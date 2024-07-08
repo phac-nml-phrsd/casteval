@@ -65,7 +65,7 @@ get_format <- function(df) {
         }
 
         # check all raw values numeric (vector or otherwise)
-        if(!column_all(df$raw, is.numeric)) {
+        if(!all_of(df$raw, is.numeric)) {
             stop("raw column not all numeric")
         }
 
@@ -84,7 +84,7 @@ get_format <- function(df) {
     # if no raw, then check for other data columns (usually summaries)
     else {
         if(mean_exists) {
-            if(!column_all(df$mean, is.numeric)) {
+            if(!all_of(df$mean, is.numeric)) {
                 stop("mean column not all numeric")
             }
             data_types <- c(data_types, "mean")
@@ -94,7 +94,7 @@ get_format <- function(df) {
         if(quant_exists) {
             for(col in quant_cols) {
                 # check numeric
-                if(!column_all(df[[col]], is.numeric)) {
+                if(!all_of(df[[col]], is.numeric)) {
                     stop(paste(col, "column not all numeric"))
                 }
 
@@ -187,11 +187,11 @@ get_time_type <- function(timecol) {
     }
 
     # validate time column & get type
-    if(column_all(timecol, lubridate::is.Date)) { # all dates
+    if(all_of(timecol, lubridate::is.Date)) { # all dates
         time_type <- "date"
-    } else if(column_all(timecol, lubridate::is.POSIXt)) { # all date-times
+    } else if(all_of(timecol, lubridate::is.POSIXt)) { # all date-times
         time_type <- "date-time"
-    } else if(column_all(timecol, is.numeric)) { # all numbers
+    } else if(all_of(timecol, is.numeric)) { # all numbers
         time_type <- "numeric"
     } else {
         stop("time column has inconsistent/unsupported types")
@@ -202,7 +202,7 @@ get_time_type <- function(timecol) {
 
 #' Check everything in a column
 #'
-#' `column_all()` checks that all elements of a given column pass a given predicate function.
+#' `all_of()` checks that all elements of a given column pass a given predicate function.
 #' Useful for checking types.
 #'
 #' @param col A list or vector, presumably a column in a data frame.
@@ -212,16 +212,16 @@ get_time_type <- function(timecol) {
 #'
 #' @examples
 #' # returns TRUE
-#' casteval:::column_all(list(1, 2.5, 1.4e7, -10, 5L, Inf, NaN), is.numeric)
+#' casteval:::all_of(list(1, 2.5, 1.4e7, -10, 5L, Inf, NaN), is.numeric)
 #' 
 #' # returns FALSE
-#' casteval:::column_all(list(1, 2, 3), function(x) {x < 3})
+#' casteval:::all_of(list(1, 2, 3), function(x) {x < 3})
 #' 
 #' # NA is by default a logical value, not a numeric one. Returns FALSE
-#' casteval:::column_all(list(1, NA), is.numeric)
+#' casteval:::all_of(list(1, NA), is.numeric)
 #' 
 #' # NA gets coerced to NA_real_, because it's in a numeric vector. Returns TRUE
-#' casteval:::column_all(c(1,NA), is.numeric)
-column_all <- function(col, f) {
+#' casteval:::all_of(c(1,NA), is.numeric)
+all_of <- function(col, f) {
     all(as.logical(purrr::map(col, f)))
 }

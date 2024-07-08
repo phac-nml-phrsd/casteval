@@ -63,10 +63,8 @@
 #'   ensemble=list(4:6, 7:9, 10:12, 13:15)
 #' ))
 create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
-    # TODO third option where you provide a list of vertical vectors instead of list of data frames)
     # TODO support even more input data formats
     # TODO consider changing the format so that each realization is its own column
-    # TODO update vignette
     # TODO detect lists that should be vectors and convert them to vectors
 
     ## Figure out the format of `dat` and dispatch the corresponding helper function

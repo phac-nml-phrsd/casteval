@@ -1,18 +1,18 @@
-test_that("column_all() works", {
+test_that("all_of() works", {
   expect_equal(
-    column_all(list(1, 2.5, 1.4e7, -10, 5L, Inf, NaN), is.numeric),
+    all_of(list(1, 2.5, 1.4e7, -10, 5L, Inf, NaN), is.numeric),
     TRUE
   )
   expect_equal(
-    column_all(list(1, 2, 3), function(x) {x < 3}),
+    all_of(list(1, 2, 3), function(x) {x < 3}),
     FALSE
   )
   expect_equal(
-    column_all(list(1, NA), is.numeric),
+    all_of(list(1, NA), is.numeric),
     FALSE
   )
   expect_equal(
-    column_all(c(1,NA), is.numeric),
+    all_of(c(1,NA), is.numeric),
     TRUE
   )
 })
