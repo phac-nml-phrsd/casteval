@@ -45,83 +45,34 @@
 #'   )),
 #'   data.frame(time=1:3, obs=c(4, 201, 1000)),
 #' )
-accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
-    # TODO document `summarize` parameter in vignette
+accuracy <- function(fcst, obs, interval=c(2.5, 97.5), summarize=TRUE) {
+    if(!is.numeric(interval)) {
+        stop("`interval` must be numeric vector")
+    }
+
+    if(length(interval) != 2) {
+        stop("`interval` must be numeric vector with length 2")
+    }
+
     # TODO redo using get_quantile()
     # TODO ask modellers if it would be better to just have `confs` instead of `interval`, if intervals are always going to be symmetrical
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    if("raw" %in% fcst$data_types) {
-        # perform input validation
-        if(is.null(interval)) {
-            interval <- c(2.5, 97.5)
-            message("interval not provided. defaulting to `c(2.5, 97.5)`")
-        }
-        validate_interval(interval)
+    # get the low and high quantiles
+    low <- get_quantile(df, interval[[1]])
+    high <- get_quantile(df, interval[[2]])
 
-        df <- remove_raw_NAs(df)
-
-        # compute quantiles using raw & interval
-        lows <- raw2quant(df$raw, interval[[1]])
-        highs <- raw2quant(df$raw, interval[[2]])
-        df <- df |> dplyr::mutate(time, low=lows, high=highs, .keep="none")
-
-        lowname <- "low"
-        highname <- "high"
-    } else if("quant" %in% fcst$data_types) {
-        quants <- get_quant_percentages(df)
-
-        # can't do anything with a single quantile
-        if(length(quants) < 2) {
-            stop("2 or more quantiles required to calculate accuracy")
-        }
-
-        if(is.null(interval)) {
-            # if quantile columns are provided but `quants` is NULL,
-            # we select the two outermost quantiles provided,
-            # and require that they be equidistant from the median.
-            # e.x. 25% to 75% is acceptable, but not 25% to 60%
-            low <- min(quants)
-            high <- max(quants)
-            # use all.equal() to deal with floating point errors
-            if(all.equal(50-low, high-50) != TRUE) {
-                stop("outermost quantiles must be equidistant from 50th percentile")
-            }
-
-            lowname <- quant_name(low)
-            highname <- quant_name(high)
-        } else {
-            validate_interval(interval)
-
-            lowname <- quant_name(interval[[1]])
-            highname <- quant_name(interval[[2]])
-
-            # confirm that the corresponding columns exist
-            if(! lowname %in% colnames(df)) {
-                stop(paste0("column named `", lowname, "` not in data frame"))
-            }
-            if(! highname %in% colnames(df)) {
-                stop(paste0("column named `", highname, "` not in data frame"))
-            }
-        }
-    } else {
-        stop("`raw` or `quant_*` columns required to calculate accuracy")
-    }
-
-    # isolate/rename the time and relevant quantile columns
-    temp <- df |> dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname))
-    
-    # check for any NAs that make proceeding impossible without removing rows
-    if(NA %in% temp$low || NA %in% temp$high) {
-        stop("some forecast quantiles are NA")
+    # check for NA quantiles
+    if(anyNA(low) || anyNA(high)) {
+        stop("some/all forecast quantiles are NA")
     }
 
     # join & calculate accuracy
     df <- join_fcst_obs(df, obs) |>
-        dplyr::mutate(score=dplyr::between(obs, temp$low, temp$high))
+        dplyr::mutate(score=dplyr::between(obs, low, high))
     if(!summarize) {
-        return(dplyr::select(df, time, obs, score))
+        return(df |> dplyr::select(time, obs, score))
     }
 
     # calculate success rate (aka accuracy)

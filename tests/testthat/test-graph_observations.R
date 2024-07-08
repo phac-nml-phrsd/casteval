@@ -29,7 +29,7 @@ test_that("graph_observations() works", {
     NULL |> graph_quantiles(fc2) |> graph_observations(obs2)
   )
   vdiffr::expect_doppelganger("obs6",
-    NULL |> graph_quantiles(fc2) |> graph_observations(accuracy(fc2, obs2, summarize=FALSE))
+    NULL |> graph_quantiles(fc2) |> graph_observations(accuracy(fc2, obs2, summarize=FALSE, interval=c(25, 75)))
   )
 
   fc3 <- create_forecast(dplyr::tibble(

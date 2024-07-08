@@ -63,6 +63,6 @@ test_that("graph_forecast() works", {
   vdiffr::expect_doppelganger("graph6", graph_forecast(fc2, confs=50))
   expect_error(graph_forecast(fc2, confs=70), "could not compute.*obtain.*quantile from data frame")
   vdiffr::expect_doppelganger("graph7", graph_forecast(fc2, obs2, confs=50, score=\(...)accuracy(..., interval=c(25,75))))
-  vdiffr::expect_doppelganger("graph8", graph_forecast(fc2, obs2, confs=90, score=accuracy))
+  vdiffr::expect_doppelganger("graph8", graph_forecast(fc2, obs2, confs=90, score=\(...)accuracy(...,interval=c(5,95))))
   expect_error(graph_forecast(fc2, obs2, score=neglog), "forecast data frame does not contain `raw` column")
 })

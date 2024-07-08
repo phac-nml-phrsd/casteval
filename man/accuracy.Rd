@@ -4,7 +4,7 @@
 \alias{accuracy}
 \title{Get accuracy from quantiles}
 \usage{
-accuracy(fcst, obs, interval = NULL, summarize = TRUE)
+accuracy(fcst, obs, interval = c(2.5, 97.5), summarize = TRUE)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}

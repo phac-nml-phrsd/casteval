@@ -125,5 +125,5 @@ get_quantile <- function(df, perc) {
 
     else {
         stop(paste0("could not compute/obtain ", perc, "% quantile from data frame"))
-    } 
+    }
 }

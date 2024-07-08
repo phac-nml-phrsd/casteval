@@ -46,11 +46,28 @@ test_that("validate_interval() works", {
 })
 
 test_that("accuracy() validates", {
+  expect_error(
+    accuracy(
+      create_forecast(data.frame(time=1:3, raw=4:6)),
+      data.frame(time=1:3, obs=4:6),
+      NULL
+    ),
+    "`interval` must be numeric vector$"
+  )
+
+  expect_error(
+    accuracy(
+      create_forecast(data.frame(time=1:3, raw=4:6)),
+      data.frame(time=1:3, obs=4:6),
+      50
+    ),
+    "`interval` must be numeric vector with length 2"
+  )
+
   expect_equal(
     accuracy(
         create_forecast(data.frame(time=1:3, raw=4:6)),
         data.frame(time=1:3, obs=4:6),
-        NULL
     ),
     1
   )
@@ -59,18 +76,16 @@ test_that("accuracy() validates", {
     accuracy(
         create_forecast(data.frame(time=1:3, quant_25=4:6)),
         data.frame(time=1:3, obs=4:6),
-        NULL
     ),
-    "2 or more quantiles required to calculate accuracy"
+    "could not compute/obtain 2.5% quantile from data frame"
   )
 
   expect_error(
     accuracy(
-        create_forecast(data.frame(time=1:3, quant_25=4:6, quant_74=7:9)),
+        create_forecast(data.frame(time=1:3, quant_2.5=4:6, quant_74=7:9)),
         data.frame(time=1:3, obs=4:6),
-        NULL
     ),
-    "outermost quantiles must be equidistant from 50th percentile"
+    "could not compute/obtain 97.5% quantile from data frame"
   )
 
   expect_error(
@@ -79,7 +94,7 @@ test_that("accuracy() validates", {
       data.frame(time=1:3, obs=4:6),
       c(1, 25)
     ),
-    "column named `quant_1` not in data frame"
+    "could not compute/obtain 1% quantile from data frame"
   )
   
   expect_error(
@@ -88,16 +103,15 @@ test_that("accuracy() validates", {
       data.frame(time=1:3, obs=4:6),
       c(25,74.9)
     ),
-    "column named `quant_74.9` not in data frame"
+    "could not compute/obtain 74.9% quantile from data frame"
   )
 
   expect_error(
     accuracy(
       create_forecast(data.frame(time=1:3, mean=4:6)),
       data.frame(time=1:3, obs=4:6),
-      NULL
     ),
-    "`raw` or `quant.*columns required to calculate accuracy"
+    "could not compute/obtain 2.5% quantile from data frame"
   )
 })
 
@@ -139,7 +153,7 @@ test_that("accuracy() handles NAs", {
       data.frame(time=1:4, obs=c(10, 100, 100, 15.1)),
       c(25,75)
     ),
-    "some forecast quantiles are NA"
+    "some/all forecast quantiles are NA"
   )
 
   expect_error(
@@ -150,7 +164,7 @@ test_that("accuracy() handles NAs", {
       data.frame(time=1:3, obs=c(10, 11, 100)),
       c(25,75)
     ),
-    "some forecast quantiles are NA"
+    "some/all forecast quantiles are NA"
   )
 
   expect_error(
@@ -236,7 +250,7 @@ test_that("accuracy() quant works", {
         time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
       )),
       data.frame(time=1:3, obs=c(4, 201, 1000)),
-      NULL
+      c(25, 75)
     ),
     2/3
   )
@@ -258,7 +272,8 @@ test_that("accuracy() quant works", {
         dplyr::tibble(time=1:5, quant_25=c(6,6,6,6,6), quant_75=c(10,10,10,10,10)),
         forecast_time=3
       ),
-      data.frame(time=1:5, obs=c(0, 2.4, 5, 9.5, 10))
+      data.frame(time=1:5, obs=c(0, 2.4, 5, 9.5, 10)),
+      c(25, 75)
     ),
     2/3
   )
@@ -272,6 +287,7 @@ test_that("accuracy(..., summarize=FALSE) works", {
         forecast_time=3
       ),
       data.frame(time=3:5, obs=c(0,5,10)),
+      interval=c(25, 75),
       summarize=FALSE
     ),
     dplyr::tibble(time=3:5, obs=c(0,5,10), score=c(FALSE,TRUE,FALSE))
