@@ -42,7 +42,7 @@
 #' 
 #' # show the negative log score of each observation
 #' graph_forecast(fc, obs, score=neglog)
-graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
+graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL, title=NULL) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
@@ -86,7 +86,12 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
 
     # mark the forecast time if provided
     if(!is.null(fcst$forecast_time)) {
-        graph <- graph + ggplot2::geom_vline(alpha=0.1, xintercept=fcst$forecast_time)
+        graph <- graph + ggplot2::geom_vline(alpha=0.2, xintercept=fcst$forecast_time)
+    }
+
+    # make the title the name if provided
+    if(!is.null(fcst$name)) {
+        graph <- graph + ggplot2::labs(title=fcst$name)
     }
 
     graph

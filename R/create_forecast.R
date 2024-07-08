@@ -65,6 +65,7 @@
 create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     # TODO support even more input data formats
     # TODO consider changing the format so that each realization is its own column
+    # catch and error/warn about extra columns
 
     ## Figure out the format of `dat` and dispatch the corresponding helper function
 

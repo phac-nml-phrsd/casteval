@@ -65,10 +65,55 @@ test_that("graph_forecast() works", {
   vdiffr::expect_doppelganger("graph7", graph_forecast(fc2, obs2, confs=50, score=\(...)accuracy(..., interval=c(25,75))))
   vdiffr::expect_doppelganger("graph8", graph_forecast(fc2, obs2, confs=90, score=\(...)accuracy(...,interval=c(5,95))))
   expect_error(graph_forecast(fc2, obs2, score=neglog), "neglog\\(\\) requires raw forecast data")
+})
 
-  fc1$forecast_time <- 2
-  vdiffr::expect_doppelganger("graph9", graph_forecast(fc1, obs1, confs=c(50,95), score=neglog))
+test_that("forecast_time vline works", {
+  fc1 <- create_forecast(dplyr::tibble(
+    time=1:3,
+    raw=list(c(4,5,4), c(7,6,6), c(8,7,6))
+  ), forecast_time=2)
 
-  fc2$forecast_time <- 2
-  vdiffr::expect_doppelganger("graph10", graph_forecast(fc2, obs2, confs=50, score=\(...)accuracy(..., interval=c(5,95))))
+  obs1 <- data.frame(time=1:3, obs=5:7)
+
+  fc2 <- create_forecast(data.frame(
+    time=1:3,
+    quant_5=4:6,
+    quant_25=5:7,
+    quant_75=6:8,
+    quant_95=7:9
+  ), forecast_time=2)
+
+  obs2 <- data.frame(time=1:3, obs=c(4,6,8))
+
+  vdiffr::expect_doppelganger("vline1", graph_forecast(fc1, obs1, confs=c(50,95), score=neglog))
+
+  vdiffr::expect_doppelganger("vline2", graph_forecast(fc2, obs2, confs=50, score=\(...)accuracy(..., interval=c(5,95))))
+})
+
+test_that("labels work", {
+  fc1 <- create_forecast(
+    dplyr::tibble(
+      time=1:3,
+      raw=list(c(4,5,4), c(7,6,6), c(8,7,6))
+    ),
+    name="a forecast"
+  )
+
+  obs1 <- data.frame(time=1:3, obs=5:7)
+
+  fc2 <- create_forecast(
+    data.frame(
+      time=1:3,
+      quant_5=4:6,
+      quant_25=5:7,
+      quant_75=6:8,
+      quant_95=7:9
+    ),
+    name=""
+  )
+
+  obs2 <- data.frame(time=1:3, obs=c(4,6,8))
+
+  vdiffr::expect_doppelganger("title1", graph_forecast(fc1, obs1))
+  vdiffr::expect_doppelganger("title2", graph_forecast(fc2, obs2))
 })
