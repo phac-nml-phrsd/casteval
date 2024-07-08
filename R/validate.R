@@ -167,3 +167,40 @@ validate_fcst_obs_pair <- function(fcst, obs) {
     }
     invisible(NULL)
 }
+
+
+#' Make sure quantile values are logically possible
+#'
+#' Checks that values in quantile columns are in increasing order for each time point.
+#' That is, if `x < y`, then `df$quant_x[[i]] <= df$quant_y[[i]]` must hold true for all `1 <= i <= nrow(df)`
+#'
+#' @param df A forecast data frame, with a `time` column and 0 or more `quant_*` columns
+#'
+#' @returns NULL if valid, error otherwise.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+validate_quant_order <- function(df) {
+    # get quantile percentages in increasing order
+    # we convert column name -> number -> back to name so that it can be sorted
+    quant_names <- get_quant_percentages(df) |>
+        purrr::map(\(x) paste0("quant_", x)) |>
+        as.character()
+
+    # get the quantile columns in order
+    rows <- df |> dplyr::select(quant_names) |>
+        unname() |>
+        # then turn it into list of rows, corresponding to time points
+        purrr::transpose()
+
+    # check that each row is nonstrictly increasing
+    unsorted <- rows |> purrr::map(\(row) is.unsorted(row)) |> as.logical()
+    if(any(unsorted)) {
+        stop(paste("quantiles have impossible values in row", which(unsorted)[[1]]))
+    }
+
+    invisible(NULL)
+}
+
+# TODO make error messages more informative

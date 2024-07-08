@@ -91,7 +91,6 @@ get_format <- function(df) {
             data_types <- c(data_types, "mean")
         }
 
-        # TODO move all quantile column processing into a new file & functions
         if(quant_exists) {
             for(col in quant_cols) {
                 # check numeric
