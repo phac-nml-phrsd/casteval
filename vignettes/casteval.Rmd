@@ -225,11 +225,7 @@ TODO revise this section after fixing `accuracy()`
 `accuracy(fcst, obs, interval=NULL, summarize=TRUE)` calculates the rate at which the observations fall inside a confidence interval predicted by the forecast.
 It returns a number from 0 to 1.
 
-If `fcst` contains raw data, `interval` must be a vector of two percentages from 0 to 100.
-The corresponding quantiles will be calculated from the raw data and used to calculate the score.
-
-If `fcst` contains quantile data and `interval` is left as `NULL`, then `accuracy()` will try to use the lowest and highest provided quantiles to calculate the score.
-If `interval` is provided, then `accuracy()` will use the corresponding quantiles in `fcst` to calculate the score.
+The `interval` parameter should be a vector of two percentages from 0 to 100 (defaults to `c(2.5, 97.5)`). The corresponding quantiles will be calculated from the raw data and/or provided quantile columns in order to calculate the score.
 
 ### Examples
 
@@ -249,48 +245,30 @@ fc2 <- create_forecast(dplyr::tibble(
   quant_95=c(9.5,9.5,9.5,9.5,9.5)
 ))
 
-# A forecast with less symmetrical quantile data
-fc3 <- create_forecast(dplyr::tibble(
-  time=1:5,
-  quant_25=c(2.5,2.5,2.5,2.5,2.5),
-  quant_50=c(5,5,5,5,5),
-  quant_95=c(9.5,9.5,9.5,9.5,9.5)
-))
-
 # Another forecast with quantile data
-fc4 <- create_forecast(dplyr::tibble(
+fc3 <- create_forecast(dplyr::tibble(
     time=1:5,
-    quant_25=c(6,6,6,6,6),
-    quant_75=c(10,10,10,10,10)
+    quant_2.5=c(6,6,6,6,6),
+    quant_97.5=c(10,10,10,10,10)
 ))
 
 obs <- data.frame(time=1:5, obs=c(0, 2.4, 5, 9.5, 10))
 
-# Calculate accuracy using the 50% confidence interval
+# Calculate accuracy from raw data (50% confidence interval)
 accuracy(fc1, obs, interval=c(25, 75))
 
-# Calculate accuracy using highest and lowest quantiles (5% and 95% in this case)
-accuracy(fc2, obs)
-
-# Calculate accuracy using provided quantiles.
-accuracy(fc2, obs, interval=c(25, 95))
-
-# `accuracy()` refuses to automatically use the highest and lowest quantiles if
-# they are not symmetrical
-try(accuracy(fc3, obs))
-
-# Specifying an interval fixes this
-accuracy(fc3, obs, interval=c(25,95))
+# Calculate accuracy using provided quantiles (90% confidence interval)
+accuracy(fc2, obs, interval=c(5, 95))
 
 # If `forecast_time` is NULL, every time point in the forecast will be scored
-accuracy(fc4, obs)
+accuracy(fc3, obs)
 
 # Otherwise, everything prior to `forecast_time` will be ignored
-fc4$forecast_time <- 3
-accuracy(fc4, obs)
+fc3$forecast_time <- 3
+accuracy(fc3, obs)
 
 # We can see what is happening behind the scenes by passing `summarize=FALSE`
-df <- accuracy(fc4, obs, summarize=FALSE)
+df <- accuracy(fc3, obs, summarize=FALSE)
 df
 mean(df$score)
 ```
@@ -345,7 +323,7 @@ TODO
 
 ```{r graph_forecast_examples}
 # Create a forecast
-fc1 <- create_forecast(list(
+fc <- create_forecast(list(
   time=1:10,
   ensemble=list(
     c(1,2,3,5,4,5,4,6,6,5),
@@ -356,23 +334,24 @@ fc1 <- create_forecast(list(
 ))
 
 # Graph it
-graph_forecast(fc1)
+graph_forecast(fc)
 
 # Graph it and display the 50%, 90%, and 95% confidence intervals
-graph_forecast(fc1, confs=c(50,95,90))
+graph_forecast(fc, confs=c(50,95,90))
 
 # Create some observations
 obs <- data.frame(time=1:10, obs=c(1,4,8,10,11,8,5,3,3,2))
 
 # Graph them over the forecast and its confidence intervals
-graph_forecast(fc1, obs=obs, confs=c(50,90,95))
+graph_forecast(fc, obs=obs, confs=c(50,90,95))
 
 # Wrap `accuracy()` to get the 90% confidence interval
 acc90 <- \(...) accuracy(..., interval=c(5,95))
 # Use `acc90()` to identify the observations outside the condfidence interval
-graph_forecast(fc1, obs=obs, confs=c(50,90,95), score=acc90)
+graph_forecast(fc, obs=obs, confs=c(50,90,95), score=acc90)
 
 # Do the same thing with `neglog()`
-# `graph_forecast()` automatically passes `summarize=FALSE` to scoring functions in order to obtain the score for each day
-graph_forecast(fc1, obs=obs, score=neglog)
+# `graph_forecast()` automatically passes `summarize=FALSE` to
+# scoring functions in order to obtain the score for each day
+graph_forecast(fc, obs=obs, score=neglog)
 ```

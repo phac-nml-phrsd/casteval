@@ -11,11 +11,8 @@ accuracy(fcst, obs, interval = c(2.5, 97.5), summarize = TRUE)
 
 \item{obs}{An observations data frame.}
 
-\item{interval}{(Optional) A vector of two numbers from 0 to 100.
-If \code{fcst} contains quantile data then the corresponding quantile columns will be
-used as the confidence interval.
-If \code{fcst} contains raw data then the corresponding quantiles will be calculated and
-used as a confidence interval.}
+\item{interval}{(Optional) A vector of two percentages from 0 to 100,
+marking the high and low ends of the confidence interval. Defaults to \code{c(2.5, 97.5)}.}
 
 \item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
 If FALSE, a data frame with \code{time} and \code{score} columns (and possibly others) will be returned,
@@ -30,8 +27,7 @@ the rate at which the observations were inside the specified confidence interval
 \description{
 Given a forecast and set of observations,
 compute the accuracy (# within confidence interval / # total) of the forecast.
-If quantiles are provided, they will be used to compute the accuracy.
-If raw data is provided, quantiles will be calculated according to the \code{interval} parameter.
+Raw data and/or provided quantiles will be used to compute the confidence interval.
 }
 \examples{
 # calculate quantiles and accuracy from raw data
@@ -52,11 +48,12 @@ accuracy(
   interval=c(25,50)
 )
 
-# implicitly use the outermost quantiles (must be symmetric around the median)
+# return a data frame with a logical `score` column
 accuracy(
   create_forecast(dplyr::tibble(
-    time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
+    time=1:3, quant_2.5=4:6, quant_50=7:9, mean=100:102, quant_97.5=200:202
   )),
   data.frame(time=1:3, obs=c(4, 201, 1000)),
+  summarize=FALSE
 )
 }

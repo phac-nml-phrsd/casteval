@@ -1,5 +1,5 @@
 # TODO legends, axes, plot titles, scales. some graphs will have multiple legends so that has to be taken into consideration.
-
+# TODO experiment with different color scales (viridis maybe?). Try to make the 2-12-50 example in the vignette more visible
 # TODO redo format of forecasts with facets in mind
 # TODO revisit graph_forecasts() after redoing formatting
 

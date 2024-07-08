@@ -2,16 +2,12 @@
 #'
 #' Given a forecast and set of observations,
 #'  compute the accuracy (# within confidence interval / # total) of the forecast.
-#'  If quantiles are provided, they will be used to compute the accuracy.
-#'  If raw data is provided, quantiles will be calculated according to the `interval` parameter.
+#'  Raw data and/or provided quantiles will be used to compute the confidence interval.
 #'
 #' @template fcst
 #' @param obs An observations data frame.
-#' @param interval (Optional) A vector of two numbers from 0 to 100.
-#'  If `fcst` contains quantile data then the corresponding quantile columns will be
-#'  used as the confidence interval.
-#'  If `fcst` contains raw data then the corresponding quantiles will be calculated and
-#'  used as a confidence interval.
+#' @param interval (Optional) A vector of two percentages from 0 to 100,
+#'  marking the high and low ends of the confidence interval. Defaults to `c(2.5, 97.5)`.
 #' @template summarize
 #'
 #' @returns A number from 0 to 1,
@@ -37,13 +33,14 @@
 #'   data.frame(time=1:3, obs=c(4, 201, 1000)),
 #'   interval=c(25,50)
 #' )
-#' 
-#' # implicitly use the outermost quantiles (must be symmetric around the median)
+#'
+#' # return a data frame with a logical `score` column
 #' accuracy(
 #'   create_forecast(dplyr::tibble(
-#'     time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
+#'     time=1:3, quant_2.5=4:6, quant_50=7:9, mean=100:102, quant_97.5=200:202
 #'   )),
 #'   data.frame(time=1:3, obs=c(4, 201, 1000)),
+#'   summarize=FALSE
 #' )
 accuracy <- function(fcst, obs, interval=c(2.5, 97.5), summarize=TRUE) {
     if(!is.numeric(interval)) {
@@ -54,7 +51,6 @@ accuracy <- function(fcst, obs, interval=c(2.5, 97.5), summarize=TRUE) {
         stop("`interval` must be numeric vector with length 2")
     }
 
-    # TODO redo using get_quantile()
     # TODO ask modellers if it would be better to just have `confs` instead of `interval`, if intervals are always going to be symmetrical
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
