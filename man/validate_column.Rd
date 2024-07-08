@@ -18,5 +18,12 @@ NULL if valid, error otherwise.
 Errors of \code{col} is not a column in data frame.
 }
 \examples{
-#TODO
+casteval:::validate_column(
+  data.frame(time=1, raw=4, quant_25=6, quant_75=8),
+  "quant_25"
+)
+try(casteval:::validate_column(
+  data.frame(time=1, raw=4),
+  "mean"
+))
 }

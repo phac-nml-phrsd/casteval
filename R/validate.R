@@ -74,7 +74,7 @@ validate_forecast <- function(fcst) {
     if(!is.null(fcst$forecast_time)) {
         validate_time(fcst$forecast_time, fcst)
     }
-    NULL
+    invisible(NULL)
 }
 
 #' Check that time compatible with forecast
@@ -118,12 +118,19 @@ validate_time <- function(t, fcst) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' casteval:::validate_column(
+#'   data.frame(time=1, raw=4, quant_25=6, quant_75=8),
+#'   "quant_25"
+#' )
+#' try(casteval:::validate_column(
+#'   data.frame(time=1, raw=4),
+#'   "mean"
+#' ))
 validate_column <- function(df, col) {
     if(! col %in% colnames(df)) {
         stop(paste0("column `", col, "` not in data frame"))
     }
-    NULL
+    invisible(NULL)
 }
 
 
@@ -153,11 +160,10 @@ validate_column <- function(df, col) {
 #'   data.frame(time=lubridate::ymd("2024-01-01"), obs=5)
 #' ))
 validate_fcst_obs_pair <- function(fcst, obs) {
-    # TODO move this and its tests over to validate_forecast.R and rename to validate.R
     validate_forecast(fcst)
     obs_time_type <- get_obs_format(obs)
     if(obs_time_type != fcst$time_type) {
         stop("observations time type must match forecast time type")
     }
-    NULL
+    invisible(NULL)
 }

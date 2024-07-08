@@ -119,5 +119,5 @@ validate_interval <- function(interval) {
         stop("`interval[[1]]` and `interval[[2]]` must be between 0 and 100, inclusive")
     }
 
-    NULL
+    invisible(NULL)
 }
