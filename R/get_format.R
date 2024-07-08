@@ -31,7 +31,7 @@
 #' # numeric times, mean-and-quantiles data
 #' casteval:::get_format(data.frame(time=1:3, quant_5=4:6, quant_95=7:9, mean=10:12))
 get_format <- function(df) {
-    #TODO streamline the data columns/data types checking. make a list of column names and iterate
+    #TODO streamline the data columns/data types checking. make a list of column names and iterate. although this should only be necessary if there end up being many more column types
     # empty data frames trip up some of the checks below
     if(nrow(df) == 0) {
         stop("data frame is empty")
@@ -120,7 +120,6 @@ get_format <- function(df) {
         stop("data frame contains no data columns")
     }
 
-    # TODO check that quantile values are in order (increasing order from lower quantiles to higher)
     validate_quant_order(df)
     list(time_type=time_type, data_types=data_types)
 }

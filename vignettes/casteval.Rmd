@@ -220,8 +220,6 @@ The currently supported scoring functions are described below.
 
 ## Accuracy
 
-TODO revise this section after fixing `accuracy()`
-
 `accuracy(fcst, obs, interval=NULL, summarize=TRUE)` calculates the rate at which the observations fall inside a confidence interval predicted by the forecast.
 It returns a number from 0 to 1.
 

@@ -57,7 +57,7 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
             stop("scoring function provided without observations")
         }
 
-        # TODO: wrap in error handler. scoring functions which don't support the summarize flag should error when passed it
+        # TODO: wrap in error handler. scoring functions which don't support the summarize flag should error when passed it (or maybe return NULL)
         obs <- score(fcst, obs, summarize=FALSE)
     }
 
@@ -68,6 +68,7 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
     }
 
     # TODO graph mean if present
+    # TODO parameters/flags for keeping/discarding fit data, observations data that doesn't correpsond to forecast data, etc.
 
     if(!is.null(confs)) {
         graph <- graph |> graph_confidence_intervals(fcst, confs)
@@ -80,7 +81,12 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
     # error if we didn't end up graphing anything
     if(is.null(graph)) {
         # could be turned into a warning
-        stop("nothing was graphed. Consider specifying confidence intervals, observations, raw data, etc.")
+        stop("nothing was graphed. Please specify raw data, confidence intervals, and/or observations to be graphed.")
+    }
+
+    # mark the forecast time if provided
+    if(!is.null(fcst$forecast_time)) {
+        graph <- graph + ggplot2::geom_vline(alpha=0.1, xintercept=fcst$forecast_time)
     }
 
     graph

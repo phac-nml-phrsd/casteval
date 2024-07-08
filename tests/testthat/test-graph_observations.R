@@ -16,7 +16,6 @@ test_that("graph_observations() works", {
     graph_observations(graph_ensemble(NULL, fc1), neglog(fc1, obs))
   )
 
-  # TODO tests with quantiles & accuracy & raw->quantiles->accuracy
   fc2 <- create_forecast(dplyr::tibble(
     time=1:12,
     quant_25=c(5,4,6,5,7,8,5,4,3,5,5,7),

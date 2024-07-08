@@ -44,6 +44,9 @@
 neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)
+    if(!"raw" %in% fcst$data_types) {
+        stop("neglog() requires raw forecast data")
+    }
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
     
     df <- remove_raw_NAs(df)

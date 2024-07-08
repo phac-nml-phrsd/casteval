@@ -34,7 +34,7 @@ test_that("graph_forecast() works", {
     graph_forecast(
       create_forecast(data.frame(time=1,quant_25=1,quant_75=2))
     ),
-    "nothing was graphed"
+    "nothing was graphed. Please specify raw data, confidence intervals, and/or observations to be graphed."
   )
 
   fc1 <- create_forecast(dplyr::tibble(
@@ -64,5 +64,11 @@ test_that("graph_forecast() works", {
   expect_error(graph_forecast(fc2, confs=70), "could not compute.*obtain.*quantile from data frame")
   vdiffr::expect_doppelganger("graph7", graph_forecast(fc2, obs2, confs=50, score=\(...)accuracy(..., interval=c(25,75))))
   vdiffr::expect_doppelganger("graph8", graph_forecast(fc2, obs2, confs=90, score=\(...)accuracy(...,interval=c(5,95))))
-  expect_error(graph_forecast(fc2, obs2, score=neglog), "forecast data frame does not contain `raw` column")
+  expect_error(graph_forecast(fc2, obs2, score=neglog), "neglog\\(\\) requires raw forecast data")
+
+  fc1$forecast_time <- 2
+  vdiffr::expect_doppelganger("graph9", graph_forecast(fc1, obs1, confs=c(50,95), score=neglog))
+
+  fc2$forecast_time <- 2
+  vdiffr::expect_doppelganger("graph10", graph_forecast(fc2, obs2, confs=50, score=\(...)accuracy(..., interval=c(5,95))))
 })
