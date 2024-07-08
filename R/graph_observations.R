@@ -33,11 +33,12 @@ graph_observations <- function(graph=NULL, obs) {
     if("score" %in% colnames(obs)) {
         # TODO print debugging reveals that this code is covered by tests, but covr::report() marks it as untested. This is likely a problem with either vdiffr or covr
         return(
-            graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs, color=score), obs)
+            # we don't change alpha here because it makes the score colormap inaccurate/misleading
+            graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs, color=score), data=obs)
         )
     } else {
         return(
-            graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs), obs)
+            graph + ggplot2::geom_point(ggplot2::aes(x=time, y=obs), data=obs, alpha=0.4)
         )
     }
 }

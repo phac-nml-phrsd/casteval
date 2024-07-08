@@ -27,8 +27,8 @@
 </defs>
 <g clip-path='url(#cpMzIuNzl8NjcxLjAxfDIyLjc4fDU0NS4xMQ==)'>
 <rect x='32.79' y='22.78' width='638.22' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<polyline points='61.80,521.37 351.90,381.71 642.00,172.22 ' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
-<polyline points='61.80,416.63 351.90,346.80 642.00,102.39 ' style='stroke-width: 1.07; stroke: #00BFC4; stroke-linecap: butt;' />
+<polyline points='61.80,521.37 351.90,381.71 642.00,172.22 ' style='stroke-width: 1.07; stroke: #F8766D; stroke-opacity: 0.40; stroke-linecap: butt;' />
+<polyline points='61.80,416.63 351.90,346.80 642.00,102.39 ' style='stroke-width: 1.07; stroke: #00BFC4; stroke-opacity: 0.40; stroke-linecap: butt;' />
 <polygon points='61.80,388.69 351.90,346.80 642.00,46.53 642.00,228.08 351.90,409.64 61.80,521.37 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #DEEBF7; fill-opacity: 0.25;' />
 <polyline points='61.80,388.69 351.90,346.80 642.00,46.53 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
 <polyline points='642.00,228.08 351.90,409.64 61.80,521.37 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
@@ -69,9 +69,9 @@
 <rect x='681.97' y='289.43' width='32.55' height='49.89' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='681.97' y='298.14' style='font-size: 11.00px; font-family: sans;' textLength='27.52px' lengthAdjust='spacingAndGlyphs'>name</text>
 <rect x='681.97' y='304.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='683.70' y1='313.40' x2='697.52' y2='313.40' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
+<line x1='683.70' y1='313.40' x2='697.52' y2='313.40' style='stroke-width: 1.07; stroke: #F8766D; stroke-opacity: 0.40; stroke-linecap: butt;' />
 <rect x='681.97' y='322.04' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='683.70' y1='330.68' x2='697.52' y2='330.68' style='stroke-width: 1.07; stroke: #00BFC4; stroke-linecap: butt;' />
+<line x1='683.70' y1='330.68' x2='697.52' y2='330.68' style='stroke-width: 1.07; stroke: #00BFC4; stroke-opacity: 0.40; stroke-linecap: butt;' />
 <text x='704.73' y='316.43' style='font-size: 8.80px; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>25</text>
 <text x='704.73' y='333.71' style='font-size: 8.80px; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>75</text>
 <text x='32.79' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='46.98px' lengthAdjust='spacingAndGlyphs'>legend1</text>

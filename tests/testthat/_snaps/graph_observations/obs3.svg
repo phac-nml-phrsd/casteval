@@ -30,9 +30,9 @@
 <polyline points='63.78,521.37 373.66,363.09 683.53,204.81 ' style='stroke-width: 1.07; stroke: #000000; stroke-opacity: 0.50; stroke-linecap: butt;' />
 <polyline points='63.78,468.61 373.66,310.33 683.53,152.05 ' style='stroke-width: 1.07; stroke: #000000; stroke-opacity: 0.50; stroke-linecap: butt;' />
 <polyline points='63.78,415.85 373.66,257.57 683.53,99.29 ' style='stroke-width: 1.07; stroke: #000000; stroke-opacity: 0.50; stroke-linecap: butt;' />
-<circle cx='63.78' cy='468.61' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
-<circle cx='373.66' cy='257.57' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
-<circle cx='683.53' cy='46.53' r='1.95' style='stroke-width: 0.71; fill: #000000;' />
+<circle cx='63.78' cy='468.61' r='1.95' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.40; fill: #000000; fill-opacity: 0.40;' />
+<circle cx='373.66' cy='257.57' r='1.95' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.40; fill: #000000; fill-opacity: 0.40;' />
+<circle cx='683.53' cy='46.53' r='1.95' style='stroke-width: 0.71; stroke: #000000; stroke-opacity: 0.40; fill: #000000; fill-opacity: 0.40;' />
 <rect x='32.79' y='22.78' width='681.73' height='522.33' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>

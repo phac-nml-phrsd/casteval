@@ -42,7 +42,7 @@
 #' 
 #' # show the negative log score of each observation
 #' graph_forecast(fc, obs, score=neglog)
-graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL, title=NULL) {
+graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
@@ -101,7 +101,6 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL, title=NULL) {
 
     graph
 }
-# TODO title the graph
 # TODO make long-form scenarios, provinces, etc. work with facets & everything else
 # TODO <1 default alpha in every graphing function
 # TODO if function provided data frame instead of forecast object, call create_forecast() on it (with warning/message)

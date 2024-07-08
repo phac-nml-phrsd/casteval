@@ -20,6 +20,7 @@
 #' 
 #' NULL |> casteval:::graph_ensemble(fc1) |> casteval:::graph_quantiles(fc1, c(2.5, 25,51,75))
 graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
+    # TODO make the quantile line colors better. maybe even symmetrical
     validate_forecast(fcst)
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
@@ -52,7 +53,7 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
 
     # graph it
     return(
-        graph + ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=name), quant_data)
+        graph + ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=name), data=quant_data, alpha=0.4)
     )
 }
 
