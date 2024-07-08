@@ -157,3 +157,22 @@ test_that("validate_fcst_obs_pair() works", {
     "observations time type must match forecast time type"
   )
 })
+
+test_that("validate_quant_order() works", {
+  expect_error(
+    validate_quant_order(data.frame(time=1:3, quant_25=4:6, quant_75=c(4,4,4))),
+    "quantiles have impossible values in row 2"
+  )
+  expect_equal(
+    validate_quant_order(data.frame(time=1:3, quant_25=4:6)),
+    NULL
+  )
+  expect_equal(
+    validate_quant_order(data.frame(time=1:3, quant_2.5=4:6, quant_50=4:6)),
+    NULL
+  )
+  expect_equal(
+    validate_quant_order(data.frame(time=1:3, quant_2.5=4:6, quant_50=7:9)),
+    NULL
+  )
+})

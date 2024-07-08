@@ -121,6 +121,7 @@ get_format <- function(df) {
     }
 
     # TODO check that quantile values are in order (increasing order from lower quantiles to higher)
+    validate_quant_order(df)
     list(time_type=time_type, data_types=data_types)
 }
 

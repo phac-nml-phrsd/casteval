@@ -103,6 +103,10 @@ test_that("get_format() validates", {
     get_format(dplyr::tibble(time=1:3)),
     "contains no data columns"
   )
+  expect_error(
+    get_format(data.frame(time=1:3, quant_25=c(10,12,10), quant_50=c(10, 13, 11), quant_75=c(10,11,9))),
+    "quantiles have impossible values in row 2"
+  )
 })
 
 test_that("get_format() returns correct format", {

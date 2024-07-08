@@ -180,7 +180,10 @@ validate_fcst_obs_pair <- function(fcst, obs) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' try(
+#'   casteval:::validate_quant_order(data.frame(time=1:3, quant_25=4:6, quant_75=c(4,4,4)))
+#' )
+#' casteval:::validate_quant_order(data.frame(time=1:3, quant_2.5=4:6, quant_50=c(4,6,8)))
 validate_quant_order <- function(df) {
     # get quantile percentages in increasing order
     # we convert column name -> number -> back to name so that it can be sorted
@@ -189,13 +192,13 @@ validate_quant_order <- function(df) {
         as.character()
 
     # get the quantile columns in order
-    rows <- df |> dplyr::select(quant_names) |>
+    rows <- df |> dplyr::select(dplyr::all_of(quant_names)) |>
         unname() |>
         # then turn it into list of rows, corresponding to time points
         purrr::transpose()
 
     # check that each row is nonstrictly increasing
-    unsorted <- rows |> purrr::map(\(row) is.unsorted(row)) |> as.logical()
+    unsorted <- rows |> purrr::map(\(row) is.unsorted(as.numeric(row), na.rm=TRUE)) |> as.logical()
     if(any(unsorted)) {
         stop(paste("quantiles have impossible values in row", which(unsorted)[[1]]))
     }
