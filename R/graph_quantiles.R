@@ -49,11 +49,12 @@ graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
         # append time column
         dplyr::mutate(time=fcst$data$time) |>
         # convert to long format for ggplot2
-        tidyr::pivot_longer(cols=as.character(quants))
+        tidyr::pivot_longer(cols=as.character(quants)) |>
+        dplyr::mutate(quantile=name)
 
     # graph it
     return(
-        graph + ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=name), data=quant_data, alpha=0.4)
+        graph + ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=quantile), data=quant_data, alpha=0.4)
     )
 }
 

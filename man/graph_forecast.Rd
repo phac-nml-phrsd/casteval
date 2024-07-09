@@ -4,7 +4,7 @@
 \alias{graph_forecast}
 \title{Graph a forecast}
 \usage{
-graph_forecast(fcst, obs = NULL, confs = NULL, score = NULL, title = NULL)
+graph_forecast(fcst, obs = NULL, confs = NULL, score = NULL)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
