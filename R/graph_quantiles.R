@@ -3,6 +3,7 @@
 #' Graph forecast quantiles
 #'
 #' Graph lines indicating quantiles of a forecast.
+#' Deprecated until I can find a way to make the legends behave.
 #'
 #' @template graph
 #' @template fcst
@@ -20,6 +21,7 @@
 #' 
 #' NULL |> casteval:::graph_ensemble(fc1) |> casteval:::graph_quantiles(fc1, c(2.5, 25,51,75))
 graph_quantiles <- function(graph=NULL, fcst, quants=NULL) {
+    warning("this function is deprecated as it messes up the legends in combination with `graph_observations()`")
     # TODO make the quantile line colors better. maybe even symmetrical
     validate_forecast(fcst)
     if(is.null(graph)) {
