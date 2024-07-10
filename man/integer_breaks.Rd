@@ -9,6 +9,11 @@ https://gist.github.com/jhrcook/eb7b63cc57c683a6eb4986c4107a88ec
 \usage{
 integer_breaks(n = 5, ...)
 }
+\arguments{
+\item{n}{Number of breaks.}
+
+\item{...}{other arguments passed to \code{pretty()}}
+}
 \description{
 A modified version of scales::pretty_breaks() for only integer-valued ticks
 }

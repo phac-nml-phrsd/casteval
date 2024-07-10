@@ -3,6 +3,8 @@
 # TODO redo format of forecasts with facets in mind
 # TODO revisit graph_forecasts() after redoing formatting
 
+# TODO somehow provide a score decorator which can convert accuracy() TRUE/FALSE to HIT/MISS or something else, and also modify the colormap
+
 #' Graph a forecast
 #'
 #' Graph a forecast, along with corresponding observations, confidence intervals, etc.
@@ -109,6 +111,10 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
 #' Integer breaks on ggplot2 axes
 #'
 #' A modified version of scales::pretty_breaks() for only integer-valued ticks
+#' 
+#' @param n Number of breaks.
+#' @param ... other arguments passed to `pretty()`
+#' 
 #' @source https://gist.github.com/jhrcook/eb7b63cc57c683a6eb4986c4107a88ec
 integer_breaks <- function(n = 5, ...) {
     fxn <- function(x) {
