@@ -22,7 +22,7 @@ library(casteval)
 `{casteval}` is an R package that helps you automate the evaluation of time series forecasts.
 It provides functionality for formatting, processing, scoring, and visualizing forecasts.
 
-In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples. For a more realistic start-to-finish demonstration of the package's usage with real forecasts, please see [`vignette("denmark2020")`](denmark2020.html).*
+In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples. For a more realistic start-to-finish demonstration of the package's usage with real forecasts, please see [`vignette("denmark2020")`](denmark2020.html).
 
 # Input formatting
 
