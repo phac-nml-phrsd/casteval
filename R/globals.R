@@ -3,6 +3,9 @@
 utils::globalVariables(c(
   "time", # <accuracy>
   "score", # <accuracy>
+  "quant_50", # <bias>
+  "time", # <bias>
+  "score", # <bias>
   "time", # <combine_two_data_frames>
   "raw1", # <combine_two_data_frames>
   "time", # <graph_ensemble>
