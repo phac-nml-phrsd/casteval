@@ -1,9 +1,8 @@
-# TODO legends, axes, plot titles, scales. some graphs will have multiple legends so that has to be taken into consideration.
 # TODO experiment with different color scales (viridis maybe?). Try to make the 2-12-50 example in the vignette more visible
 # TODO redo format of forecasts with facets in mind
 # TODO revisit graph_forecasts() after redoing formatting
 
-# TODO somehow provide a score decorator which can convert accuracy() TRUE/FALSE to HIT/MISS or something else, and also modify the colormap
+# TODO somehow provide a score decorator which can convert accuracy() TRUE/FALSE to HIT/MISS or something else, and also modify the colormap. use this to set viridis for neglog() too
 
 #' Graph a forecast
 #'
@@ -126,5 +125,4 @@ integer_breaks <- function(n = 5, ...) {
 }
 
 # TODO make long-form scenarios, provinces, etc. work with facets & everything else
-# TODO <1 default alpha in every graphing function
 # TODO if function provided data frame instead of forecast object, call create_forecast() on it (with warning/message)
