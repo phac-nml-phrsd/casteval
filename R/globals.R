@@ -9,9 +9,10 @@ utils::globalVariables(c(
   "realization", # <graph_ensemble>
   "time", # <graph_observations>
   "score", # <graph_observations>
+  "name", # <graph_quantiles>
   "time", # <graph_quantiles>
   "value", # <graph_quantiles>
-  "name", # <graph_quantiles>
+  "quantile", # <graph_quantiles>
   "conf", # <graph_confidence_intervals>
   "time", # <graph_confidence_intervals>
   "lo", # <graph_confidence_intervals>

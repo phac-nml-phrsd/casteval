@@ -21,6 +21,7 @@ A ggplot object.
 }
 \description{
 Graph lines indicating quantiles of a forecast.
+Deprecated until I can find a way to make the legends behave.
 }
 \examples{
 fc1 <- create_forecast(dplyr::tibble(

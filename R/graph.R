@@ -99,8 +99,26 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
     # name the axes
     graph <- graph + ggplot2::xlab("time") + ggplot2::ylab("value")
 
+    # make both axes integers only
+    graph <- graph + ggplot2::scale_x_continuous(breaks=integer_breaks())
+    graph <- graph + ggplot2::scale_y_continuous(breaks=integer_breaks())
+
     graph
 }
+
+#' Integer breaks on ggplot2 axes
+#'
+#' A modified version of scales::pretty_breaks() for only integer-valued ticks
+#' @source https://gist.github.com/jhrcook/eb7b63cc57c683a6eb4986c4107a88ec
+integer_breaks <- function(n = 5, ...) {
+    fxn <- function(x) {
+    breaks <- floor(pretty(x, n, ...))
+    names(breaks) <- attr(breaks, "labels")
+    breaks
+    }
+    return(fxn)
+}
+
 # TODO make long-form scenarios, provinces, etc. work with facets & everything else
 # TODO <1 default alpha in every graphing function
 # TODO if function provided data frame instead of forecast object, call create_forecast() on it (with warning/message)
