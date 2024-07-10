@@ -70,6 +70,7 @@ graph_ensemble <- function(graph=NULL, fcst, alpha=NULL) {
 #'   raw=list(4:6, 7:9, 10:12)
 #' ))
 wide2long <- function(df) {
+    # TODO make this preserve rows other than `time` and `raw`. or make it obsolete by changing the raw format
     # go through every row of the data frame
     1:nrow(df) |>
         purrr::map(\(row) {
