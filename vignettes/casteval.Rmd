@@ -19,10 +19,21 @@ library(casteval)
 
 
 # Overview
+
 `{casteval}` is an R package that helps you automate the evaluation of time series forecasts.
 It provides functionality for formatting, processing, scoring, and visualizing forecasts.
 
 In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples. For a more realistic start-to-finish demonstration of the package's usage with real forecasts, please see [`vignette("denmark2020")`](denmark2020.html).
+
+# Forecast data frames
+
+In the context of this package, a "forecast data frame" is a data frame which has:
+
+- a `time` column, containing the time
+- (optional) a `sim` column, containing the simulation number (a.k.a. the realization number)
+- (optional) any number of columns that start with `grp_`, e.x. `grp_scenario`, `grp_province`, `grp_variable`, etc.
+- (optional) a `val` column, containing raw forecast values
+- (optional) any number of columns that start with `val_`, e.x. `val_q2.5`, `val_q50`, `val_q97.5`, `val_mean`, etc.
 
 # Input formatting
 

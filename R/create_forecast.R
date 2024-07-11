@@ -3,6 +3,8 @@
 #' `create_forecast()` creates a forecast object given data and optional metadata.
 #' It accepts a variety of forecast formats as input and intelligently converts them into a standard format.
 #'
+#' 
+#'
 #' @param dat Forecast data. Currently, the following formats for `dat` are supported:
 #' - A single data frame containing raw or summary data.
 #' - A list of data frames each containing raw data.
@@ -27,11 +29,11 @@
 #'  If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to `forecast_time`.
 #'  Additionally, plots of this forecast may graphically distinguish between values to the left and right of `forecast_time`.
 #' 
-#' @returns A named list containing the forecast and its metadata.
-#'  The (possibly processed) data frame is stored in `$data`.
-#'  The name and forecast time are stored in `$name` and `$forecast_time`.
-#'  The type of the time column (one of "date", "date-time", or "numeric") is stored in `$time_type`
-#'  The types of the data columns (a character vector containing "mean", "quant", and/or "raw") are stored in `$data_types`
+#' @returns A named list containing the forecast and its metadata:
+#'  - `$data` is a data frame containing the (possibly processed) forecast data.
+#'  - `$name` and `$forecast_time` contain the name and forecast time respectively.
+#'  - `$time_type` stores the type of the time column as a string (one of "date", "date-time", or "numeric")
+#'  - `$data_types` stores the types of the data columns (a character vector containing "mean", "quant", and/or "raw")
 #' @export
 #'
 #' @examples

@@ -35,11 +35,13 @@ If provided, this forecast will be scored only using data corresponding to dates
 Additionally, plots of this forecast may graphically distinguish between values to the left and right of \code{forecast_time}.}
 }
 \value{
-A named list containing the forecast and its metadata.
-The (possibly processed) data frame is stored in \verb{$data}.
-The name and forecast time are stored in \verb{$name} and \verb{$forecast_time}.
-The type of the time column (one of "date", "date-time", or "numeric") is stored in \verb{$time_type}
-The types of the data columns (a character vector containing "mean", "quant", and/or "raw") are stored in \verb{$data_types}
+A named list containing the forecast and its metadata:
+\itemize{
+\item \verb{$data} is a data frame containing the (possibly processed) forecast data.
+\item \verb{$name} and \verb{$forecast_time} contain the name and forecast time respectively.
+\item \verb{$time_type} stores the type of the time column as a string (one of "date", "date-time", or "numeric")
+\item \verb{$data_types} stores the types of the data columns (a character vector containing "mean", "quant", and/or "raw")
+}
 }
 \description{
 \code{create_forecast()} creates a forecast object given data and optional metadata.
