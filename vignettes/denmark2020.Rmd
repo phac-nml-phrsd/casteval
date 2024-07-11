@@ -17,3 +17,25 @@ knitr::opts_chunk$set(
 library(casteval)
 ```
 
+
+```{r juul_data}
+# Here we have a list of 500 realizations of a forecast, each 150 days long
+length(denmark2020ens)
+denmark2020ens[[1]]
+
+# We pass it to `create_forecast()` along with times and another information
+fc <- create_forecast(
+  list(time=0:149, ensemble=denmark2020ens),
+  forecast_time=0,
+  name="Denmark 2020 Juul forecast (May 5 to Oct 1)"
+)
+
+# We also have observations for roughly 50 days leading up to the forecast
+tail(denmark2020obs)
+
+# We can graph these two objects together
+graph_forecast(fc, denmark2020obs)
+
+# We can show confidence intervals
+graph_forecast(fc, denmark2020obs, confs=c(95,90,50))
+```
