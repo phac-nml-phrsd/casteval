@@ -43,3 +43,7 @@ pages:
     script:
         - Rscript -e "devtools::document()"
         - Rscript -e "pkgdown::build_site()"
+    artifacts:
+      paths:
+        - public
+      expire_in: never
