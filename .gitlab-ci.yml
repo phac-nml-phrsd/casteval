@@ -29,7 +29,7 @@ testing:
         - Rscript -e 'covr::gitlab(quiet = FALSE)'
     artifacts:
         paths:
-            - public
+            - testing
     only:
         - merge_requests
 
@@ -38,13 +38,8 @@ testing:
 
 pages:
     stage: deploy
-    dependencies:
-        - testing
-    script:
-        - ls
-    artifacts:
-        paths:
-            - public
-        expire_in: 30 days
     only:
-        - merge_requests
+        - main
+    script:
+        - Rscript -e "devtools::document()"
+        - Rscript -e "pkgdown::build_site()"
