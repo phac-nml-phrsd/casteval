@@ -119,3 +119,41 @@ test_that("validate_time() works", {
     "type of `t` does not match `fcst.*time_type`"
   )
 })
+
+test_that("validate_column() works", {
+  df1 <- data.frame(time=numeric(0),raw=NULL)
+  df2 <- data.frame()
+  df3 <- dplyr::tibble(time=1:3, raw=list(1,2,3))
+  df4 <- dplyr::tibble(time=1:3, quant_2.5=4:6)
+
+  expect_equal(validate_column(df1, "time"), NULL)
+  expect_error(validate_column(df1, "raw"), "not in data frame")
+
+  expect_error(validate_column(df2, ""), "not in data frame")
+
+  expect_equal(validate_column(df3, "raw"), NULL)
+
+  expect_equal(validate_column(df4, "quant_2.5"), NULL)
+
+  expect_error(validate_column(df3, "mean"), "not in data frame")
+
+  expect_error(validate_column(df4, "quant_"), "not in data frame")
+})
+
+test_that("validate_fcst_obs_pair() works", {
+  expect_equal(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:10, raw=11:20)),
+      data.frame(time=101:110, obs=111:120)
+    ),
+    NULL
+  )
+
+  expect_error(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:10, raw=11:20)),
+      data.frame(time=lubridate::ymd("2024-01-01"), obs=5)
+    ),
+    "observations time type must match forecast time type"
+  )
+})

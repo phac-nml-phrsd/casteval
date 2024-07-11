@@ -82,8 +82,7 @@ validate_forecast <- function(fcst) {
 #' Check that the type of a given time matches the time type of a given forecast.
 #'
 #' @param t A time (e.x. a number, date, or date-time).
-#' @param fcst A forecast (as returned by `create_forecast()`).
-#'  No input validation is done on `fcst` itself.
+#' @template fcst
 #'
 #' @returns NULL if `t` is compatible with `fcst`. Error otherwise
 #' @autoglobal
@@ -105,4 +104,60 @@ validate_time <- function(t, fcst) {
     } else {
         stop("type of `t` does not match `fcst$time_type`")
     }
+}
+
+
+#' Check that column is in data frame
+#'
+#' Errors of `col` is not a column in data frame.
+#'
+#' @param df A data frame.
+#' @param col A string containing the column name.
+#'
+#' @returns NULL if valid, error otherwise.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+validate_column <- function(df, col) {
+    if(! col %in% colnames(df)) {
+        stop(paste0("column `", col, "` not in data frame"))
+    }
+    NULL
+}
+
+
+#' Validate a forecast-observations pair
+#'
+#' Given a forecast and observations, verify that:
+#' - forecast is valid
+#' - observations are valid
+#' - forecast time type matches observations time type
+#'
+#' @template fcst
+#' @param obs An observations data frame.
+#'
+#' @returns NULL if valid. Error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' # compatible time types
+#' casteval:::validate_fcst_obs_pair(
+#'   create_forecast(data.frame(time=1:10, raw=11:20)),
+#'   data.frame(time=101:110, obs=111:120)
+#' )
+#' 
+#' # incompatible time types
+#' try(casteval:::validate_fcst_obs_pair(
+#'   create_forecast(data.frame(time=1:10, raw=11:20)),
+#'   data.frame(time=lubridate::ymd("2024-01-01"), obs=5)
+#' ))
+validate_fcst_obs_pair <- function(fcst, obs) {
+    # TODO move this and its tests over to validate_forecast.R and rename to validate.R
+    validate_forecast(fcst)
+    obs_time_type <- get_obs_format(obs)
+    if(obs_time_type != fcst$time_type) {
+        stop("observations time type must match forecast time type")
+    }
+    NULL
 }

@@ -11,7 +11,7 @@ get_obs_format(obs)
 \itemize{
 \item Be non-empty
 \item Contain a \code{time} column with a consistent and valid time type
-\item Contain a numeric \code{raw} column with only one value per row
+\item Contain a numeric \code{obs} column
 }}
 }
 \value{
@@ -19,18 +19,14 @@ The time type, as a string.
 }
 \description{
 Consumes a data frame, performs input validation, and returns the time type.
-Essentially a wrapper around \code{get_format()} with stricter requirements.
 }
 \examples{
 # "numeric"
-casteval:::get_obs_format(data.frame(time=1:3, raw=4:6))
+casteval:::get_obs_format(data.frame(time=1:3, obs=4:6))
 
 # "date"
-casteval:::get_obs_format(data.frame(time=lubridate::ymd("2024-01-01"), raw=10))
+casteval:::get_obs_format(data.frame(time=lubridate::ymd("2024-01-01"), obs=10))
 
-# raw not present
+# obs not present
 try(casteval:::get_obs_format(data.frame(time=1:3, mean=4:6)))
-
-# multiple raw realizations
-try(casteval:::get_obs_format(dplyr::tibble(time=1:3, raw=list(1:2, 3:4, 5:6))))
 }

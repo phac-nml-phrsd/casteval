@@ -127,40 +127,36 @@ get_format <- function(df) {
 #' Get observations format
 #'
 #' Consumes a data frame, performs input validation, and returns the time type.
-#' Essentially a wrapper around `get_format()` with stricter requirements.
 #'
 #' @param obs Data frame containing observations. In order to pass input validation it should:
 #' - Be non-empty
 #' - Contain a `time` column with a consistent and valid time type
-#' - Contain a numeric `raw` column with only one value per row
+#' - Contain a numeric `obs` column
 #'
 #' @returns The time type, as a string.
 #' @autoglobal
 #'
 #' @examples
 #' # "numeric"
-#' casteval:::get_obs_format(data.frame(time=1:3, raw=4:6))
+#' casteval:::get_obs_format(data.frame(time=1:3, obs=4:6))
 #' 
 #' # "date"
-#' casteval:::get_obs_format(data.frame(time=lubridate::ymd("2024-01-01"), raw=10))
+#' casteval:::get_obs_format(data.frame(time=lubridate::ymd("2024-01-01"), obs=10))
 #' 
-#' # raw not present
+#' # obs not present
 #' try(casteval:::get_obs_format(data.frame(time=1:3, mean=4:6)))
-#' 
-#' # multiple raw realizations
-#' try(casteval:::get_obs_format(dplyr::tibble(time=1:3, raw=list(1:2, 3:4, 5:6))))
 get_obs_format <- function(obs) {
-    fmt <- get_format(obs)
-    if(! "raw" %in% fmt$data_types) {
-        stop("observations require `raw` column")
+    if(nrow(obs) == 0) {
+        stop("data frame empty")
+    }
+    validate_column(obs, "time")
+    validate_column(obs, "obs")
+
+    if(!is.numeric(obs$obs)) {
+        stop("`obs` column must be numeric")
     }
 
-    # get_format() already ensures data frame non-empty and raw has consistent lengths
-    if(length(obs$raw[[1]]) > 1) {
-        stop("observations require single-point raw data, not multiple")
-    }
-
-    fmt$time_type
+    get_time_type(obs$time)
 }
 
 #' Get type of time column

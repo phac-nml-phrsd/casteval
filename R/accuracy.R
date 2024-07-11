@@ -2,16 +2,17 @@
 #'
 #' Given a forecast and set of observations,
 #'  compute the accuracy (# within confidence interval / # total) of the forecast.
-#'
-#' @param fcst The forecast (see `create_forecast()` output).
 #'  If quantiles are provided, they will be used to compute the accuracy.
 #'  If raw data is provided, quantiles will be calculated according to the `interval` parameter.
-#' @param obs The observations data frame.
-#' @param interval Either NULL or a vector of two numbers from 0 to 100.
+#'
+#' @template fcst
+#' @param obs An observations data frame.
+#' @param interval (Optional) A vector of two numbers from 0 to 100.
 #'  If `fcst` contains quantile data then the corresponding quantile columns will be
 #'  used as the confidence interval.
 #'  If `fcst` contains raw data then the corresponding quantiles will be calculated and
 #'  used as a confidence interval.
+#' @template summarize
 #'
 #' @returns A number from 0 to 1,
 #'  the rate at which the observations were inside the specified confidence interval
@@ -23,7 +24,7 @@
 #' # returns 2/3
 #' accuracy(
 #'   create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
-#'   data.frame(time=1:3, raw=c(5, 7.4, 11.6)),
+#'   data.frame(time=1:3, obs=c(5, 7.4, 11.6)),
 #'   interval=c(25, 75)
 #' )
 #' 
@@ -33,7 +34,7 @@
 #'   create_forecast(dplyr::tibble(
 #'     time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
 #'   )),
-#'   data.frame(time=1:3, raw=c(4, 201, 1000)),
+#'   data.frame(time=1:3, obs=c(4, 201, 1000)),
 #'   interval=c(25,50)
 #' )
 #' 
@@ -42,32 +43,34 @@
 #'   create_forecast(dplyr::tibble(
 #'     time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
 #'   )),
-#'   data.frame(time=1:3, raw=c(4, 201, 1000)),
+#'   data.frame(time=1:3, obs=c(4, 201, 1000)),
 #' )
-accuracy <- function(fcst, obs, interval=NULL) {
+accuracy <- function(fcst, obs, interval=NULL, summarize=TRUE) {
+    # TODO document `summarize` parameter in vignette
+    # TODO redo using get_quantile()
+    # TODO ask modellers if it would be better to just have `confs` instead of `interval`, if intervals are always going to be symmetrical
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
     if("raw" %in% fcst$data_types) {
         # perform input validation
         if(is.null(interval)) {
-            stop("`interval` parameter required for computing accuracy from raw data")
+            interval <- c(2.5, 97.5)
+            message("interval not provided. defaulting to `c(2.5, 97.5)`")
         }
         validate_interval(interval)
 
         df <- remove_raw_NAs(df)
 
         # compute quantiles using raw & interval
-        # TODO extract this into a function for computing a given quantile from raw
-        quants <- df$raw |> purrr::map(~ stats::quantile(.x, c(interval[[1]]/100, interval[[2]]/100)))
-        lows <- as.numeric(purrr::map(quants, ~ .x[[1]]))
-        highs <- as.numeric(purrr::map(quants, ~ .x[[2]]))
+        lows <- raw2quant(df$raw, interval[[1]])
+        highs <- raw2quant(df$raw, interval[[2]])
         df <- df |> dplyr::mutate(time, low=lows, high=highs, .keep="none")
 
         lowname <- "low"
         highname <- "high"
     } else if("quant" %in% fcst$data_types) {
-        quants <- get_quantiles(df)
+        quants <- get_quant_percentages(df)
 
         # can't do anything with a single quantile
         if(length(quants) < 2) {
@@ -107,19 +110,22 @@ accuracy <- function(fcst, obs, interval=NULL) {
     }
 
     # isolate/rename the time and relevant quantile columns
-    df <- df |> dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname))
+    temp <- df |> dplyr::select(time, low=dplyr::all_of(lowname), high=dplyr::all_of(highname))
     
     # check for any NAs that make proceeding impossible without removing rows
-    if(NA %in% df$low || NA %in% df$high) {
+    if(NA %in% temp$low || NA %in% temp$high) {
         stop("some forecast quantiles are NA")
     }
 
     # join & calculate accuracy
     df <- join_fcst_obs(df, obs) |>
-        dplyr::mutate(success=dplyr::between(obs, low, high))
-    
+        dplyr::mutate(score=dplyr::between(obs, temp$low, temp$high))
+    if(!summarize) {
+        return(dplyr::select(df, time, obs, score))
+    }
+
     # calculate success rate (aka accuracy)
-    mean(df$success)
+    mean(df$score)
 }
 
 #' Validate quantile interval vector
