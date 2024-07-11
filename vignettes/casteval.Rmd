@@ -22,16 +22,21 @@ library(casteval)
 `{casteval}` is an R package that helps you automate the evaluation of time series forecasts.
 It provides functionality for formatting, processing, scoring, and visualizing forecasts.
 
-*Note: Many examples in this vignette are deliberately contrived/simplified in order to better illustrate functionality. For a more realistic start-to-finish demonstration of the package's usage, see [this vignette](denmark2020.html).*
+In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples. For a more realistic start-to-finish demonstration of the package's usage with real forecasts, please see [`vignette("denmark2020")`](denmark2020.html).
 
 # Input formatting
+
+At a high level, a time series forecast is specified with two pieces of information: forecasted values and the accompanying time at which the forecasted values are predicted to be observed. In practice, forecasts can be presented in various ways. A forecast may be given as many individual realizations of a model, or this ensemble may be summarized into a mean and confidence interval for each predicted time point. Additionally, a forecast may be produced for a single scenario (_e.g._ a simple, status quo forecast) or several, distinct scenarios may be considered (status quo alongside the introduction of an intervention with varying degrees of success in controlling an outbreak). 
+
+With these applications in mind, `{casteval}` accepts several input formats, including:
+
+- A single data frame with a [`time` column](#input-time) and one or more [forecast data columns](#input-forecast-data) 
+- A list of data frames, each with a `time` column and a [`raw` data column](#input-forecast-data)
+- A named list `l`, where `l$time` is a vector of times and `l$ensemble` is a list of vectors containing forecast data, each one the same length as `l$time`
+
 *Note: As this is a work in progress, the number of formats supported is still limited*
 
-`{casteval}` accepts the following forecast formats as input:
-
-- A single data frame with a `time` column and one or more data columns (see below)
-- A list of data frames, each with a `time` column and a `raw` data column
-- A named list `l`, where `l$time` is a vector of times and `l$ensemble` is a list of vectors, each one the same length as `l$time`
+## Time {#input-time}
 
 Times can be one of the following types:
 
@@ -39,8 +44,10 @@ Times can be one of the following types:
 - `Date` (_e.g._ from `{lubridate}`)
 - date-time formats `POSIXct` and `POSIXt`
 
-All data columns must contain numeric data.
-The current supported data columns are:
+## Forecast data {#input-forecast-data}
+
+All forecast data columns must contain numeric data.
+The current supported forecast data columns are:
 
 - `raw`: values for individual realisations of a forecast
 - `mean`: mean value for each time point of an ensemble
