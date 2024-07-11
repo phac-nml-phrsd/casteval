@@ -17,4 +17,3 @@ knitr::opts_chunk$set(
 library(casteval)
 ```
 
-TODO
