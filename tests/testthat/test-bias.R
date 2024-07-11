@@ -28,4 +28,9 @@ test_that("bias() works", {
 
   fc6 <- create_forecast(data.frame(time=1:3, quant_50=c(9,9,12)))
   expect_equal(bias(fc6, obs), 0)
+
+  expect_equal(
+    bias(fc6, obs, summarize=FALSE),
+    data.frame(time=1:3, obs=c(11,9,9), score=c(-1, 0, 1))
+  )
 })

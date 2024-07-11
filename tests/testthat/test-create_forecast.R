@@ -77,6 +77,17 @@ test_that("create_forecast() works with single data frame", {
       data=dplyr::tibble(time=1:2, raw=list(10:11, 12:13))
     )
   )
+
+  expect_equal(
+    create_forecast(dplyr::tibble(time=as.list(1:2), raw=list(10:11, 12:13))),
+    list(
+      name=NULL,
+      forecast_time=NULL,
+      time_type="numeric",
+      data_types="raw",
+      data=dplyr::tibble(time=1:2, raw=list(10:11, 12:13))
+    )
+  )
 })
 
 test_that("create_forecast() works with list of data frames", {
