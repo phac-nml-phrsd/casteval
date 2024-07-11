@@ -272,7 +272,7 @@ mean(df$score)
 ```
 
 ## Negative log score
-`neglog(fcst, obs, at=NULL, after=NULL)` calculates the negative log score of a forecast.
+`neglog(fcst, obs, at=NULL, after=NULL, summarize=TRUE)` calculates the negative log score of a forecast.
 `fcst` must contain raw data with 2 or more realizations per row.
 It uses Kernel Density Estimation (KDE) to obtain a probability distribution for each point in time in the forecast.
 If `f(x)` is the calculated probability distribution and `x0` is the corresponding observation, then the negative log score at that point in time is `-log(f(x0))`, where `log` is the natural logarithm.
@@ -310,8 +310,27 @@ neglog(fcst, obs, summarize=FALSE)
 try(neglog(fcst, obs, at=3, after=1))
 ```
 
+## Bias
+`bias(fcst, obs, summarize=TRUE)` calculates how much a forecast overpredicts and underpredicts each observed value, and returns the result as a number between -1 and 1, where -1 means 100% underprediction and 1 means 100% overprediction.
+
+*Note: while `bias()` has a `summarize` parameter, its output is currently not fully compatible with `graph_forecast()`*
+
+It searches for these three kinds of data:
+
+1. raw realizations (`raw`)
+2. mean data (`mean`)
+3. median data (`quant_50`)
+
+It uses the first kind that it can find to calculate the bias.
+
 ## Defining your own scoring functions
-TODO
+Let's say you want to define your own scoring function. It should accept the following arguments:
+- `fcst`: a forecast object, such as the ones returned by `create_forecast()`
+- `obs`: an observations data frame
+
+It can also optionally support the argument `summarize=TRUE`, in which case it should handle the flag like the builtin scoring functions do (see above).
+
+By default, your function should return a single number indicating the score.
 
 # Visualization
 
