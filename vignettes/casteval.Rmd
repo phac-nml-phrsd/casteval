@@ -33,7 +33,14 @@ In the context of this package, a "forecast data frame" is a data frame which ha
 - (optional) a `sim` column, containing the simulation number (a.k.a. the realization number)
 - (optional) any number of columns that start with `grp_`, e.x. `grp_scenario`, `grp_province`, `grp_variable`, etc.
 - (optional) a `val` column, containing raw forecast values
-- (optional) any number of columns that start with `val_`, e.x. `val_q2.5`, `val_q50`, `val_q97.5`, `val_mean`, etc.
+- (optional) any number of columns that start with `val_`, e.x. `val_q2.5`, `val_mean`
+
+`sim` is required for any curve-based scoring methods, as well as for plotting of raw ensemble curves.
+It is not required for fixe-time scoring methods.
+
+Columns starting with `grp_` will be used to group the data before scoring and plotting.
+
+Columns starting with `val_` contain summary data (`val` itself contains unsummarized data) such as quantiles (e.x. `val_q50` for the median) and the mean.
 
 # Input formatting
 
