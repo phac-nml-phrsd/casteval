@@ -207,11 +207,6 @@ get_time_type <- function(timecol) {
 }
 
 
-get_time_type(times) {
-
-}
-
-
 #' Check everything in a vector/list
 #'
 #' `all_of()` checks that all elements of a given vector or list pass a given predicate function.

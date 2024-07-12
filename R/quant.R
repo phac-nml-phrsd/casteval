@@ -19,10 +19,10 @@
 #' )
 get_quant_percentages <- function(df) {
     cols <- colnames(df)
-    quant_cols <- stringr::str_subset(cols, "^quant_")
+    quant_cols <- stringr::str_subset(cols, "^val_q")
     
     quant_cols |>
-        purrr::map(~ as.numeric(strsplit(.x, "_")[[1]][[2]])) |>
+        purrr::map(~ as.numeric(strsplit(.x, "q")[[1]][[2]])) |>
         as.numeric() |>
         sort()
 }
@@ -63,7 +63,7 @@ get_quant_col <- function(df, num) {
 #' # "quant_2.5"
 #' casteval:::quant_name(2.5)
 quant_name <- function(num) {
-    paste0("quant_", as.character(num))
+    paste0("val_q", as.character(num))
 }
 
 

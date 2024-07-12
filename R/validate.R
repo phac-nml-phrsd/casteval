@@ -130,15 +130,36 @@ validate_quant_order <- function(df) {
 # TODO make error messages more informative
 
 
-# consumes data frame
-validate_forecast_data <- function(df) {
+#' Validate forecast data frame
+#'
+#' Given a data frame, checks that:
+#' 
+#' - it has a valid time column
+#' - its quantile columns are properly named
+#' - its data columns are numeric
+#'
+#' @param df A data frame
+#'
+#' @returns NULL on success. Error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' # TODO
+validate_data_frame <- function(df) {
     cols <- colnames(df)
+
+    # check time column
     if(! "time" %in% cols) {
         stop("data frame must contain `time` column")
     }
     validate_time_column(df$time)
 
-    numeric_columns <- c("sim", "val", "mean")
+    # check quantile column names
+    quant_cols <- stringr::str_subset(cols, "^val_q")
+    quant_cols |> purrr::walk(validate_quant_name)
+
+    # check contents of numeric columns
+    numeric_columns <- c("sim", "val", "val_mean", quant_cols)
     for(col in numeric_columns) {
         if(col %in% cols) {
             if(!is.numeric(df[[col]])) {
@@ -147,10 +168,53 @@ validate_forecast_data <- function(df) {
         }
     }
 
-    quant_cols <- stringr::str_subset(cols, "^quant_")
+    invisible(NULL)
 }
 
 
+#' Validate quantile column name
+#'
+#' Check that a quantile column name starts with `val_q` followed by a number between 0 and 100.
+#'
+#' @param name A string containing the quantile column name
+#'
+#' @returns NULL if valid. Error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+validate_quant_name <- function(name) {
+    parts <- strsplit(name, "q")[[1]]
+    if(length(parts) != 2) {
+        stop(glue::glue("invalid quantile column name {name}"))
+    }
+
+    quant <- suppressWarnings(as.numeric(parts[[2]]))
+    if(is.na(quant)) {
+        stop(glue::glue("invalid quantile percentage {quant}"))
+    }
+
+    quant <- as.numeric(quant)
+    if(quant < 0 || quant > 100) {
+        stop(glue::glue("quantile percentage {quant} out of range"))
+    }
+
+    invisible(NULL)
+}
+
+
+#' Validate time column
+#'
+#' Check that the type of a time column is valid.
+#'
+#' @param times A vector, presumably a time column
+#'
+#' @returns NULL if valid, error otherwise
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
 validate_time_column <- function(times) {
     if(lubridate::is.Date(times) ||
         lubridate::is.POSIXt(times) ||
@@ -159,4 +223,5 @@ validate_time_column <- function(times) {
     } else {
         stop("time column must be either numeric, Date, or date-time (POSIXt)")
     }
+    invisible(NULL)
 }
