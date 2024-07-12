@@ -1,82 +1,3 @@
-#' Validate forecast in named-list format
-#'
-#' `validate_forecast()` validates a forecast by checking that it:
-#' - is a named list
-#' - contains a `time_type` field
-#' - contains a `data_types` field
-#' - contains a valid data frame
-#' - data frame format matches `time_type` and `data_type`
-#' If any of these conditions fail, it stops with an appropriate an error message
-#'
-#' @param fcst The object to be validated
-#'
-#' @returns NULL if valid (error if invalid)
-#'
-#' @examples
-#' # incorrect time type
-#' try(casteval:::validate_forecast(list(
-#'   time_type="date", data_types="raw", data=data.frame(time=1:3, raw=4:6)
-#' )))
-#' 
-#' # invalid `forecast_time` type
-#' try(casteval:::validate_forecast(list(
-#'   time_type="numeric",
-#'   data_types="raw",
-#'   data=data.frame(time=1,raw=4),
-#'   forecast_time=lubridate::ymd("2024-01-01")
-#' )))
-#' 
-#' # a valid forecast
-#' casteval:::validate_forecast(list(
-#'   time_type="numeric",
-#'   data_types=c("mean", "quant"),
-#'   data=data.frame(time=1:3, mean=4:6, quant_50=7:9),
-#'   forecast_time=2
-#' ))
-validate_forecast <- function(fcst) {
-    # must be list
-    if(!is.list(fcst)) {
-        stop("forecast must be named list")
-    }
-
-    # data frames pass is.list() but are probably a sign of a mistake
-    if(is.data.frame(fcst)) {
-        stop("forecast must be named list containing data, not just a data frame")
-    }
-
-    # `time_type` present
-    if(! "time_type" %in% names(fcst)) {
-        stop("forecast must specify `time_type`")
-    }
-
-    # `data_types` present
-    if(! "data_types" %in% names(fcst)) {
-        stop("forecast must specify `data_types`")
-    }
-
-    # `data` present
-    if(! "data" %in% names(fcst)) {
-        stop("forecast must contain `data`")
-    }
-
-    # get_format() both validates the data frame and returns its format to us
-    fmt <- get_format(fcst$data)
-    
-    # check that the formats are consistent
-    if(fcst$time_type != fmt$time_type) {
-        stop("stated time type does not match data frame time type")
-    }
-    if(!setequal(fcst$data_types, fmt$data_types)) {
-        stop("stated data types do not match data frame data types")
-    }
-
-    # check `forecast_time` type valid
-    if(!is.null(fcst$forecast_time)) {
-        validate_time(fcst$forecast_time, fcst)
-    }
-    invisible(NULL)
-}
-
 #' Check that time compatible with forecast
 #'
 #' Check that the type of a given time matches the time type of a given forecast.
@@ -207,3 +128,35 @@ validate_quant_order <- function(df) {
 }
 
 # TODO make error messages more informative
+
+
+# consumes data frame
+validate_forecast_data <- function(df) {
+    cols <- colnames(df)
+    if(! "time" %in% cols) {
+        stop("data frame must contain `time` column")
+    }
+    validate_time_column(df$time)
+
+    numeric_columns <- c("sim", "val", "mean")
+    for(col in numeric_columns) {
+        if(col %in% cols) {
+            if(!is.numeric(df[[col]])) {
+                stop(glue::glue("{col} column must be numeric"))
+            }
+        }
+    }
+
+    quant_cols <- stringr::str_subset(cols, "^quant_")
+}
+
+
+validate_time_column <- function(times) {
+    if(lubridate::is.Date(times) ||
+        lubridate::is.POSIXt(times) ||
+        is.numeric(times)) {
+            return(invisible(NULL))
+    } else {
+        stop("time column must be either numeric, Date, or date-time (POSIXt)")
+    }
+}

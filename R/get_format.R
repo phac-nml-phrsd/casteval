@@ -161,11 +161,10 @@ get_obs_format <- function(obs) {
 
 #' Get type of time column
 #'
-#' Helper function for `get_format()`.
 #' Inspects a time column from a data frame to determine the type of its contents.
 #' Also checks that the contents are all of the same supported type.
 #'
-#' @param timecol A vector or list, presumably a column in a data frame.
+#' @param timecol A vector, presumably a column in a forecast data frame.
 #'  Its contents should all be of the same supported type (date, date-time, or numeric)
 #'
 #' @returns A string describing the type of the time column
@@ -205,6 +204,11 @@ get_time_type <- function(timecol) {
         stop("time column has unsupported type")
     }
     time_type
+}
+
+
+get_time_type(times) {
+
 }
 
 

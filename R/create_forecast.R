@@ -1,117 +1,3 @@
-#' Create a forecast
-#'
-#' `create_forecast()` creates a forecast object given data and optional metadata.
-#' It accepts a variety of forecast formats as input and intelligently converts them into a standard format.
-#'
-#' 
-#'
-#' @param dat Forecast data. Currently, the following formats for `dat` are supported:
-#' - A single data frame containing raw or summary data.
-#' - A list of data frames each containing raw data.
-#' - A named list containing a numeric vector `time` and a list of vectors `ensemble`.
-#' Each vector corresponds to a realization in a forecast ensemble.
-#'  The `time` vector and `ensemble` vectors must all have the same length.
-#' 
-#' All data frames in `dat` must additionally have a `time` column containing either integers, dates, or date-times.
-#' 
-#' Raw data columns should be named `raw`, and should contain numeric vectors of length 1 or more.
-#' The lengths of the vectors must all be the same.
-#' 
-#' Summary data columns may be named `mean`, or `quant_` followed by a number from 0 to 100 (e.x. `quant_2.5`, `quant_50`, etc.).
-#'
-#' See below for examples.
-#' 
-#' See [get_format()] for further details on data frame formatting.
-#' 
-#' @param name (Optional) A string specifying the name of the forecast/model.
-#' @param forecast_time (Optional) An integer, date, or date-time specifying when the forecast was created.
-#'  Its type should match the type of values in the `time` column(s) of `data`
-#'  If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to `forecast_time`.
-#'  Additionally, plots of this forecast may graphically distinguish between values to the left and right of `forecast_time`.
-#' 
-#' @returns A named list containing the forecast and its metadata:
-#'  - `$data` is a data frame containing the (possibly processed) forecast data.
-#'  - `$name` and `$forecast_time` contain the name and forecast time respectively.
-#'  - `$time_type` stores the type of the time column as a string (one of "date", "date-time", or "numeric")
-#'  - `$data_types` stores the types of the data columns (a character vector containing "mean", "quant", and/or "raw")
-#' @export
-#'
-#' @examples
-#' # forecast with numeric times and raw data
-#' create_forecast(data.frame(time=1:3, raw=10:12), name="a forecast", forecast_time=2)
-#' 
-#' # forecast with dates and mean-and-quantiles data
-#' create_forecast(
-#'   data.frame(
-#'     time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")),
-#'     mean=10:11, quant_2.5=5:6, quant_97.5=15:16
-#'   ),
-#'   name="another forecast"
-#' )
-#'
-#' # an ensemble of 3 realizations, each represented by a data frame
-#' create_forecast(list(
-#'   dplyr::tibble(time=1:5,raw=6:10),
-#'   dplyr::tibble(time=2:6,raw=7:11),
-#'   dplyr::tibble(time=3:7,raw=8:12)
-#' ))
-#' 
-#' # an already-combined ensemble
-#' create_forecast(dplyr::tibble(time=1:2, raw=list(10:15, 20:25)))
-#' 
-#' # an ensemble of 4 realizations, each represented by a vector
-#' create_forecast(list(
-#'   time=1:3,
-#'   ensemble=list(4:6, 7:9, 10:12, 13:15)
-#' ))
-create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
-    # TODO support even more input data formats
-    # TODO consider changing the format so that each realization is its own column
-    # catch and error/warn about extra columns
-
-    ## Figure out the format of `dat` and dispatch the corresponding helper function
-
-    # we check for data frame first since data frames are also lists
-    if(is.data.frame(dat)) { # A single data frame
-        forecast <- create_forecast_single(dat, name, forecast_time)
-    }
-    
-    else if(is.list(dat)) {
-        if(length(names(dat)) > 0) {
-            # time + ensemble
-            if("time" %in% names(dat) && "ensemble" %in% names(dat)) {
-                forecast <- create_forecast_ensemble(dat, name, forecast_time)
-            }
-            else {
-                stop("expected `time` and `ensemble` to be in `dat`")
-            }
-        }
-
-        else { # A list of data frames, to be combined.
-            forecast <- create_forecast_multiple(dat, name, forecast_time)
-        }
-    } else {
-        # TODO reference the vignette in appropriate error messages in exported functions
-        stop("`dat` has invalid type. See `?create_forecast` or `vignette(topic='casteval', package='casteval')` for proper usage")
-    }
-
-    # TODO? sort the rows by time
-
-    # check forecast_time type consistency
-    if(!is.null(forecast$forecast_time)) {
-        validate_time(forecast$forecast_time, forecast)
-    }
-
-    # make sure time column is vector and not list
-    # probably not necessary but it might prevent some bugs
-    if(is.list(forecast$data$time)) {
-        forecast$data$time <- purrr::list_simplify(forecast$data$time)
-    }
-
-    forecast
-}
-
-
 #' Create forecast from single data frame
 #'
 #' Helper for `create_forecast()`.
@@ -136,7 +22,6 @@ create_forecast_single <- function(df, name, forecast_time) {
     forecast$data <- df
     forecast
 }
-
 
 #' Create forecast from multiple data frames
 #'
@@ -233,4 +118,15 @@ create_forecast_ensemble <- function(dat, name, forecast_time) {
     forecast$data_types <- "raw"
     forecast$data <- df
     forecast
+}
+
+
+create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
+    # TODO grouping & corresponding input formats
+    # TODO warn about extra columns
+
+    message("Validating input data...")
+    if(is.data.frame(dat)) {
+        
+    }
 }
