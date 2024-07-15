@@ -19,6 +19,9 @@
 #' # unsupported type
 #' try(casteval:::get_time_type(list("January 1", "January 2")))
 get_time_type <- function(df) {
+    if(!"time" %in% colnames(df)) {
+        stop("data frame does not contain time column")
+    }
     timecol <- df$time
 
     # validate time column & get type
