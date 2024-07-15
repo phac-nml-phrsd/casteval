@@ -71,14 +71,20 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
         if("time" %in% names(dat) && "vals" %in% names(dat)) {
             df <- create_forecast_ensemble(dat$time, dat$vals)
         } else {
-            stop("`dat` must have `time` and `vals` fields")
+            stop("`dat` list must contain `time` and `vals` fields")
         }
     }
+
+    else {
+        stop("`dat` has invalid type. See `?create_forecast` or `vignette(topic='casteval', package='casteval')` for proper usage")
+    }
+
+    # TODO? sort rows by time, maybe it will improve performance
 
     # check time type compatibility
     fcst <- list(name=name, forecast_time=forecast_time, data=df)
     if(!is.null(fcst$forecast_time)) {
-        validate_time(fcst$forecast_time, forecast)
+        validate_time(fcst$forecast_time, fcst)
     }
 
     fcst
@@ -124,7 +130,7 @@ create_forecast_ensemble <- function(time, vals) {
 
     lens <- vals |> purrr::map(length) |> as.numeric()
     if(any(length(time) != lens)) {
-        stop("all vectors in `dat$ens` must have the same length as `dat$time`")
+        stop("all vectors in `dat$vals` must have the same length as `dat$time`")
     }
 
     # create a data frame from each vector in vals, give them each a unique sim number, then bind them together
