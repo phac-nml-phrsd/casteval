@@ -126,19 +126,19 @@ validate_column <- function(df, col) {
 #' @examples
 #' # compatible time types
 #' casteval:::validate_fcst_obs_pair(
-#'   create_forecast(data.frame(time=1:10, raw=11:20)),
-#'   data.frame(time=101:110, obs=111:120)
+#'   create_forecast(data.frame(time=1:10, val=11:20)),
+#'   data.frame(time=101:110, val_obs=111:120)
 #' )
 #' 
 #' # incompatible time types
 #' try(casteval:::validate_fcst_obs_pair(
-#'   create_forecast(data.frame(time=1:10, raw=11:20)),
-#'   data.frame(time=lubridate::ymd("2024-01-01"), obs=5)
+#'   create_forecast(data.frame(time=1:10, val=11:20)),
+#'   data.frame(time=lubridate::ymd("2024-01-01"), val_obs=5)
 #' ))
 validate_fcst_obs_pair <- function(fcst, obs) {
     validate_forecast(fcst)
-    obs_time_type <- get_obs_format(obs)
-    if(obs_time_type != fcst$time_type) {
+    validate_obs(obs)
+    if(get_time_type(obs) != get_time_type(fcst$data)) {
         stop("observations time type must match forecast time type")
     }
     invisible(NULL)
@@ -162,9 +162,9 @@ validate_fcst_obs_pair <- function(fcst, obs) {
 #' casteval:::validate_quant_order(data.frame(time=1:3, quant_2.5=4:6, quant_50=c(4,6,8)))
 validate_quant_order <- function(df) {
     # get quantile percentages in increasing order
-    # we convert column name -> number -> back to name so that it can be sorted
+    # we convert column name -> number -> back to name so that it gets sorted
     quant_names <- get_quant_percentages(df) |>
-        purrr::map(\(x) paste0("quant_", x)) |>
+        purrr::map(\(x) quant_name(x)) |>
         as.character()
 
     # get the quantile columns in order
