@@ -1,43 +1,31 @@
-# test_that("validate_forecast() works", {
-#   expect_error(
-#     validate_forecast(5),
-#     "forecast must be named list"
-#   )
+test_that("validate_forecast() works", {
+  expect_error(
+    validate_forecast(5),
+    "forecast must be named list"
+  )
 
-#   expect_error(
-#     validate_forecast(data.frame(time=1:3,raw=4:6)),
-#     "forecast must be named list.*not just a data frame"
-#   )
+  expect_error(
+    validate_forecast(data.frame(time=1:3,raw=4:6)),
+    "forecast must be named list containing data frame, not just a data frame"
+  )
 
-#   expect_error(
-#     validate_forecast(list(1,2,3)),
-#     "forecast must specify.*time_type"
-#   )
+  expect_error(
+    validate_forecast(list(name="hello", forecast_time=45)),
+    "forecast must contain `data`"
+  )
 
-#   expect_error(
-#     validate_forecast(list(time_type="whatever")),
-#     "forecast must specify.*data_types"
-#   )
+  expect_error(
+    validate_forecast(list(data=data.frame(time=1:3,sim=4:6))),
+    "sim column present but val column missing"
+  )
 
-#   expect_error(
-#     validate_forecast(list(time_type="hi", data_types="bye")),
-#     "forecast must contain `data`"
-#   )
-
-#   expect_error(
-#     validate_forecast(list(
-#       time_type="hi", data_types="bye", data=data.frame(time=1:3, raw=4:6))
-#     ),
-#     "stated time type does not match data frame time type"
-#   )
-
-#   expect_error(
-#     validate_forecast(list(
-#       time_type="numeric", data_types="raw", data=data.frame(time=1,raw=4), forecast_time=lubridate::ymd("2024-01-01")
-#     )),
-#     "type of `t` does not match `fcst.*time_type`"
-#   )
-# })
+  expect_error(
+    validate_forecast(list(
+      data=data.frame(time=1,val=4), forecast_time=lubridate::ymd("2024-01-01")
+    )),
+    "type of `t` does not match `fcst.*time_type`"
+  )
+})
 
 # test_that("validate_forecast() checks data types properly", {
 #   expect_error(
@@ -179,6 +167,11 @@
 
 test_that("validate_data_frame() works", {
   expect_error(
+    validate_data_frame(data.frame(time=NULL,val=NULL)),
+    "data frame has no rows"
+  )
+
+  expect_error(
     validate_data_frame(data.frame(
       val=1:3
     )),
@@ -243,11 +236,32 @@ test_that("validate_data_frame() works", {
     "val_q5 column must be numeric"
   )
 
+  expect_error(
+    validate_data_frame(data.frame(
+      time=1:3, sim=4:6
+    )),
+    "sim column present but val column missing"
+  )
+
+  expect_error(
+    validate_data_frame(data.frame(
+      time=1:3
+    )),
+    "data frame contains no data columns"
+  )
+
   expect_equal(
+    validate_data_frame(data.frame(
+      time=1:3, val_q2.5=7:9, val_q50=10:12, val_mean=13:15
+    )),
+    NULL
+  )
+
+  expect_warning(
     validate_data_frame(data.frame(
       time=1:3, val=4:6, val_q2.5=7:9, val_q50=10:12, val_mean=13:15
     )),
-    NULL
+    "both summarized and unsummarized \\(`val`\\) data provided. summarized data will be ignored"
   )
 
   expect_equal(

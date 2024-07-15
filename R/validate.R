@@ -1,3 +1,57 @@
+#' Validate forecast in named-list format
+#'
+#' `validate_forecast()` validates a forecast by checking that:
+#' - it is a named list
+#' - it contains a valid data frame
+#' - its forecast time is compatible with its time type
+#' If any of these conditions fail, it stops with an appropriate an error message
+#'
+#' @param fcst The object to be validated
+#'
+#' @returns NULL if valid (error if invalid)
+#'
+#' @examples
+#' # valid forecast
+#' casteval:::validate_forecast(list(
+#'   name="hello",
+#'   forecast_time=5,
+#'   data=data.frame(time=1:3, val=4:6)
+#' ))
+#' 
+#' # not a forecast
+#' try(casteval:::validate_forecast(data.frame(time=1:3, val=4:6)))
+#' 
+#' # bad forecast_time type
+#' try(casteval:::validate_forecast(list(
+#'   forecast_time=lubridate::as.Date(1000),
+#'   data=data.frame(time=1:3, val=4:6)
+#' )))
+validate_forecast <- function(fcst) {
+    # must be list
+    if(!is.list(fcst)) {
+        stop("forecast must be named list")
+    }
+
+    # data frames pass is.list() but are probably a sign of a mistake
+    if(is.data.frame(fcst)) {
+        stop("forecast must be named list containing data frame, not just a data frame")
+    }
+
+    # `data` present
+    if(! "data" %in% names(fcst)) {
+        stop("forecast must contain `data`")
+    }
+
+    validate_data_frame(fcst$data)
+
+    # check `forecast_time` type valid
+    if(!is.null(fcst$forecast_time)) {
+        validate_time(fcst$forecast_time, fcst)
+    }
+    invisible(NULL)
+}
+
+
 #' Check that time compatible with forecast
 #'
 #' Check that the type of a given time matches the time type of a given forecast.
@@ -18,9 +72,10 @@
 #'   create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
 #' ))
 validate_time <- function(t, fcst) {
-    if((lubridate::is.Date(t) && fcst$time_type == "date") ||
-        (lubridate::is.POSIXt(t) && fcst$time_type == "date-time") ||
-        (is.numeric(t) && fcst$time_type == "numeric")) {
+    time_type <- get_time_type(fcst$data)
+    if((lubridate::is.Date(t) && time_type == "date") ||
+        (lubridate::is.POSIXt(t) && time_type == "date-time") ||
+        (is.numeric(t) && time_type == "numeric")) {
         return(NULL)
     } else {
         stop("type of `t` does not match `fcst$time_type`")
@@ -146,6 +201,10 @@ validate_quant_order <- function(df) {
 #' @examples
 #' # TODO
 validate_data_frame <- function(df) {
+    if(nrow(df) == 0) {
+        stop("data frame has no rows")
+    }
+
     cols <- colnames(df)
 
     # check time column
@@ -166,6 +225,21 @@ validate_data_frame <- function(df) {
                 stop(glue::glue("{col} column must be numeric"))
             }
         }
+    }
+
+    # if sim exists, val must exist
+    if("sim" %in% cols && (!"val" %in% cols)) {
+        stop("sim column present but val column missing")
+    }
+
+    summary_present <- "val_mean" %in% cols || length(quant_cols) > 0
+
+    if("val" %in% cols && summary_present) {
+        warning("both summarized and unsummarized (`val`) data provided. summarized data will be ignored")
+    }
+
+    if((!"val" %in% cols) && !summary_present) {
+        stop("data frame contains no data columns")
     }
 
     invisible(NULL)

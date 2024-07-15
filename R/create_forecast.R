@@ -1,3 +1,17 @@
+create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
+    # TODO grouping & corresponding input formats
+    # TODO warn about extra columns
+
+    #check quant symmetry
+    #check quant order
+    #check time type match
+    message("Validating input data...")
+    if(is.data.frame(dat)) {
+        forecast <- create_forecast_single(dat, name, forecast_time)
+    }
+}
+
+
 #' Create forecast from single data frame
 #'
 #' Helper for `create_forecast()`.
@@ -14,12 +28,10 @@
 create_forecast_single <- function(df, name, forecast_time) {
     forecast <- list(name=name, forecast_time=forecast_time)
 
-    # validate data frame & get its format
-    fmt <- get_format(df)
-    # store the format as metadata
-    forecast$time_type <- fmt$time_type
-    forecast$data_types <- fmt$data_types
+    # validate data frame
+    validate_data_frame(df)
     forecast$data <- df
+
     forecast
 }
 
@@ -118,18 +130,4 @@ create_forecast_ensemble <- function(dat, name, forecast_time) {
     forecast$data_types <- "raw"
     forecast$data <- df
     forecast
-}
-
-
-create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
-    # TODO grouping & corresponding input formats
-    # TODO warn about extra columns
-
-    #check empty
-    #check quant symmetry
-    #check quant order
-    message("Validating input data...")
-    if(is.data.frame(dat)) {
-        
-    }
 }
