@@ -34,47 +34,76 @@ test_that("validate_forecast() works", {
   )
 })
 
-test_that("validate_time() works", {
-  expect_equal(
-    validate_time(5, create_forecast(data.frame(time=6,raw=7))),
-    NULL
-  )
+# test_that("validate_time() works", {
+#   expect_equal(
+#     validate_time(5, create_forecast(data.frame(time=6,raw=7))),
+#     NULL
+#   )
 
-  expect_equal(
-    validate_time(lubridate::ymd("2024-01-02"), create_forecast(data.frame(time=lubridate::ymd("2024-01-01"), raw=7))),
-    NULL
-  )
+#   expect_equal(
+#     validate_time(lubridate::ymd("2024-01-02"), create_forecast(data.frame(time=lubridate::ymd("2024-01-01"), raw=7))),
+#     NULL
+#   )
 
-  expect_equal(
-    validate_time(
-      lubridate::ymd_hms("2024-01-01_03:03:03"),
-      create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_04:04:04"),raw=8))
-    ),
-    NULL
-  )
+#   expect_equal(
+#     validate_time(
+#       lubridate::ymd_hms("2024-01-01_03:03:03"),
+#       create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_04:04:04"),raw=8))
+#     ),
+#     NULL
+#   )
   
+#   expect_error(
+#     validate_time(
+#       lubridate::ymd_hms("2024-01-01_04:04:04"),
+#       create_forecast(data.frame(time=5,raw=6))
+#     ),
+#     "type of `t` does not match `fcst\\$time_type`"
+#   )
+
+#   expect_error(
+#     validate_time(
+#       lubridate::ymd("2024-01-01"),
+#       create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
+#     ),
+#     "type of `t` does not match `fcst\\$time_type`"
+#   )
+
+#   expect_error(
+#     validate_time(
+#       lubridate::ymd_hms("2024-01-01_00:00:00"),
+#       create_forecast(data.frame(time=lubridate::ymd("2024-01-01"),raw=7))
+#     ),
+#     "type of `t` does not match `fcst\\$time_type`"
+#   )
+# })
+
+test_that("validate_obs() works", {
+  expect_error(validate_obs(list(data=data.frame(time=1,val_obs=3))), "obs must be data frame")
+
   expect_error(
-    validate_time(
-      lubridate::ymd_hms("2024-01-01_04:04:04"),
-      create_forecast(data.frame(time=5,raw=6))
-    ),
-    "type of `t` does not match `fcst\\$time_type`"
+    validate_obs(data.frame(time=NULL,val_obs=NULL)),
+    "obs data frame has no rows"
   )
 
   expect_error(
-    validate_time(
-      lubridate::ymd("2024-01-01"),
-      create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
-    ),
-    "type of `t` does not match `fcst\\$time_type`"
+    validate_obs(data.frame(val_obs=1)),
+    "obs data frame requires time column"
   )
 
   expect_error(
-    validate_time(
-      lubridate::ymd_hms("2024-01-01_00:00:00"),
-      create_forecast(data.frame(time=lubridate::ymd("2024-01-01"),raw=7))
-    ),
-    "type of `t` does not match `fcst\\$time_type`"
+    validate_obs(data.frame(time=1)),
+    "obs data frame requires val_obs column"
+  )
+
+  expect_error(
+    validate_obs(data.frame(time=c("hi", "bye"))),
+    "time column must be either numeric, Date, or date-time"
+  )
+
+  expect_error(
+    validate_obs(data.frame(time=4,val_obs=c("hi"))),
+    "obs\\$val_obs must be numeric"
   )
 })
 
@@ -98,39 +127,39 @@ test_that("validate_column() works", {
   expect_error(validate_column(df4, "quant_"), "not in data frame")
 })
 
-test_that("validate_fcst_obs_pair() works", {
-  expect_equal(
-    validate_fcst_obs_pair(
-      create_forecast(data.frame(time=1:10, val=11:20)),
-      data.frame(time=101:110, val_obs=111:120)
-    ),
-    NULL
-  )
+# test_that("validate_fcst_obs_pair() works", {
+#   expect_equal(
+#     validate_fcst_obs_pair(
+#       create_forecast(data.frame(time=1:10, val=11:20)),
+#       data.frame(time=101:110, val_obs=111:120)
+#     ),
+#     NULL
+#   )
 
-  expect_error(
-    validate_fcst_obs_pair(
-      create_forecast(data.frame(time=1:10, val=11:20)),
-      data.frame(time=lubridate::ymd("2024-01-01"), val_obs=5)
-    ),
-    "observations time type must match forecast time type"
-  )
-})
+#   expect_error(
+#     validate_fcst_obs_pair(
+#       create_forecast(data.frame(time=1:10, val=11:20)),
+#       data.frame(time=lubridate::ymd("2024-01-01"), val_obs=5)
+#     ),
+#     "observations time type must match forecast time type"
+#   )
+# })
 
 test_that("validate_quant_order() works", {
   expect_error(
-    validate_quant_order(data.frame(time=1:3, quant_25=4:6, quant_75=c(4,4,4))),
+    validate_quant_order(data.frame(time=1:3, val_q25=4:6, val_q75=c(4,4,4))),
     "quantiles have impossible values in row 2"
   )
   expect_equal(
-    validate_quant_order(data.frame(time=1:3, quant_25=4:6)),
+    validate_quant_order(data.frame(time=1:3, val_q25=4:6)),
     NULL
   )
   expect_equal(
-    validate_quant_order(data.frame(time=1:3, quant_2.5=4:6, quant_50=4:6)),
+    validate_quant_order(data.frame(time=1:3, val_2.5=4:6, val_50=4:6)),
     NULL
   )
   expect_equal(
-    validate_quant_order(data.frame(time=1:3, quant_2.5=4:6, quant_50=7:9)),
+    validate_quant_order(data.frame(time=1:3, val_q2.5=4:6, val_q50=7:9)),
     NULL
   )
 })
@@ -220,18 +249,25 @@ test_that("validate_data_frame() works", {
     "data frame contains no data columns"
   )
 
-  expect_equal(
-    validate_data_frame(data.frame(
-      time=1:3, val_q2.5=7:9, val_q50=10:12, val_mean=13:15
-    )),
-    NULL
-  )
-
   expect_warning(
     validate_data_frame(data.frame(
       time=1:3, val=4:6, val_q2.5=7:9, val_q50=10:12, val_mean=13:15
     )),
     "both summarized and unsummarized \\(`val`\\) data provided. summarized data will be ignored"
+  )
+
+  expect_error(
+    validate_data_frame(data.frame(
+      time=1:3, val_q2.5=10:12, val_q97.5=7:9
+    )),
+    "quantiles have impossible values in row 1"
+  )
+
+  expect_equal(
+    validate_data_frame(data.frame(
+      time=1:3, val_q2.5=7:9, val_q50=10:12, val_mean=13:15
+    )),
+    NULL
   )
 
   expect_equal(

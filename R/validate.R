@@ -52,6 +52,48 @@ validate_forecast <- function(fcst) {
 }
 
 
+#' Validate observations data frame
+#'
+#' Check that a given object:
+#' - is a data frame
+#' - is not empty
+#' - contains a valid `time` column
+#' - contains a numeric `val_obs` column
+#'
+#' @param obs An observations object.
+#'
+#' @returns NULL if valid, error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+validate_obs <- function(obs) {
+    if(!is.data.frame(obs)) {
+        stop("obs must be data frame")
+    }
+
+    if(nrow(obs) == 0) {
+        stop("obs data frame has no rows")
+    }
+
+    cols <- colnames(obs)
+
+    if(!"time" %in% cols) {
+        stop("obs data frame requires time column")
+    }
+
+    validate_time_column(obs$time)
+
+    if(!"val_obs" %in% cols) {
+        stop("obs data frame requires val_obs column")
+    }
+
+    if(!is.numeric(obs$val_obs)) {
+        stop("obs$val_obs must be numeric")
+    }
+}
+
+
 #' Check that time compatible with forecast
 #'
 #' Check that the type of a given time matches the time type of a given forecast.
@@ -189,8 +231,10 @@ validate_quant_order <- function(df) {
 #'
 #' Given a data frame, checks that:
 #' 
+#' - it isn't empty
 #' - it has a valid time column
-#' - its quantile columns are properly named
+#' - its quantile columns are properly named and their values are in order
+#' - it has at least one data column
 #' - its data columns are numeric
 #'
 #' @param df A data frame
@@ -241,6 +285,8 @@ validate_data_frame <- function(df) {
     if((!"val" %in% cols) && !summary_present) {
         stop("data frame contains no data columns")
     }
+
+    validate_quant_order(df)
 
     invisible(NULL)
 }
