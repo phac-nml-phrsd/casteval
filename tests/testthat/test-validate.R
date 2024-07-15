@@ -108,23 +108,23 @@ test_that("validate_obs() works", {
 })
 
 test_that("validate_column() works", {
-  df1 <- data.frame(time=numeric(0),raw=NULL)
+  df1 <- data.frame(time=numeric(0),val=NULL)
   df2 <- data.frame()
-  df3 <- dplyr::tibble(time=1:3, raw=list(1,2,3))
-  df4 <- dplyr::tibble(time=1:3, quant_2.5=4:6)
+  df3 <- dplyr::tibble(time=1:3, val=c(1,2,3))
+  df4 <- dplyr::tibble(time=1:3, val_q2.5=4:6)
 
   expect_equal(validate_column(df1, "time"), NULL)
-  expect_error(validate_column(df1, "raw"), "not in data frame")
+  expect_error(validate_column(df1, "val"), "not in data frame")
 
   expect_error(validate_column(df2, ""), "not in data frame")
 
-  expect_equal(validate_column(df3, "raw"), NULL)
+  expect_equal(validate_column(df3, "val"), NULL)
 
-  expect_equal(validate_column(df4, "quant_2.5"), NULL)
+  expect_equal(validate_column(df4, "val_q2.5"), NULL)
 
-  expect_error(validate_column(df3, "mean"), "not in data frame")
+  expect_error(validate_column(df3, "val_mean"), "not in data frame")
 
-  expect_error(validate_column(df4, "quant_"), "not in data frame")
+  expect_error(validate_column(df4, "val_q"), "not in data frame")
 })
 
 # test_that("validate_fcst_obs_pair() works", {

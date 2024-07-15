@@ -58,7 +58,7 @@
 #' # an already-combined ensemble with simulation numbers
 #' create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), sim=c(1,2,3,4,5,1,2,3,4,5), val=c(20,21,22,23,24,10,11,12,13,14)))
 #' 
-#' # an ensemble of 4 realizations, each represented by a vector
+#' # an ensemble of 4 realizations, each represented by a vector in `vals`
 #' create_forecast(list(
 #'   time=1:3,
 #'   vals=list(4:6, 7:9, 10:12, 13:15)
@@ -71,7 +71,8 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 
     #check quant symmetry
     if(is.data.frame(dat)) {
-        df <- create_forecast_single(dat)
+        validate_data_frame(dat)
+        df <- dat
     }
     
     else if(is.list(dat)) {
@@ -91,26 +92,6 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     fcst
 }
 
-
-#' Create forecast from single data frame
-#'
-#' Helper for `create_forecast()`.
-#'
-#' @param df A data frame
-#' @returns A forecast object
-#' @autoglobal
-#'
-#' @examples
-#' # See `create_forecast()`
-create_forecast_single <- function(df) {
-    forecast <- list(name=name, forecast_time=forecast_time)
-
-    # validate data frame
-    validate_data_frame(df)
-    forecast$data <- df
-
-    forecast
-}
 
 #' Create forecast from multiple data frames
 #'
