@@ -96,7 +96,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 #' @param vals A list of vectors of values.
 #'  Each vector corresponds to a realization which will be assigned a simulation number.
 #'
-#' @returns A forecast object
+#' @returns A forecast data frame
 #' @autoglobal
 #'
 #' @examples
@@ -106,33 +106,28 @@ create_forecast_ensemble <- function(time, vals) {
 
     validate_time_column(time)
 
-    if(length(tm) == 0) {
+    if(length(time) == 0) {
         stop("`dat$time` is empty")
     }
     
-    if(!is.list(ens)) {
+    if(!is.list(vals)) {
         stop("`dat$vals` must be a list")
     }
 
-    if(length(ens) == 0) {
+    if(length(vals) == 0) {
         stop("`dat$vals` is empty")
     }
 
-    if(!all(as.logical(purrr::map(ens, is.numeric)))) {
+    if(!all(as.logical(purrr::map(vals, is.numeric)))) {
         stop("`dat$vals` must be list of numeric vectors")
     }
 
-    lens <- ens |> purrr::map(length) |> as.numeric()
-    if(any(length(tm) != lens)) {
-        stop("all vectors in `dat$ensemble` must have the same length as `dat$time`")
+    lens <- vals |> purrr::map(length) |> as.numeric()
+    if(any(length(time) != lens)) {
+        stop("all vectors in `dat$ens` must have the same length as `dat$time`")
     }
 
-    # transpose list of vectors
-    raw <- ens |> purrr::list_transpose() |> purrr::map(as.numeric)
-    # build data frame
-    df <- dplyr::tibble(time=tm, raw=raw)
-    forecast$time_type <- get_time_type(tm)
-    forecast$data_types <- "raw"
-    forecast$data <- df
-    forecast
+    # create a data frame from each vector in vals, give them each a unique sim number, then bind them together
+    vals |> purrr::imap(\(val, i) data.frame(time=time, sim=i, val=val)) |>
+        dplyr::bind_rows()
 }
