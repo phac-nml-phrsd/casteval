@@ -4,17 +4,15 @@
 #' It accepts a variety of forecast formats as input and intelligently converts them into a standard format.
 #'
 #' @param dat Forecast data. It can be in one of the following formats:
-#' - A single data frame containing forecast data
-#' - A list of data frames each containing unsummarized forecast data
+#' - A data frame containing forecast data
 #' - A named list with a `time` field (vector of times) and a `vals` field (list of realization vectors).
 #'  Each of the vectors in `vals` must have the same length as `time`
 #' 
-#' Forecast data frames should contain:
+#' In the first option above, the data frame should contain:
 #' - A `time` column
 #' - (Optional) a `sim` column, containing simulation numbers for unsummarized data
 #' - (Optional) a `val` column, containing unsummarized data.
 #'  If `sim` is present then `val` must be present as well.
-#'  If `dat` is a list of data frames, then `sim` must not be present in them.
 #' - (Optional) columns starting with `val_q` followed by a number from 0 to 100, containing quantile data
 #' - (Optional) a `val_mean` column, containing mean data
 #'
@@ -45,13 +43,6 @@
 #'   ),
 #'   name="another forecast"
 #' )
-#'
-#' # an ensemble of 3 realizations, each represented by a data frame
-#' create_forecast(list(
-#'   dplyr::tibble(time=1:5,val=6:10),
-#'   dplyr::tibble(time=2:6,val=7:11),
-#'   dplyr::tibble(time=3:7,val=8:12)
-#' ))
 #' 
 #' # an already-combined ensemble
 #' create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), val=c(20,21,22,23,24,10,11,12,13,14)))
@@ -80,7 +71,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
         if("time" %in% names(dat) && "vals" %in% names(dat)) {
             df <- create_forecast_ensemble(dat$time, dat$vals)
         } else {
-            df <- create_forecast_multiple(dat)
+            stop("`dat` must have `time` and `vals` fields")
         }
     }
 
@@ -94,72 +85,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 }
 
 
-#' Create forecast from multiple data frames
-#'
-#' Helper for `create_forecast()`.
-#'
-#' @param dfs A list of data frames
-#'
-#' @returns A forecast object
-#' @autoglobal
-#'
-#' @examples
-#' # See `create_forecast()`
-create_forecast_multiple <- function(dfs) {
-    if(length(dfs) == 0) {
-        stop("`dat` is empty")
-    }
-
-    # check all data frames
-    is_df <- dfs |> purrr::map(is.data.frame) |> as.logical()
-    if(!all(is_df)) {
-        index <- which(!is_df)[[1]]
-        stop(glue::glue("`dat[[{index}]]` is not a data frame"))
-    }
-
-    # validate each data frame
-    purrr::walk(\(df) validate_data_frame(df))
-
-    # check all unsummarized
-    unsummarized <- dfs |> purrr::map(\(df) "val" %in% colnames(df)) |> as.logical()
-    if(!all(unsummarized)) {
-        index <- which(!unsummarized)
-        stop(glue::glue("`dat[[{index}]]` does not contain unsummarized data"))
-    }
-
-    sim <- dfs |> purrr::map(\(df) "sim" %in% colnames(df)) |> as.logical()
-    if(any(sim)) {
-        index <- which(sim)
-        stop(glue::glue("`dat[[{index}]]` has `sim` column"))
-    }
-
-    # check time types
-    time_types <- dfs |> purrr::map(get_time_type) |> as.character() |> unique()
-    if(length(time_types) > 1) {
-        stop("multiple time types detected in `dat`")
-    }
-
-    # warn if time columns don't match perfectly
-    timecols <- dfs |> purrr::map(\(df) df$time)
-    times_match <- timecols[-1] |> purrr::map(\(col) setequal(timecols[[1]], col)) |> all()
-    if(!times_match) {
-        warning("data frame time columns are not all the same")
-    }
-
-    if(!is.null(names(dfs))) {
-        warning("list of data frames `dat` contains names which will be ignored")
-    }
-
-    # append a `sim` column to every data frame
-    dfs <- dfs |> unname() |> purrr::imap(\(df, i) 
-        # isolate `time` and `val` columns
-        df |> dplyr::select(time, val) |>
-            dplyr::mutate(sim=i)
-    )
-
-    # combine into one data frame with `time`, `sim`, and `val` columns
-    dfs |> purrr::reduce(dplyr::bind_rows)
-}
+# TODO support a format with a list of vectors for each time point
 
 
 #' Create forecast from time vector and ensemble of realizations
