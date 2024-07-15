@@ -13,7 +13,8 @@
 #' - A `time` column
 #' - (Optional) a `sim` column, containing simulation numbers for unsummarized data
 #' - (Optional) a `val` column, containing unsummarized data.
-#'  If `sim` is present then `val` must be present as well
+#'  If `sim` is present then `val` must be present as well.
+#'  If `dat` is a list of data frames, then `sim` must not be present in them.
 #' - (Optional) columns starting with `val_q` followed by a number from 0 to 100, containing quantile data
 #' - (Optional) a `val_mean` column, containing mean data
 #'
@@ -98,40 +99,66 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 #' Helper for `create_forecast()`.
 #'
 #' @param dfs A list of data frames
-#' @param name A string
-#' @param forecast_time A number, date, or date-time
 #'
 #' @returns A forecast object
 #' @autoglobal
 #'
 #' @examples
 #' # See `create_forecast()`
-create_forecast_multiple <- function(dfs, name, forecast_time) {
-    forecast <- list(name=name, forecast_time=forecast_time)
-
+create_forecast_multiple <- function(dfs) {
     if(length(dfs) == 0) {
-        stop("list of data frames is empty")
+        stop("`dat` is empty")
     }
 
-    if(!all(as.logical(purrr::map(dfs, is.data.frame)))) {
-        stop("received list containing non-data-frames")
+    # check all data frames
+    is_df <- dfs |> purrr::map(is.data.frame) |> as.logical()
+    if(!all(is_df)) {
+        index <- which(!is_df)[[1]]
+        stop(glue::glue("`dat[[{index}]]` is not a data frame"))
     }
 
-    # validate data frames & get their formats
-    fmts <- dfs |> purrr::map(~ get_format(.x))
+    # validate each data frame
+    purrr::walk(\(df) validate_data_frame(df))
 
-    if((fmts |> purrr::map(~ .x$time_type) |> unique() |> length()) > 1) {
-        stop("all data frames must have same time type")
+    # check all unsummarized
+    unsummarized <- dfs |> purrr::map(\(df) "val" %in% colnames(df)) |> as.logical()
+    if(!all(unsummarized)) {
+        index <- which(!unsummarized)
+        stop(glue::glue("`dat[[{index}]]` does not contain unsummarized data"))
     }
 
-    if(!all(as.logical(purrr::map(fmts, ~ "raw" %in% .x$data_types)))) {
-        stop("all data frames must contain raw data")
+    sim <- dfs |> purrr::map(\(df) "sim" %in% colnames(df)) |> as.logical()
+    if(any(sim)) {
+        index <- which(sim)
+        stop(glue::glue("`dat[[{index}]]` has `sim` column"))
     }
 
-    forecast$time_type <- fmts[[1]]$time_type
-    forecast$data_types <- "raw"
-    forecast$data <- combine_data_frames(dfs)
-    forecast
+    # check time types
+    time_types <- dfs |> purrr::map(get_time_type) |> as.character() |> unique()
+    if(length(time_types) > 1) {
+        stop("multiple time types detected in `dat`")
+    }
+
+    # warn if time columns don't match perfectly
+    timecols <- dfs |> purrr::map(\(df) df$time)
+    times_match <- timecols[-1] |> purrr::map(\(col) setequal(timecols[[1]], col)) |> all()
+    if(!times_match) {
+        warning("data frame time columns are not all the same")
+    }
+
+    if(!is.null(names(dfs))) {
+        warning("list of data frames `dat` contains names which will be ignored")
+    }
+
+    # append a `sim` column to every data frame
+    dfs <- dfs |> unname() |> purrr::imap(\(df, i) 
+        # isolate `time` and `val` columns
+        df |> dplyr::select(time, val) |>
+            dplyr::mutate(sim=i)
+    )
+
+    # combine into one data frame with `time`, `sim`, and `val` columns
+    dfs |> purrr::reduce(dplyr::bind_rows)
 }
 
 
