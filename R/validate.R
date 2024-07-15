@@ -223,5 +223,4 @@ validate_time_column <- function(times) {
     } else {
         stop("time column must be either numeric, Date, or date-time (POSIXt)")
     }
-    invisible(NULL)
 }

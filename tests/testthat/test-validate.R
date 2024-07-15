@@ -228,4 +228,32 @@ test_that("validate_data_frame() works", {
     )),
     "quantile percentage 100\\.1 out of range"
   )
+
+  expect_error(
+    validate_data_frame(data.frame(
+      time=1:3, sim=c(TRUE,TRUE,TRUE), val=4:6
+    )),
+    "sim column must be numeric"
+  )
+
+  expect_error(
+    validate_data_frame(data.frame(
+      time=1:3, val_q5=c("hi","bye","hey")
+    )),
+    "val_q5 column must be numeric"
+  )
+
+  expect_equal(
+    validate_data_frame(data.frame(
+      time=1:3, val=4:6, val_q2.5=7:9, val_q50=10:12, val_mean=13:15
+    )),
+    NULL
+  )
+
+  expect_equal(
+    validate_data_frame(data.frame(
+      time=c(1,1,2,2,3,3), sim=c(1,2,1,2,1,2), val=c(1,2,3,4,5,6)
+    )),
+    NULL
+  )
 })
