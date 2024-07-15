@@ -125,6 +125,9 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     # TODO grouping & corresponding input formats
     # TODO warn about extra columns
 
+    #check empty
+    #check quant symmetry
+    #check quant order
     message("Validating input data...")
     if(is.data.frame(dat)) {
         

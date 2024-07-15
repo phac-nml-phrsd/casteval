@@ -210,7 +210,6 @@ validate_quant_name <- function(name) {
 #' @param times A vector, presumably a time column
 #'
 #' @returns NULL if valid, error otherwise
-#' @export
 #' @autoglobal
 #'
 #' @examples
