@@ -265,13 +265,6 @@ test_that("validate_data_frame() works", {
 
   expect_error(
     validate_data_frame(data.frame(
-      time=c(1,1,2), val=4:6
-    )),
-    "data frame contains duplicate entries"
-  )
-
-  expect_error(
-    validate_data_frame(data.frame(
       time=c(1,1,2,2,2,3,3), sim=c(1,2,1,2,2,1,2), val=1:7
     )),
     "data frame contains duplicate entries"

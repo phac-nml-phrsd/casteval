@@ -166,40 +166,34 @@ create_forecast_multiple <- function(dfs) {
 #'
 #' Helper for `create_forecast()`.
 #'
-#' @param dat A named list containing names `time` and `ensemble`
-#' @param name A string
-#' @param forecast_time A number, date, or date-time
+#' @param time A vector of times
+#' @param vals A list of vectors of values.
+#'  Each vector corresponds to a realization which will be assigned a simulation number.
 #'
 #' @returns A forecast object
 #' @autoglobal
 #'
 #' @examples
 #' # See `create_forecast()`
-create_forecast_ensemble <- function(dat, name, forecast_time) {
-    forecast <- list(name=name, forecast_time=forecast_time)
-    
-    ## do input validation
-    tm <- dat$time
-    ens <- dat$ensemble
+create_forecast_ensemble <- function(time, vals) {
+    ## validate `time` and `vals`
 
-    if(!is.numeric(tm)) {
-        stop("`dat$time` must be numeric vector")
-    }
-
-    if(!is.list(ens)) {
-        stop("`dat$ensemble` must be list")
-    }
+    validate_time_column(time)
 
     if(length(tm) == 0) {
         stop("`dat$time` is empty")
     }
+    
+    if(!is.list(ens)) {
+        stop("`dat$vals` must be a list")
+    }
 
     if(length(ens) == 0) {
-        stop("`dat$ensemble` is empty")
+        stop("`dat$vals` is empty")
     }
 
     if(!all(as.logical(purrr::map(ens, is.numeric)))) {
-        stop("`dat$ensemble` must be list of numeric vectors")
+        stop("`dat$vals` must be list of numeric vectors")
     }
 
     lens <- ens |> purrr::map(length) |> as.numeric()
