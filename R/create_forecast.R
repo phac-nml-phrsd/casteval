@@ -1,14 +1,94 @@
+#' Create a forecast object
+#' 
+#' `create_forecast()` creates a forecast object given data and optional metadata.
+#' It accepts a variety of forecast formats as input and intelligently converts them into a standard format.
+#'
+#' @param dat Forecast data. It can be in one of the following formats:
+#' - A single data frame containing forecast data
+#' - A list of data frames each containing unsummarized forecast data
+#' - A named list with a `time` field (vector of times) and a `vals` field (list of realization vectors).
+#'  Each of the vectors in `vals` must have the same length as `time`
+#' 
+#' Forecast data frames should contain:
+#' - A `time` column
+#' - (Optional) a `sim` column, containing simulation numbers for unsummarized data
+#' - (Optional) a `val` column, containing unsummarized data.
+#'  If `sim` is present then `val` must be present as well
+#' - (Optional) columns starting with `val_q` followed by a number from 0 to 100, containing quantile data
+#' - (Optional) a `val_mean` column, containing mean data
+#'
+#' Times can be either numeric, dates, or date-times. All data must be numeric.
+#' `sim` must also be numeric if present.
+#' 
+#' @param name (Optional) A string specifying the name of the forecast
+#' @param forecast_time (Optional) An integer, date, or date-time specifying when the forecast was created.
+#'  Its type should match the type of values in the `time` column(s) of `data`
+#'  If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to `forecast_time`.
+#'  Additionally, plots of this forecast may graphically distinguish between values to the left and right of `forecast_time`.
+#' 
+#' @returns A named list with fields `data`, `name`, `forecast_time`.
+#' `data` is a data frame containing forecast data.
+#' `name` and `forecast_time` are the same as the parameters passed to `create_forecast()`
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' # forecast with numeric times and raw data
+#' create_forecast(data.frame(time=1:3, val=10:12), name="a forecast", forecast_time=2)
+#' 
+#' # forecast with dates and mean-and-quantiles data
+#' create_forecast(
+#'   data.frame(
+#'     time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")),
+#'     val_mean=10:11, val_q2.5=5:6, val_q97.5=15:16
+#'   ),
+#'   name="another forecast"
+#' )
+#'
+#' # an ensemble of 3 realizations, each represented by a data frame
+#' create_forecast(list(
+#'   dplyr::tibble(time=1:5,val=6:10),
+#'   dplyr::tibble(time=2:6,val=7:11),
+#'   dplyr::tibble(time=3:7,val=8:12)
+#' ))
+#' 
+#' # an already-combined ensemble
+#' create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), val=c(20,21,22,23,24,10,11,12,13,14)))
+#' 
+#' # an already-combined ensemble with simulation numbers
+#' create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), sim=c(1,2,3,4,5,1,2,3,4,5), val=c(20,21,22,23,24,10,11,12,13,14)))
+#' 
+#' # an ensemble of 4 realizations, each represented by a vector
+#' create_forecast(list(
+#'   time=1:3,
+#'   vals=list(4:6, 7:9, 10:12, 13:15)
+#' ))
 create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
     # TODO grouping & corresponding input formats
     # TODO warn about extra columns
 
+    #TODO messages & quiet mode
+
     #check quant symmetry
-    #check quant order
-    #check time type match
-    message("Validating input data...")
     if(is.data.frame(dat)) {
-        forecast <- create_forecast_single(dat, name, forecast_time)
+        df <- create_forecast_single(dat)
     }
+    
+    else if(is.list(dat)) {
+        if("time" %in% names(dat) && "vals" %in% names(dat)) {
+            df <- create_forecast_ensemble(dat$time, dat$vals)
+        } else {
+            df <- create_forecast_multiple(dat)
+        }
+    }
+
+    # check time type compatibility
+    fcst <- list(name=name, forecast_time=forecast_time, data=df)
+    if(!is.null(fcst$forecast_time)) {
+        validate_time(fcst$forecast_time, forecast)
+    }
+
+    fcst
 }
 
 
@@ -17,15 +97,12 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 #' Helper for `create_forecast()`.
 #'
 #' @param df A data frame
-#' @param name A string
-#' @param forecast_time A number, date, or date-time
-#'
 #' @returns A forecast object
 #' @autoglobal
 #'
 #' @examples
 #' # See `create_forecast()`
-create_forecast_single <- function(df, name, forecast_time) {
+create_forecast_single <- function(df) {
     forecast <- list(name=name, forecast_time=forecast_time)
 
     # validate data frame
