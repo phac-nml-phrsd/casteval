@@ -276,6 +276,20 @@ validate_data_frame <- function(df) {
         stop("sim column present but val column missing")
     }
 
+    # if val exists, check for duplicated rows
+    if("val" %in% cols) {
+        if("sim" %in% cols) {
+            grouped <- df |> dplyr::group_by(time, sim)
+        } else {
+            grouped <- df |> dplyr::group_by(time)
+        }
+
+        dups <- grouped |> dplyr::filter(dplyr::n() > 1)
+        if(nrow(dups) > 0) {
+            stop("data frame contains duplicate entries")
+        }
+    }
+
     summary_present <- "val_mean" %in% cols || length(quant_cols) > 0
 
     if("val" %in% cols && summary_present) {

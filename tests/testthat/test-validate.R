@@ -263,6 +263,20 @@ test_that("validate_data_frame() works", {
     "quantiles have impossible values in row 1"
   )
 
+  expect_error(
+    validate_data_frame(data.frame(
+      time=c(1,1,2), val=4:6
+    )),
+    "data frame contains duplicate entries"
+  )
+
+  expect_error(
+    validate_data_frame(data.frame(
+      time=c(1,1,2,2,2,3,3), sim=c(1,2,1,2,2,1,2), val=1:7
+    )),
+    "data frame contains duplicate entries"
+  )
+
   expect_equal(
     validate_data_frame(data.frame(
       time=1:3, val_q2.5=7:9, val_q50=10:12, val_mean=13:15
