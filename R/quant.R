@@ -88,16 +88,19 @@ quant_name <- function(num) {
 #' # c(1000, 3000, 3000)
 #' casteval:::get_quantile(df2, 50)
 get_quantile <- function(df, perc) {
+    qcol <- glue::glue("val_q{perc}")
     # if raw values present, compute quantile from them, regardless of whether quantile columns present
     if("val" %in% colnames(df)) {
         # group by time
         quants <- df |> dplyr::group_by(time) |>
-            dplyr::summarize(quant=stats::quantile(val, perc/100, na.rm=TRUE)[[1]])
-        return(quants$quant)
+            dplyr::summarize(quant=stats::quantile(val, perc/100)[[1]])
+        quants[qcol] <- quants$quant
+        quants$quant <- NULL
+        return(quants)
     }
 
-    else if(perc %in% get_quant_percentages(df)) {
-        return(get_quant_col(df, perc))
+    else if(qcol %in% colnames(df)) {
+        return(dplyr::select(df, time, dplyr::all_of(qcol)))
     }
 
     else {
