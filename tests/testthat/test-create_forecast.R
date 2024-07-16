@@ -31,7 +31,7 @@ test_that("create_forecast() accepts data frame", {
     "data frame contains duplicate entries"
   )
 
-  expect_warning(
+  expect_error(
     create_forecast(data.frame(time=1:3, val=4:6, val_q2.5=7:9)),
     "both summarized and unsummarized.*data provided"
   )

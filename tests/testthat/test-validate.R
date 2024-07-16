@@ -249,11 +249,11 @@ test_that("validate_data_frame() works", {
     "data frame contains no data columns"
   )
 
-  expect_warning(
+  expect_error(
     validate_data_frame(data.frame(
       time=1:3, val=4:6, val_q2.5=7:9, val_q50=10:12, val_mean=13:15
     )),
-    "both summarized and unsummarized \\(`val`\\) data provided. summarized data will be ignored"
+    "both summarized and unsummarized \\(`val`\\) data provided"
   )
 
   expect_error(
@@ -266,6 +266,13 @@ test_that("validate_data_frame() works", {
   expect_error(
     validate_data_frame(data.frame(
       time=c(1,1,2,2,2,3,3), sim=c(1,2,1,2,2,1,2), val=1:7
+    )),
+    "data frame contains duplicate entries"
+  )
+
+  expect_error(
+    validate_data_frame(data.frame(
+      time=c(1,1,2), val_q50=c(4,5,6)
     )),
     "data frame contains duplicate entries"
   )

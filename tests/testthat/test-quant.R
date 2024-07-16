@@ -30,45 +30,34 @@ test_that("quant_name() works", {
   expect_equal(quant_name(1.2345), "val_q1.2345")
 })
 
-#TODO
-# test_that("raw2quant() works", {
-#   expect_error(raw2quant(list(c(1,2,NA),4:6)), "raw data contains NA values")
-#   expect_error(raw2quant(c(1,NA,3)), "raw data contains NA values")
-#   expect_error(raw2quant(list(1, NA, 3), "raw data contains NA values"))
-#   expect_equal(raw2quant(list(), 50), numeric(0))
-#   expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 50), c(2, 2, 4.5, 9))
-#   expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 0), c(1, 2, 3, 7))
-#   expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 100), c(3, 2, 6, 11))
-#   expect_equal(raw2quant(list(0:100), 26), 26)
-# })
+test_that("get_quantile() works", {
+  # error if not found
+  expect_error(
+    get_quantile(data.frame(time=1:3, val_q51=6:8), 50),
+    "could not compute/obtain.*quantile from data frame"
+  )
 
-# test_that("get_quantile() works", {
-#   # error if not found
-#   expect_error(
-#     get_quantile(data.frame(time=1:3, val_q51=6:8), 50),
-#     "could not compute/obtain.*quantile from data frame"
-#   )
+  df <- dplyr::tibble(time=c(1,1,1,2,2,2,3,3,3), val=c(4:12))
 
-#   df <- dplyr::tibble(time=1:3, val_q50=c(1000,2000,3000), raw=list(4:6, 7:9, 10:12))
+  df2 <- dplyr::tibble(time=1:3, val_q50=c(1000,2000,3000))
 
-#   # raw supersedes val_q*
-#   expect_equal(
-#     get_quantile(df, 50),
-#     c(5, 8, 11)
-#   )
+  expect_equal(
+    get_quantile(df, 50),
+    c(5, 8, 11)
+  )
 
-#   expect_equal(
-#     get_quantile(df |> dplyr::select(time, val_q50), 50),
-#     c(1000,2000,3000)
-#   )
+  expect_equal(
+    get_quantile(df2, 50),
+    c(1000,2000,3000)
+  )
 
-#   expect_equal(
-#     get_quantile(dplyr::tibble(time=1:2, raw=list(c(1,2,NA), 4:6)), 50),
-#     c(1.5, 5)
-#   )
+  expect_equal(
+    get_quantile(dplyr::tibble(time=c(1,1,1,2,2,2), val=c(1,2,NA, 4:6)), 50),
+    c(1.5, 5)
+  )
 
-#   expect_error(
-#     get_quantile(dplyr::tibble(time=1:2, raw=c(NA,2)), 50),
-#     "forecast data frame contains row with no raw data"
-#   )
-# })
+  expect_equal(
+    get_quantile(dplyr::tibble(time=1:2, val=c(NA,2)), 50),
+    c(NA, 2)
+  )
+})

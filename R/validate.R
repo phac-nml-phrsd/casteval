@@ -276,19 +276,23 @@ validate_data_frame <- function(df) {
         stop("sim column present but val column missing")
     }
 
-    # if val and sim provided, check for duplicate entries (same `time` and `sim`)
-    if("val" %in% cols && "sim" %in% cols) {
-        grouped <- df |> dplyr::group_by(time, sim)
+    summary_present <- "val_mean" %in% cols || length(quant_cols) > 0
+
+    if("val" %in% cols && summary_present) {
+        stop("both summarized and unsummarized (`val`) data provided")
+    }
+
+    # check for duplicate entries
+    if(("val" %in% cols && "sim" %in% cols) || summary_present) {
+        if(summary_present) {
+            grouped <- df |> dplyr::group_by(time)
+        } else {
+            grouped <- df |> dplyr::group_by(time, sim)
+        }
         dups <- grouped |> dplyr::filter(dplyr::n() > 1)
         if(nrow(dups) > 0) {
             stop("data frame contains duplicate entries")
         }
-    }
-
-    summary_present <- "val_mean" %in% cols || length(quant_cols) > 0
-
-    if("val" %in% cols && summary_present) {
-        warning("both summarized and unsummarized (`val`) data provided. summarized data will be ignored")
     }
 
     if((!"val" %in% cols) && !summary_present) {
