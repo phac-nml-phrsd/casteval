@@ -1,17 +1,18 @@
 #' Get accuracy from quantiles
 #'
 #' Given a forecast and set of observations,
-#'  compute the accuracy (# within confidence interval / # total) of the forecast.
-#'  Raw data and/or provided quantiles will be used to compute the confidence interval.
+#'  compute the accuracy (# inside quantile range / # total) of the forecast.
+#'  Raw data and/or provided quantiles will be used to compute the quantile range.
 #'
 #' @template fcst
 #' @param obs An observations data frame.
-#' @param interval (Optional) A vector of two percentages from 0 to 100,
-#'  marking the high and low ends of the confidence interval. Defaults to `c(2.5, 97.5)`.
+#' @param quants (Optional) A vector of two percentages from 0 to 100,
+#'  the high and low end of the quantile range.
+#'  Defaults to `c(2.5, 97.5)`.
 #' @template summarize
 #'
 #' @returns A number from 0 to 1,
-#'  the rate at which the observations were inside the specified confidence interval
+#'  the rate at which the observations were inside the specified quantile range
 #' @export
 #' @autoglobal
 #'
@@ -19,104 +20,106 @@
 #' # calculate quantiles and accuracy from raw data
 #' # returns 2/3
 #' accuracy(
-#'   create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
-#'   data.frame(time=1:3, obs=c(5, 7.4, 11.6)),
-#'   interval=c(25, 75)
+#'   create_forecast(dplyr::tibble(time=c(1,1,1,2,2,2,3,3,3), val=4:12)),
+#'   data.frame(time=1:3, val_obs=c(5, 7.4, 11.6)),
+#'   quants=c(25, 75)
 #' )
 #' 
-#' # provide two quantiles and specify them in `interval`
+#' # provide two quantiles and specify them in `quants`
 #' # returns 1/3
 #' accuracy(
 #'   create_forecast(dplyr::tibble(
-#'     time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
+#'     time=1:3, val_q25=4:6, val_q50=7:9, val_mean=100:102, val_q75=200:202
 #'   )),
-#'   data.frame(time=1:3, obs=c(4, 201, 1000)),
-#'   interval=c(25,50)
+#'   data.frame(time=1:3, val_obs=c(4, 201, 1000)),
+#'   quants=c(25,50)
 #' )
 #'
 #' # return a data frame with a logical `score` column
 #' accuracy(
 #'   create_forecast(dplyr::tibble(
-#'     time=1:3, quant_2.5=4:6, quant_50=7:9, mean=100:102, quant_97.5=200:202
+#'     time=1:3, val_q2.5=4:6, val_q50=7:9, val_mean=100:102, val_q97.5=200:202
 #'   )),
-#'   data.frame(time=1:3, obs=c(4, 201, 1000)),
+#'   data.frame(time=1:3, val_obs=c(4, 201, 1000)),
 #'   summarize=FALSE
 #' )
-accuracy <- function(fcst, obs, interval=c(2.5, 97.5), summarize=TRUE) {
-    if(!is.numeric(interval)) {
-        stop("`interval` must be numeric vector")
+accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
+    validate_quant_interval(quants)
+
+    if(!is.numeric(quants)) {
+        stop("`quants` must be numeric vector")
     }
 
-    if(length(interval) != 2) {
-        stop("`interval` must be numeric vector with length 2")
+    if(length(quants) != 2) {
+        stop("`quants` must be numeric vector with length 2")
     }
 
-    # TODO ask modellers if it would be better to just have `confs` instead of `interval`, if intervals are always going to be symmetrical
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    # get the low and high quantiles
-    low <- get_quantile(df, interval[[1]])
-    high <- get_quantile(df, interval[[2]])
+    # get the low and high quantiles and name the columns correspondingly
+    low <- get_quantile(df, quants[[1]]) |> dplyr::rename(low=quant)
+    high <- get_quantile(df, quants[[2]]) |> dplyr::rename(high=quant)
 
-    # check for NA quantiles
-    if(anyNA(low) || anyNA(high)) {
-        stop("some/all forecast quantiles are NA")
+    # attach quant columns to obs data frame
+    obs <- obs |> dplyr::left_join(low, dplyr::join_by(time)) |> dplyr::left_join(high, dplyr::join_by(time))
+    if(nrow(obs) == 0) {
+        stop("observations and forecast data share no time points")
     }
 
-    # join & calculate accuracy
-    df <- join_fcst_obs(df, obs) |>
-        dplyr::mutate(score=dplyr::between(obs, low, high))
+    # calculate accuracy
+    obs |> mutate(score=dplyr::between(val_obs, low, high))
+
     if(!summarize) {
-        return(df |> dplyr::select(time, obs, score))
+        return(obs |> dplyr::select(time, obs, score))
     }
 
     # calculate success rate (aka accuracy)
-    mean(df$score)
+    mean(obs$score)
 }
 
 #' Validate quantile interval vector
 #'
-#' Helper function for accuracy(). Performs input validation on its `interval` parameter.
+#' Helper function for accuracy(). Performs input validation on its `quants` parameter.
 #'
-#' @param interval Same as the `interval` parameter passed to accuracy()
+#' @param quants Same as the `quants` parameter passed to accuracy()
 #'
 #' @returns NULL if valid. Error otherwise.
 #' @autoglobal
 #'
 #' @examples
 #' # valid
-#' casteval:::validate_interval(c(50, 70))
+#' casteval:::validate_quant_interval(c(50, 70))
 #' 
 #' # invalid
-#' try(casteval:::validate_interval(c(70, 50)))
+#' try(casteval:::validate_quant_interval(c(70, 50)))
 #' 
 #' # invalid
-#' try(casteval:::validate_interval(c(-1, 50)))
+#' try(casteval:::validate_quant_interval(c(-1, 50)))
 #' 
 #' # invalid
-#' try(casteval:::validate_interval(c(50,60,70)))
+#' try(casteval:::validate_quant_interval(c(50,60,70)))
 #' 
 #' # invalid
-#' try(casteval:::validate_interval("50, 60"))
-validate_interval <- function(interval) {
-    if(!is.numeric(interval)) {
-        stop("`interval` must be either NULL or vector of 2 numbers")
+#' try(casteval:::validate_quant_interval("50, 60"))
+validate_quant_interval <- function(quants) {
+    if(!is.numeric(quants)) {
+        stop("`quants` must be either NULL or vector of 2 numbers")
     }
 
-    if(length(interval) != 2) {
-        stop("`interval` vector must have length 2")
+    if(length(quants) != 2) {
+        stop("`quants` vector must have length 2")
     }
 
-    low <- interval[[1]]
-    high <- interval[[2]]
+    low <- quants[[1]]
+    high <- quants[[2]]
 
     if(low >= high) {
-        stop("`interval[[1]]` must be less than `interval[[2]]`")
+        stop("`quants[[1]]` must be less than `quants[[2]]`")
     }
 
     if(low < 0 || low > 100 || high < 0 || high > 100) {
-        stop("`interval[[1]]` and `interval[[2]]` must be between 0 and 100, inclusive")
+        stop("`quants[[1]]` and `quants[[2]]` must be between 0 and 100, inclusive")
     }
 
     invisible(NULL)
