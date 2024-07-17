@@ -105,6 +105,11 @@ test_that("validate_obs() works", {
     validate_obs(data.frame(time=4,val_obs=c("hi"))),
     "obs\\$val_obs must be numeric"
   )
+
+  expect_error(
+    validate_obs(data.frame(time=c(1,2,2), val_obs=c(1,2,3))),
+    "obs contains duplicate observations at time 2"
+  )
 })
 
 test_that("validate_column() works", {

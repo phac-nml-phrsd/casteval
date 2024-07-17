@@ -91,6 +91,13 @@ validate_obs <- function(obs) {
     if(!is.numeric(obs$val_obs)) {
         stop("obs$val_obs must be numeric")
     }
+
+    # check for duplicates
+    dups <- obs |> dplyr::group_by(time) |> filter(dplyr::n() > 1)
+    if(nrow(dups) > 0) {
+        tm <- dups$time[[1]]
+        stop(glue::glue("obs contains duplicate observations at time {tm}"))
+    }
 }
 
 
