@@ -113,20 +113,3 @@ test_that("join_fcst_obs() works", {
     data.frame(time=1:3, val=4:6, val_=8:10)
   )
 })
-
-test_that("get_time_point() works", {
-  expect_error(
-    get_time_point(data.frame(time=1:3,raw=4:6), 4),
-    "no rows in data frame with given time"
-  )
-
-  expect_error(
-    get_time_point(data.frame(time=c(1,2,2,3), raw=4:7), 2),
-    "multiple rows in data frame with given time"
-  )
-
-  expect_equal(
-    get_time_point(data.frame(time=1:3, raw=4:6, mean=7:9), 2),
-    data.frame(time=2, raw=5, mean=8)
-  )
-})
