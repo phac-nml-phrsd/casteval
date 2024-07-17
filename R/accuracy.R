@@ -44,15 +44,10 @@
 #'   summarize=FALSE
 #' )
 accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
+    if(is.null(quants)) {
+        stop("TODO")
+    }
     validate_quant_interval(quants)
-
-    if(!is.numeric(quants)) {
-        stop("`quants` must be numeric vector")
-    }
-
-    if(length(quants) != 2) {
-        stop("`quants` must be numeric vector with length 2")
-    }
 
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
@@ -62,16 +57,16 @@ accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
     high <- get_quantile(df, quants[[2]]) |> dplyr::rename(high=quant)
 
     # attach quant columns to obs data frame
-    obs <- obs |> dplyr::left_join(low, dplyr::join_by(time)) |> dplyr::left_join(high, dplyr::join_by(time))
+    obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
     if(nrow(obs) == 0) {
         stop("observations and forecast data share no time points")
     }
 
     # calculate accuracy
-    obs |> mutate(score=dplyr::between(val_obs, low, high))
+    obs <- obs |> mutate(score=dplyr::between(val_obs, low, high))
 
     if(!summarize) {
-        return(obs |> dplyr::select(time, obs, score))
+        return(obs |> dplyr::select(time, val_obs, score))
     }
 
     # calculate success rate (aka accuracy)
