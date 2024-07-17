@@ -33,36 +33,6 @@ filter_forecast_time <- function(df, forecast_time) {
 }
 
 
-#' Remove NA values from raw data
-#'
-#' Removes NA values from raw data in a forecast data frame.
-#' Raises an error if this leaves any rows empty.
-#'
-#' @param df The forecast data frame.
-#'  It should contain a `raw` column of numeric vectors.
-#'
-#' @returns The data frame with raw NA values removed from the vectors.
-#' @autoglobal
-#'
-#' @examples
-#' # dplyr::tibble(time=1:3, raw=list(1, 1:3, 4))
-#' casteval:::remove_raw_NAs(dplyr::tibble(time=1:3, raw=list(c(NA, 1), c(1, 2, 3), c(NA, NA, 4))))
-#' 
-#' # error if we end up with any empty rows
-#' try(casteval:::remove_raw_NAs(dplyr::tibble(time=4:5, raw=list(c(1,NA), c(NA,NA)))))
-remove_raw_NAs <- function(df) {
-    if(! "raw" %in% colnames(df)) {
-        stop("forecast data frame does not contain `raw` column")
-    }
-
-    df$raw <- purrr::map(df$raw, ~ .x[!is.na(.x)])
-    if(any(as.logical(purrr::map(df$raw, ~ length(.x) == 0)))) {
-        stop("forecast data frame contains row with no raw data")
-    }
-    df
-}
-
-
 #' Join a forecast and observations into a single data frame
 #'
 #' Add an observations column to the forecast data frame containing
@@ -70,54 +40,43 @@ remove_raw_NAs <- function(df) {
 #'
 #' @param df The forecast data frame.
 #' @param obs The observations data frame.
-#' @param na.rm A boolean. Defaults to FALSE. If FALSE, then an error will be raised when
-#'  observations are missing for any forecast time points.
-#'  If TRUE, any time points with missing observations will be removed from the data frame.
 #'
 #' @returns The forecast data frame with an additional `obs` column containing observations.
 #' @autoglobal
 #'
 #' @examples
 #' # data.frame(time=1:3, raw=4:6, obs=8:10)
-#' casteval:::join_fcst_obs(data.frame(time=1:3, raw=4:6), data.frame(time=0:4, obs=7:11))
+#' casteval:::join_fcst_obs(data.frame(time=1:3, val=4:6), data.frame(time=0:4, val_obs=7:11))
 #' 
-#' # remove rows with missing observations 
-#' # data.frame(time=3, quant_50=6, obs=7)
+#' # remove rows with missing observations
+#' # data.frame(time=3, val_q50=6, val_obs=7)
 #' casteval:::join_fcst_obs(
-#'   data.frame(time=1:3, quant_50=4:6),
-#'   data.frame(time=2:3, obs=c(NA,7)),
-#'   na.rm=TRUE
+#'   data.frame(time=1:3, val_q50=4:6),
+#'   data.frame(time=2:3, val_obs=c(NA,7))
 #' )
 #' 
 #' # default behaviour is to error if observations are missing
 #' try(casteval:::join_fcst_obs(
-#'   data.frame(time=1:3, quant_50=4:6),
-#'   data.frame(time=2:3, obs=c(NA,7))
+#'   data.frame(time=1:3, val_q50=4:6),
+#'   data.frame(time=2:3, val_obs=c(NA,7))
 #' ))
-join_fcst_obs <- function(df, obs, na.rm=FALSE) {
+join_fcst_obs <- function(df, obs) {
     # this function does very little input validation because
     # it is meant to be used inside functions like `accuracy()` and `neglog()`,
     # where the forecast and observations are already validated.
 
     # check that no collisions will occur
-    if("obs" %in% colnames(df)) {
-        stop("`obs` column already present in forecast data frame")
+    if("val_obs" %in% colnames(df)) {
+        stop("`val_obs` column already present in forecast data frame")
     }
-    
-    # join, using NAs for wherever observations are missing
-    df <- dplyr::left_join(df, obs, dplyr::join_by(time))
 
-    # check for NAs in the `obs` column
-    # (whether they are from NAs in the `obs` data frame or due to left_join() does not matter)
-    if(any(as.logical(purrr::map(df$obs, is.na)))) {
-        if(na.rm) { # remove the rows with NA obs
-            df <- dplyr::filter(df, !is.na(obs))
-            if(nrow(df) == 0) {
-                stop("no rows remain after removing NA observations")
-            }
-        } else { # raise error
-            stop("missing observations for some forecast time points")
-        }
+    # filter out NAs
+    obs <- obs |> dplyr::filter(is.na(val_obs))
+
+    df <- dplyr::inner_join(df, obs, dplyr::join_by(time))
+
+    if(nrow(df) == 0) {
+        stop("forecast and observations data do not share any time points")
     }
 
     df

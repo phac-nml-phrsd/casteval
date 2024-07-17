@@ -137,3 +137,5 @@ create_forecast_ensemble <- function(time, vals) {
     vals |> purrr::imap(\(val, i) data.frame(time=time, sim=i, val=val)) |>
         dplyr::bind_rows()
 }
+
+# TODO filter out NAs in forecast data and observations
