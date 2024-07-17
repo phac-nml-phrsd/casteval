@@ -22,44 +22,48 @@
 #' @autoglobal
 #'
 #' @examples
+#' df <- data.frame(time=c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3), val=c(1:5, 1:5, 1:5))
 #' # in the absence of `at` and `after`, return a data frame with a `score` column
 #' neglog(
-#'   create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5))),
-#'   data.frame(time=1:3, obs=c(-1, 2.5, 5))
+#'   create_forecast(df),
+#'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5))
 #' )
 #' 
 #' # use `at` parameter to specify absolute times
 #' neglog(
-#'   create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
-#'   data.frame(time=1:3, obs=c(-1, 2.5, 5)),
+#'   create_forecast(df, forecast_time=1),
+#'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   at=2
 #' )
 #' 
 #' # use `after` parameter to specify times relative to `forecast_time`
 #' neglog(
-#'   create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
-#'   data.frame(time=1:3, obs=c(-1, 2.5, 5)),
+#'   create_forecast(df, forecast_time=1),
+#'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   after=1
 #' )
 neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)
-    if(!"raw" %in% fcst$data_types) {
-        stop("neglog() requires raw forecast data")
+    if(!"val" %in% colnames(fcst$data)) {
+        stop("neglog() requires unsummarized forecast data (`val`)")
     }
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
-    
-    df <- remove_raw_NAs(df)
-    # KDE requires at least 2 data points, so check for that after removing NAs
-    if(any(as.logical(purrr::map(df$raw, ~ length(.x) < 2)))) {
-        stop("at least 2 raw data points for each time point required to calculate KDE")
-    }
 
     # join
-    df <- df |> dplyr::select(time, raw) |> join_fcst_obs(obs)
+    df <- df |> dplyr::select(time, val) |> join_fcst_obs(obs)
 
-    # score using KDE
-    df$score <- as.numeric(purrr::map2(df$obs, df$raw, scoringRules::logs_sample))
+    # group by time
+    df <- df |> dplyr::group_by(time)
+
+    # check if any time points
+    not_enough_points <- df |> filter(dplyr::n() < 2)
+    if(nrow(not_enough_points) > 1) {
+        tm <- not_enough_points$time[[1]]
+        stop(glue::glue("not enough data points at time {tm} (at least 2 required to calculate KDE)"))
+    }
+
+    df <- df |> dplyr::summarize(score = scoringRules::logs_sample(dplyr::filter(obs, time=time)$val_obs[[1]], val))
     #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
 
     # TODO clean this up once default values for at/after set
