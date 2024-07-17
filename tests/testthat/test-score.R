@@ -100,7 +100,7 @@ test_that("join_fcst_obs() works", {
   expect_equal(
     join_fcst_obs(
       data.frame(time=1:3, val=4:6),
-      data.frame(time=2:3, val_=7:8)
+      data.frame(time=2:3, val_obs=7:8)
     ),
     data.frame(time=2:3, val=5:6, val_obs=7:8)
   )
@@ -108,8 +108,8 @@ test_that("join_fcst_obs() works", {
   expect_equal(
     join_fcst_obs(
       data.frame(time=1:3, val=4:6),
-      data.frame(time=0:4, val_=7:11)
+      data.frame(time=0:4, val_obs=7:11)
     ),
-    data.frame(time=1:3, val=4:6, val_=8:10)
+    data.frame(time=1:3, val=4:6, val_obs=8:10)
   )
 })

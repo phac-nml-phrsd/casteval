@@ -71,7 +71,7 @@ join_fcst_obs <- function(df, obs) {
     }
 
     # filter out NAs
-    obs <- obs |> dplyr::filter(is.na(val_obs))
+    obs <- obs |> dplyr::filter(!is.na(val_obs))
 
     df <- dplyr::inner_join(df, obs, dplyr::join_by(time))
 
