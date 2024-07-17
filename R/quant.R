@@ -75,7 +75,7 @@ quant_name <- function(num) {
 #' @param df A forecast data frame. It should contain raw or quantile data.
 #' @param perc A percentage, from 0 to 100.
 #'
-#' @returns A numeric vector with one entry for each row in `df`.
+#' @returns A data frame with a `time` column and a `quant` column, containing the requested quantile data
 #' @autoglobal
 #'
 #' @examples
@@ -94,13 +94,11 @@ get_quantile <- function(df, perc) {
         # group by time
         quants <- df |> dplyr::group_by(time) |>
             dplyr::summarize(quant=stats::quantile(val, perc/100)[[1]])
-        quants[qcol] <- quants$quant
-        quants$quant <- NULL
         return(quants)
     }
 
     else if(qcol %in% colnames(df)) {
-        return(dplyr::select(df, time, dplyr::all_of(qcol)))
+        return(dplyr::select(df, time, quant=dplyr::all_of(qcol)))
     }
 
     else {

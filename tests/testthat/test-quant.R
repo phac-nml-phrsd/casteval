@@ -43,17 +43,17 @@ test_that("get_quantile() works", {
 
   expect_equal(
     get_quantile(df, 50),
-    dplyr::tibble(time=1:3, val_q50=c(5, 8, 11))
+    dplyr::tibble(time=1:3, quant=c(5, 8, 11))
   )
 
   expect_equal(
     get_quantile(df2, 50),
-    dplyr::tibble(time=1:3, val_q50=c(1000,2000,3000))
+    dplyr::tibble(time=1:3, quant=c(1000,2000,3000))
   )
 
   expect_equal(
     get_quantile(dplyr::tibble(time=c(1,1,2,2,2), val=c(1,2, 4:6)), 50),
-    dplyr::tibble(time=1:2, val_q50=c(1.5, 5))
+    dplyr::tibble(time=1:2, quant=c(1.5, 5))
   )
 
   expect_error(
