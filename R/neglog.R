@@ -66,8 +66,7 @@ neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     df <- df |> dplyr::summarize(score = scoringRules::logs_sample(dplyr::filter(obs, time=time)$val_obs[[1]], val))
     #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
 
-    # TODO clean this up once default values for at/after set
-    if(!summarize || (is.null(at) && is.null(after))) { # return the whole data frame with the score column
+    if(!summarize) { # return the whole data frame with the score column
         return(dplyr::select(df, time, obs, score))
     }
     
@@ -80,7 +79,7 @@ neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
         validate_time(at, fcst)
         t <- at
     }
-    if(!is.null(after)) {
+    else if(!is.null(after)) {
         if(!is.numeric(after)) {
             stop("`after` not numeric")
         }
@@ -89,6 +88,16 @@ neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
         }
         t <- fcst$forecast_time + after
     }
+    # neither provided, error
+    else {
+        stop("either `at` or `after` must be provided")
+    }
 
-    get_time_point(df, t)[["score"]]
+    df <- df |> dplyr::filter(time=t)
+
+    if(nrow(df) == 0) {
+        stop(glue::glue("score was not calculated for time {t}"))
+    }
+
+    df$score[[1]]
 }
