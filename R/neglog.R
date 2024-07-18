@@ -57,17 +57,17 @@ neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     df <- df |> dplyr::group_by(time)
 
     # check if any time points
-    not_enough_points <- df |> filter(dplyr::n() < 2)
-    if(nrow(not_enough_points) > 1) {
+    not_enough_points <- df |> dplyr::filter(dplyr::n() < 2)
+    if(nrow(not_enough_points) > 0) {
         tm <- not_enough_points$time[[1]]
         stop(glue::glue("not enough data points at time {tm} (at least 2 required to calculate KDE)"))
     }
 
-    df <- df |> dplyr::summarize(score = scoringRules::logs_sample(dplyr::filter(obs, time=time)$val_obs[[1]], val))
+    df <- df |> dplyr::summarize(score = scoringRules::logs_sample(val_obs[[1]], val), val_obs=val_obs[[1]])
     #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
 
     if(!summarize) { # return the whole data frame with the score column
-        return(dplyr::select(df, time, obs, score))
+        return(dplyr::select(df, time, val_obs, score))
     }
     
     if(!is.null(at) && !is.null(after)) { # mutually exclusive
@@ -90,10 +90,10 @@ neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     }
     # neither provided, error
     else {
-        stop("either `at` or `after` must be provided")
+        stop("either `at` or `after` must be provided for summarized score")
     }
 
-    df <- df |> dplyr::filter(time=t)
+    df <- df |> dplyr::filter(time==t)
 
     if(nrow(df) == 0) {
         stop(glue::glue("score was not calculated for time {t}"))
