@@ -1,7 +1,7 @@
 test_that("bias() works", {
   expect_error(
     bias(create_forecast(data.frame(time=1:3, val_q25=4:6)), data.frame(time=1:3, val_obs=4:6)),
-    "unsummarized, mean, or median forecast values required to compute bias"
+    "raw, mean, or median forecast values required to compute bias"
   )
 
   obs <- data.frame(time=1:5, val_obs=rep(10,5))

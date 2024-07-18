@@ -40,7 +40,7 @@ It is not required for fixe-time scoring methods.
 
 Columns starting with `grp_` will be used to group the data before scoring and plotting.
 
-Columns starting with `val_` contain summary data (`val` itself contains unsummarized data) such as quantiles (e.x. `val_q50` for the median) and the mean.
+Columns starting with `val_` contain summary data (`val` itself contains unsummarized raw data) such as quantiles (e.x. `val_q50` for the median) and the mean.
 
 # Input formatting
 

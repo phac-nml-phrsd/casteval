@@ -10,8 +10,8 @@
 #' 
 #' In the first option above, the data frame should contain:
 #' - A `time` column
-#' - (Optional) a `sim` column, containing simulation numbers for unsummarized data
-#' - (Optional) a `val` column, containing unsummarized data.
+#' - (Optional) a `sim` column, containing simulation numbers for raw data
+#' - (Optional) a `val` column, containing raw data.
 #'  If `sim` is present then `val` must be present as well.
 #' - (Optional) columns starting with `val_q` followed by a number from 0 to 100, containing quantile data
 #' - (Optional) a `val_mean` column, containing mean data

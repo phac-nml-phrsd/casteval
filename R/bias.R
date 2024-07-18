@@ -2,7 +2,7 @@
 #'
 #' Given a forecast and a set of observations, compute the bias of the forecast's predictions.
 #' `bias()` looks for forecast data in the following order:
-#' 1. raw unsummarized data (`val`)
+#' 1. raw data (`val`)
 #' 2. mean (`val_mean`)
 #' 3. median (`val_q50`)
 #' 
@@ -35,7 +35,7 @@ bias <- function(fcst, obs, summarize=TRUE) {
     } else if("val_q50" %in% cols) { # then try median data
         df <- df |> dplyr::rename(prediction=val_q50)
     } else { # then error
-        stop("unsummarized, mean, or median forecast values required to compute bias")
+        stop("raw, mean, or median forecast values required to compute bias")
     }
 
     # join observations

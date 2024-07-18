@@ -1,6 +1,6 @@
 test_that("graph_ensemble() works", {
   expect_error(
-    graph_ensemble(NULL, create_forecast(data.frame(time=1:3,mean=4:6))),
+    graph_ensemble(NULL, create_forecast(data.frame(time=1:3,val_mean=4:6))),
     "raw data needed to graph ensemble"
   )
 

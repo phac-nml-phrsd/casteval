@@ -46,7 +46,7 @@ neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)
     if(!"val" %in% colnames(fcst$data)) {
-        stop("neglog() requires unsummarized forecast data (`val`)")
+        stop("neglog() requires raw forecast data (`val`)")
     }
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 

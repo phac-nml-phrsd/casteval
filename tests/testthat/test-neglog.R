@@ -4,7 +4,7 @@ test_that("neglog() validates", {
       create_forecast(dplyr::tibble(time=1:3, val_mean=4:6)),
       data.frame(time=1:3, val_obs=4:6)
     ),
-    "neglog\\(\\) requires unsummarized forecast data"
+    "neglog\\(\\) requires raw forecast data"
   )
 
   expect_error(

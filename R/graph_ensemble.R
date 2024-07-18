@@ -27,7 +27,7 @@ graph_ensemble <- function(graph=NULL, fcst, alpha=NULL) {
     }
 
     if(! "val" %in% fcst$data_types) {
-        stop("unsummarized data needed to graph ensemble")
+        stop("raw data needed to graph ensemble")
     }
 
     if(is.null(alpha)) {
