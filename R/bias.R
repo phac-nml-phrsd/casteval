@@ -25,12 +25,14 @@ bias <- function(fcst, obs, summarize=TRUE) {
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
+    cols <- colnames(fcst$data)
+
     # place the data to be scored in `prediction` column
-    if("val" %in% fcst$data_types) { # try raw data
+    if("val" %in% cols) { # try raw data
         df <- df |> dplyr::rename(prediction=val)
-    } else if("val_mean" %in% fcst$data_types) { # then try mean data
+    } else if("val_mean" %in% cols) { # then try mean data
         df <- df |> dplyr::rename(prediction=val_mean)
-    } else if("val_q50" %in% colnames(fcst$data)) { # then try median data
+    } else if("val_q50" %in% cols) { # then try median data
         df <- df |> dplyr::rename(prediction=val_q50)
     } else { # then error
         stop("unsummarized, mean, or median forecast values required to compute bias")
@@ -41,7 +43,7 @@ bias <- function(fcst, obs, summarize=TRUE) {
         dplyr::mutate(score=sign(prediction - val_obs))
 
     if(!summarize) {
-        df <- df |> dplyr::group_by(time) |> dplyr::sumarize(val_obs=val_obs[[1]], score=mean(score))
+        df <- df |> dplyr::group_by(time) |> dplyr::summarize(val_obs=val_obs[[1]], score=mean(score))
         return(df)
     }
 
