@@ -12,13 +12,13 @@
 #' @examples
 #' casteval:::graph_ensemble(
 #'   NULL,
-#'   create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))
+#'   create_forecast(dplyr::tibble(time=1:3, val=c(4:12))
 #' ))
 #' 
-#' casteval:::graph_ensemble(
-#'   NULL,
-#'   create_forecast(data.frame(time=lubridate::as_datetime(c(0,20000,100000)), raw=c(20,30,40))
-#' ))
+#' NULL |> casteval:::graph_ensemble(create_forecast(data.frame(
+#'   time=lubridate::as_datetime(c(0,20000,100000)),
+#'   val=c(20,30,40)
+#' )))
 graph_ensemble <- function(graph=NULL, fcst, alpha=NULL) {
     #TODO? make the fit data points instead of lines, or just don't plot the fit data
     validate_forecast(fcst)
