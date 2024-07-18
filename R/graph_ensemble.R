@@ -19,25 +19,20 @@
 #'   time=lubridate::as_datetime(c(0,20000,100000)),
 #'   val=c(20,30,40)
 #' )))
-graph_ensemble <- function(graph=NULL, fcst, alpha=NULL) {
+graph_ensemble <- function(graph=NULL, fcst, alpha=0.3) {
     #TODO? make the fit data points instead of lines, or just don't plot the fit data
     validate_forecast(fcst)
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
     }
 
-    if(! "val" %in% fcst$data_types) {
+    cols <- colnames(fcst$data)
+    if(! "val" %in% cols) {
         stop("raw data needed to graph ensemble")
     }
-
-    if(is.null(alpha)) {
-        if(length(fcst$data$raw[[1]]) > 10) {
-            alpha <- 0.2
-        } else {
-            alpha <- 0.5
-        }
-
+    if(! "sim" %in% cols) {
+        stop("simulation numbers (`sim` column) required to graph ensemble")
     }
 
-    graph + ggplot2::geom_line(ggplot2::aes(x=time, y=val, group=sim), alpha=alpha, df)
+    graph + ggplot2::geom_line(ggplot2::aes(x=time, y=val, group=sim), alpha=alpha, fcst$data)
 }

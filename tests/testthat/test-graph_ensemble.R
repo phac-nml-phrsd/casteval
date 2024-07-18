@@ -4,30 +4,37 @@ test_that("graph_ensemble() works", {
     "raw data needed to graph ensemble"
   )
 
-  df1 <- dplyr::tibble(
+  expect_error(
+    graph_ensemble(NULL, create_forecast(data.frame(time=1:3, val=4:6))),
+    "simulation numbers \\(`sim` column\\) required to graph ensemble"
+  )
+
+  fc1 <- create_forecast(list(
     time=1:3,
-    raw=list(4:6, 7:9, 10:12)
-  )
+    vals=list(c(4,7,10), c(5,8,11), c(6,9,12))
+  ))
 
-  df2 <- dplyr::tibble(
+  fc2 <- create_forecast(dplyr::tibble(
     time=lubridate::as_date(0:399),
-    raw=c(1:400)
-  )
+    sim=rep(1,400),
+    val=c(1:400)
+  ))
 
-  df3 <- data.frame(
+  fc3 <- create_forecast(data.frame(
     time=lubridate::as_datetime(c(0,20000,100000)),
-    raw=c(20,30,40)
-  )
+    sim=c(1,1,1),
+    val=c(20,30,40)
+  ))
 
   vdiffr::expect_doppelganger("ens1",
-    graph_ensemble(NULL, create_forecast(df1))
+    graph_ensemble(NULL, fc1)
   )
 
   vdiffr::expect_doppelganger("ens2",
-    graph_ensemble(NULL, create_forecast(df2))
+    graph_ensemble(NULL, fc2)
   )
 
   vdiffr::expect_doppelganger("ens3",
-    graph_ensemble(NULL, create_forecast(df3))
+    graph_ensemble(NULL, fc3)
   )
 })
