@@ -1,6 +1,14 @@
 #' Calculate forecast bias
 #'
+#' Given a forecast and a set of observations, compute the bias of the forecast's predictions.
+#' `bias()` looks for forecast data in the following order:
+#' 1. raw unsummarized data
+#' 2. mean
+#' 3. median (`val_q50`)
 #' 
+#' It uses the first that it finds to calculate bias,
+#' by assigning 1 for overprediction, 0 for equality, and -1 for underprediction.
+#' It then summarizes the score by taking the mean of the assigned values.
 #'
 #' @template fcst
 #' @param obs An observations data frame.
@@ -13,7 +21,6 @@
 #' @examples
 #' #TODO
 bias <- function(fcst, obs, summarize=TRUE) {
-    # TODO fix summarize=FALSE output to make it work with graphing (must not be long form)
     # validate and filter
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
