@@ -20,9 +20,8 @@ time \code{fcst$forecast_time + after} will be returned.
 Mutually exclusive with \code{at}.}
 
 \item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
-If FALSE, a data frame with \code{time} and \code{score} columns (and possibly others) will be returned,
-containing the intermediate values for each time point used to calculate the score.
-The type of the \code{score} column can be anything (numbers, booleans, etc.).
+If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
+containing the scores for each individual time point.
 This can be used by graphing functions to color code observations, for example.}
 }
 \value{
@@ -37,23 +36,24 @@ Uses a Kernel Density Estimation (KDE) to interpolate the density
 at the observation point.
 }
 \examples{
+df <- data.frame(time=c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3), val=c(1:5, 1:5, 1:5))
 # in the absence of `at` and `after`, return a data frame with a `score` column
 neglog(
-  create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5))),
-  data.frame(time=1:3, obs=c(-1, 2.5, 5))
+  create_forecast(df),
+  data.frame(time=1:3, val_obs=c(-1, 2.5, 5))
 )
 
 # use `at` parameter to specify absolute times
 neglog(
-  create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
-  data.frame(time=1:3, obs=c(-1, 2.5, 5)),
+  create_forecast(df, forecast_time=1),
+  data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
   at=2
 )
 
 # use `after` parameter to specify times relative to `forecast_time`
 neglog(
-  create_forecast(dplyr::tibble(time=1:3, raw=list(1:5, 1:5, 1:5)), forecast_time=1),
-  data.frame(time=1:3, obs=c(-1, 2.5, 5)),
+  create_forecast(df, forecast_time=1),
+  data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
   after=1
 )
 }

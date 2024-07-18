@@ -16,9 +16,9 @@ The quantile column name.
 Given a number, returns the column name of a corresponding quantile column
 }
 \examples{
-# "quant_50"
+# "val_q50"
 casteval:::quant_name(50)
 
-# "quant_2.5"
+# "val_q2.5"
 casteval:::quant_name(2.5)
 }

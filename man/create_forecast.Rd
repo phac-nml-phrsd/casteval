@@ -2,32 +2,32 @@
 % Please edit documentation in R/create_forecast.R
 \name{create_forecast}
 \alias{create_forecast}
-\title{Create a forecast}
+\title{Create a forecast object}
 \usage{
 create_forecast(dat, name = NULL, forecast_time = NULL)
 }
 \arguments{
-\item{dat}{Forecast data. Currently, the following formats for \code{dat} are supported:
+\item{dat}{Forecast data. It can be in one of the following formats:
 \itemize{
-\item A single data frame containing raw or summary data.
-\item A list of data frames each containing raw data.
-\item A named list containing a numeric vector \code{time} and a list of vectors \code{ensemble}.
-Each vector corresponds to a realization in a forecast ensemble.
-The \code{time} vector and \code{ensemble} vectors must all have the same length.
+\item A data frame containing forecast data
+\item A named list with a \code{time} field (vector of times) and a \code{vals} field (list of realization vectors).
+Each of the vectors in \code{vals} must have the same length as \code{time}
 }
 
-All data frames in \code{dat} must additionally have a \code{time} column containing either integers, dates, or date-times.
+In the first option above, the data frame should contain:
+\itemize{
+\item A \code{time} column
+\item (Optional) a \code{sim} column, containing simulation numbers for raw data
+\item (Optional) a \code{val} column, containing raw data.
+If \code{sim} is present then \code{val} must be present as well.
+\item (Optional) columns starting with \code{val_q} followed by a number from 0 to 100, containing quantile data
+\item (Optional) a \code{val_mean} column, containing mean data
+}
 
-Raw data columns should be named \code{raw}, and should contain numeric vectors of length 1 or more.
-The lengths of the vectors must all be the same.
+Times can be either numeric, dates, or date-times. All data must be numeric.
+\code{sim} must also be numeric if present.}
 
-Summary data columns may be named \code{mean}, or \code{quant_} followed by a number from 0 to 100 (e.x. \code{quant_2.5}, \code{quant_50}, etc.).
-
-See below for examples.
-
-See \code{\link[=get_format]{get_format()}} for further details on data frame formatting.}
-
-\item{name}{(Optional) A string specifying the name of the forecast/model.}
+\item{name}{(Optional) A string specifying the name of the forecast}
 
 \item{forecast_time}{(Optional) An integer, date, or date-time specifying when the forecast was created.
 Its type should match the type of values in the \code{time} column(s) of \code{data}
@@ -35,13 +35,9 @@ If provided, this forecast will be scored only using data corresponding to dates
 Additionally, plots of this forecast may graphically distinguish between values to the left and right of \code{forecast_time}.}
 }
 \value{
-A named list containing the forecast and its metadata:
-\itemize{
-\item \verb{$data} is a data frame containing the (possibly processed) forecast data.
-\item \verb{$name} and \verb{$forecast_time} contain the name and forecast time respectively.
-\item \verb{$time_type} stores the type of the time column as a string (one of "date", "date-time", or "numeric")
-\item \verb{$data_types} stores the types of the data columns (a character vector containing "mean", "quant", and/or "raw")
-}
+A named list with fields \code{data}, \code{name}, \code{forecast_time}.
+\code{data} is a data frame containing forecast data.
+\code{name} and \code{forecast_time} are the same as the parameters passed to \code{create_forecast()}
 }
 \description{
 \code{create_forecast()} creates a forecast object given data and optional metadata.
@@ -49,30 +45,26 @@ It accepts a variety of forecast formats as input and intelligently converts the
 }
 \examples{
 # forecast with numeric times and raw data
-create_forecast(data.frame(time=1:3, raw=10:12), name="a forecast", forecast_time=2)
+create_forecast(data.frame(time=1:3, val=10:12), name="a forecast", forecast_time=2)
 
 # forecast with dates and mean-and-quantiles data
 create_forecast(
   data.frame(
     time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")),
-    mean=10:11, quant_2.5=5:6, quant_97.5=15:16
+    val_mean=10:11, val_q2.5=5:6, val_q97.5=15:16
   ),
   name="another forecast"
 )
 
-# an ensemble of 3 realizations, each represented by a data frame
-create_forecast(list(
-  dplyr::tibble(time=1:5,raw=6:10),
-  dplyr::tibble(time=2:6,raw=7:11),
-  dplyr::tibble(time=3:7,raw=8:12)
-))
-
 # an already-combined ensemble
-create_forecast(dplyr::tibble(time=1:2, raw=list(10:15, 20:25)))
+create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), val=c(20,21,22,23,24,10,11,12,13,14)))
 
-# an ensemble of 4 realizations, each represented by a vector
+# an already-combined ensemble with simulation numbers
+create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), sim=c(1,2,3,4,5,1,2,3,4,5), val=c(20,21,22,23,24,10,11,12,13,14)))
+
+# an ensemble of 4 realizations, each represented by a vector in `vals`
 create_forecast(list(
   time=1:3,
-  ensemble=list(4:6, 7:9, 10:12, 13:15)
+  vals=list(4:6, 7:9, 10:12, 13:15)
 ))
 }

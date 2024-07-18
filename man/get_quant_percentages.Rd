@@ -8,7 +8,7 @@ get_quant_percentages(df)
 }
 \arguments{
 \item{df}{The data frame,
-presumably containing columns named "quant_" followed by a number from 0 to 100.}
+presumably containing columns named "val_q" followed by a number from 0 to 100.}
 }
 \value{
 A numeric vector containing the quantiles, sorted in increasing order.
@@ -21,6 +21,6 @@ This function does no input validation.
 \examples{
 # returns c(2.5, 50, 97.5)
 casteval:::get_quant_percentages(
-  data.frame(time=1:3, quant_2.5=4:6, quant_50=7:9, quant_97.5=10:12)
+  data.frame(time=1:3, val_q2.5=4:6, val_q50=7:9, val_q97.5=10:12)
 )
 }

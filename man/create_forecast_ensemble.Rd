@@ -4,17 +4,16 @@
 \alias{create_forecast_ensemble}
 \title{Create forecast from time vector and ensemble of realizations}
 \usage{
-create_forecast_ensemble(dat, name, forecast_time)
+create_forecast_ensemble(time, vals)
 }
 \arguments{
-\item{dat}{A named list containing names \code{time} and \code{ensemble}}
+\item{time}{A vector of times}
 
-\item{name}{A string}
-
-\item{forecast_time}{A number, date, or date-time}
+\item{vals}{A list of vectors of values.
+Each vector corresponds to a realization which will be assigned a simulation number.}
 }
 \value{
-A forecast object
+A forecast data frame
 }
 \description{
 Helper for \code{create_forecast()}.

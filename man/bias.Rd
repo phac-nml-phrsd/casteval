@@ -12,16 +12,26 @@ bias(fcst, obs, summarize = TRUE)
 \item{obs}{An observations data frame.}
 
 \item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
-If FALSE, a data frame with \code{time} and \code{score} columns (and possibly others) will be returned,
-containing the intermediate values for each time point used to calculate the score.
-The type of the \code{score} column can be anything (numbers, booleans, etc.).
+If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
+containing the scores for each individual time point.
 This can be used by graphing functions to color code observations, for example.}
 }
 \value{
 A number between -1 and 1, inclusive. -1 means 100\% underprediction and 1 means 100\% overprediction.
 }
 \description{
-Calculate forecast bias
+Given a forecast and a set of observations, compute the bias of the forecast's predictions.
+\code{bias()} looks for forecast data in the following order:
+\enumerate{
+\item raw data (\code{val})
+\item mean (\code{val_mean})
+\item median (\code{val_q50})
+}
+}
+\details{
+It uses the first that it finds to calculate bias,
+by assigning 1 for overprediction, 0 for equality, and -1 for underprediction.
+It then summarizes the score by taking the mean of the assigned values.
 }
 \examples{
 #TODO

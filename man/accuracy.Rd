@@ -4,56 +4,56 @@
 \alias{accuracy}
 \title{Get accuracy from quantiles}
 \usage{
-accuracy(fcst, obs, interval = c(2.5, 97.5), summarize = TRUE)
+accuracy(fcst, obs, quants = c(2.5, 97.5), summarize = TRUE)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
 \item{obs}{An observations data frame.}
 
-\item{interval}{(Optional) A vector of two percentages from 0 to 100,
-marking the high and low ends of the confidence interval. Defaults to \code{c(2.5, 97.5)}.}
+\item{quants}{(Optional) A vector of two percentages from 0 to 100,
+the high and low end of the quantile range.
+Defaults to \code{c(2.5, 97.5)}.}
 
 \item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
-If FALSE, a data frame with \code{time} and \code{score} columns (and possibly others) will be returned,
-containing the intermediate values for each time point used to calculate the score.
-The type of the \code{score} column can be anything (numbers, booleans, etc.).
+If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
+containing the scores for each individual time point.
 This can be used by graphing functions to color code observations, for example.}
 }
 \value{
 A number from 0 to 1,
-the rate at which the observations were inside the specified confidence interval
+the rate at which the observations were inside the specified quantile range
 }
 \description{
 Given a forecast and set of observations,
-compute the accuracy (# within confidence interval / # total) of the forecast.
-Raw data and/or provided quantiles will be used to compute the confidence interval.
+compute the accuracy (# inside quantile range / # total) of the forecast.
+Raw data and/or provided quantiles will be used to compute the quantile range.
 }
 \examples{
 # calculate quantiles and accuracy from raw data
 # returns 2/3
 accuracy(
-  create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))),
-  data.frame(time=1:3, obs=c(5, 7.4, 11.6)),
-  interval=c(25, 75)
+  create_forecast(dplyr::tibble(time=c(1,1,1,2,2,2,3,3,3), val=4:12)),
+  data.frame(time=1:3, val_obs=c(5, 7.4, 11.6)),
+  quants=c(25, 75)
 )
 
-# provide two quantiles and specify them in `interval`
+# provide two quantiles and specify them in `quants`
 # returns 1/3
 accuracy(
   create_forecast(dplyr::tibble(
-    time=1:3, quant_25=4:6, quant_50=7:9, mean=100:102, quant_75=200:202
+    time=1:3, val_q25=4:6, val_q50=7:9, val_mean=100:102, val_q75=200:202
   )),
-  data.frame(time=1:3, obs=c(4, 201, 1000)),
-  interval=c(25,50)
+  data.frame(time=1:3, val_obs=c(4, 201, 1000)),
+  quants=c(25,50)
 )
 
 # return a data frame with a logical `score` column
 accuracy(
   create_forecast(dplyr::tibble(
-    time=1:3, quant_2.5=4:6, quant_50=7:9, mean=100:102, quant_97.5=200:202
+    time=1:3, val_q2.5=4:6, val_q50=7:9, val_mean=100:102, val_q97.5=200:202
   )),
-  data.frame(time=1:3, obs=c(4, 201, 1000)),
+  data.frame(time=1:3, val_obs=c(4, 201, 1000)),
   summarize=FALSE
 )
 }

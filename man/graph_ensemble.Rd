@@ -4,7 +4,7 @@
 \alias{graph_ensemble}
 \title{Graph ensemble of forecast realizations}
 \usage{
-graph_ensemble(graph = NULL, fcst, alpha = NULL)
+graph_ensemble(graph = NULL, fcst, alpha = 0.3, colour = "black")
 }
 \arguments{
 \item{graph}{(Optional) A ggplot object.
@@ -13,7 +13,9 @@ Defaults to NULL, in which case a blank ggplot object will be created.}
 
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
-\item{alpha}{(Optional) The alpha value to be passed to \code{ggplot2::geom_line()}.}
+\item{alpha}{(Optional) The alpha value to be passed to \code{ggplot2}.}
+
+\item{colour}{(Optional) The colour to be passed to \code{ggplot2}.}
 }
 \value{
 A ggplot object.
@@ -24,11 +26,11 @@ Given a forecast with raw realizations, generate a graph displaying all of them.
 \examples{
 casteval:::graph_ensemble(
   NULL,
-  create_forecast(dplyr::tibble(time=1:3, raw=list(4:6, 7:9, 10:12))
+  create_forecast(dplyr::tibble(time=1:3, val=c(4:12))
 ))
 
-casteval:::graph_ensemble(
-  NULL,
-  create_forecast(data.frame(time=lubridate::as_datetime(c(0,20000,100000)), raw=c(20,30,40))
-))
+NULL |> casteval:::graph_ensemble(create_forecast(data.frame(
+  time=lubridate::as_datetime(c(0,20000,100000)),
+  val=c(20,30,40)
+)))
 }
