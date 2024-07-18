@@ -1,10 +1,12 @@
 #' Graph ensemble of forecast realizations
 #'
 #' Given a forecast with raw realizations, generate a graph displaying all of them.
+#' If the forecast provides simulation numbers (`sim` column), the ensemble of curves will be plotted.
+#' Otherwise, the data will be plotted as points.
 #'
 #' @template graph
 #' @template fcst
-#' @param alpha (Optional) The alpha value to be passed to `ggplot2::geom_line()`.
+#' @template ggplot2params
 #'
 #' @returns A ggplot object.
 #' @autoglobal
@@ -19,7 +21,7 @@
 #'   time=lubridate::as_datetime(c(0,20000,100000)),
 #'   val=c(20,30,40)
 #' )))
-graph_ensemble <- function(graph=NULL, fcst, alpha=0.3) {
+graph_ensemble <- function(graph=NULL, fcst, alpha=0.3, colour="black") {
     #TODO? make the fit data points instead of lines, or just don't plot the fit data
     validate_forecast(fcst)
     if(is.null(graph)) {
@@ -30,9 +32,14 @@ graph_ensemble <- function(graph=NULL, fcst, alpha=0.3) {
     if(! "val" %in% cols) {
         stop("raw data needed to graph ensemble")
     }
-    if(! "sim" %in% cols) {
-        stop("simulation numbers (`sim` column) required to graph ensemble")
-    }
 
-    graph + ggplot2::geom_line(ggplot2::aes(x=time, y=val, group=sim), alpha=alpha, fcst$data)
+    # if sim numbers present, graph ensemble curves
+    if("sim" %in% cols) {
+        return(graph + ggplot2::geom_line(ggplot2::aes(x=time, y=val, group=sim), colour=colour, alpha=alpha, data=fcst$data))
+    }
+    
+    # if sim numbers absent, just graph points
+    else {
+        return(graph + ggplot2::geom_point(ggplot2::aes(x=time, y=val), alpha=alpha, colour=colour, data=fcst$data))
+    }
 }

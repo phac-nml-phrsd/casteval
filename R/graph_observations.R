@@ -13,7 +13,7 @@
 #' @examples
 #' fc <- create_forecast(dplyr::tibble(
 #'   time=1:3,
-#'   raw=list(4:6, 7:9, 10:12)
+#'   val=4:12
 #' ))
 #' obs <- data.frame(time=1:3, obs=c(5,9,13))
 #' 
