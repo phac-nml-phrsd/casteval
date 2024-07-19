@@ -115,14 +115,15 @@ get_quantile <- function(df, perc) {
 #' @param quants A vector of distinct numbers between 0 and 100.
 #'
 #' @returns A named list with two elements: `pairs`, a list of pairs of quantiles,
-#'  and `singles`, a list of all the leftover quantiles.
+#'  and `singles`, a vector of all the leftover quantiles.
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # list(pairs=list(c(15,85), c(30,70)), singles=c(0,10,20,50,51,60,75))
+#' casteval:::pair_quantiles(c(0, 10, 15, 20, 30, 50, 51, 60, 70, 75, 85))
 pair_quantiles <- function(quants) {
     pairs <- list()
-    singles <- list()
+    singles <- numeric(0)
 
     quants <- quants |> sort() |> unique()
     while(length(quants) > 1) {
@@ -152,5 +153,5 @@ pair_quantiles <- function(quants) {
         singles[[length(singles) + 1]] <- quants[[1]]
     }
 
-    list(pairs=pairs, singles=singles)
+    list(pairs=pairs, singles=sort(singles))
 }

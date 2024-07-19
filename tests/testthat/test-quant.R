@@ -61,3 +61,25 @@ test_that("get_quantile() works", {
     "missing values and NaN's not allowed if 'na.rm' is FALSE"
   )
 })
+
+test_that("pair_quantiles() works", {
+  expect_equal(
+    pair_quantiles(numeric(0)),
+    list(pairs=list(), singles=numeric(0))
+  )
+
+  expect_equal(
+    pair_quantiles(c(50)),
+    list(pairs=list(), singles=c(50))
+  )
+
+  expect_equal(
+    pair_quantiles(c(20, 30, 10)),
+    list(pairs=list(), singles=c(10, 20, 30))
+  )
+
+  expect_equal(
+    pair_quantiles(c(0, 10, 15, 20, 30, 50, 51, 60, 70, 75, 85)),
+    list(pairs=list(c(15,85), c(30,70)), singles=c(0,10,20,50,51,60,75))
+  )
+})
