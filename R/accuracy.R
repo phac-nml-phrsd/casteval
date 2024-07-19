@@ -47,7 +47,7 @@ accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
     if(is.null(quants)) {
         stop("TODO")
     }
-    validate_quant_interval(quants)
+    validate_quant_range(quants)
 
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
@@ -73,7 +73,7 @@ accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
     mean(obs$score)
 }
 
-#' Validate quantile interval vector
+#' Validate quantile range vector
 #'
 #' Helper function for accuracy(). Performs input validation on its `quants` parameter.
 #'
@@ -84,20 +84,20 @@ accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
 #'
 #' @examples
 #' # valid
-#' casteval:::validate_quant_interval(c(50, 70))
+#' casteval:::validate_quant_range(c(50, 70))
 #' 
 #' # invalid
-#' try(casteval:::validate_quant_interval(c(70, 50)))
+#' try(casteval:::validate_quant_range(c(70, 50)))
 #' 
 #' # invalid
-#' try(casteval:::validate_quant_interval(c(-1, 50)))
+#' try(casteval:::validate_quant_range(c(-1, 50)))
 #' 
 #' # invalid
-#' try(casteval:::validate_quant_interval(c(50,60,70)))
+#' try(casteval:::validate_quant_range(c(50,60,70)))
 #' 
 #' # invalid
-#' try(casteval:::validate_quant_interval("50, 60"))
-validate_quant_interval <- function(quants) {
+#' try(casteval:::validate_quant_range("50, 60"))
+validate_quant_range <- function(quants) {
     if(!is.numeric(quants)) {
         stop("`quants` must be either NULL or vector of 2 numbers")
     }
