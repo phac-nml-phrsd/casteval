@@ -87,6 +87,14 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
         validate_time(fcst$forecast_time, fcst)
     }
 
+    # warn if unpaired quantiles that aren't the median
+    quants <- get_quant_percentages(df)
+    unpaired <- pair_quantiles(quants)$unpaired
+    unpaired <- unpaired[unpaired != 50]
+    if(length(unpaired) > 0) {
+        warning(glue::glue("{unpaired[[1]]}% quantile is unpaired"))
+    }
+
     fcst
 }
 

@@ -41,6 +41,11 @@ test_that("create_forecast() accepts data frame", {
     "data frame contains no data columns"
   )
 
+  expect_error(
+    create_forecast(data.frame(time=1:3, val_q2.5=c(10,10,10), val_q97.5=c(11,10,9))),
+    "quantiles have impossible values in row 3"
+  )
+
   expect_equal(
     create_forecast(
       data.frame(time=1:3, val=4:6),
@@ -136,5 +141,18 @@ test_that("create_forecast() works with ensemble of realizations", {
       forecast_time=1,
       data=data.frame(time=c(1,2,3,1,2,3,1,2,3), sim=c(1,1,1,2,2,2,3,3,3), val=c(4:12))
     )
+  )
+})
+
+test_that("create_forecast() checks quantile pairings", {
+  # {testthat} idiom for "expect no warning"
+  expect_warning(
+    create_forecast(data.frame(time=1, val_q50=2, val_q2.5=0, val_q97.5=9)),
+    NA
+  )
+
+  expect_warning(
+    create_forecast(data.frame(time=1, val_q25=3, val_q75=5, val_q40=4)),
+    "40% quantile is unpaired"
   )
 })
