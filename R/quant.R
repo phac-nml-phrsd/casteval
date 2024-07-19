@@ -111,19 +111,20 @@ get_quantile <- function(df, perc) {
 #'
 #' Given a list of quantiles, pair together the ones symmetrical around the median.
 #' For example, the 2.5% quantile and 97.5% quantile go together.
+#' The 50% quantile will never be paired.
 #'
 #' @param quants A vector of distinct numbers between 0 and 100.
 #'
-#' @returns A named list with two elements: `pairs`, a list of pairs of quantiles,
-#'  and `singles`, a vector of all the leftover quantiles.
+#' @returns A named list with two elements: `paired`, a list of pairs of quantiles,
+#'  and `unpaired`, a vector of all the leftover quantiles.
 #' @autoglobal
 #'
 #' @examples
-#' # list(pairs=list(c(15,85), c(30,70)), singles=c(0,10,20,50,51,60,75))
+#' # list(paired=list(c(15,85), c(30,70)), unpaired=c(0,10,20,50,51,60,75))
 #' casteval:::pair_quantiles(c(0, 10, 15, 20, 30, 50, 51, 60, 70, 75, 85))
 pair_quantiles <- function(quants) {
-    pairs <- list()
-    singles <- numeric(0)
+    paired <- list()
+    unpaired <- numeric(0)
 
     quants <- quants |> sort() |> unique()
     while(length(quants) > 1) {
@@ -132,26 +133,26 @@ pair_quantiles <- function(quants) {
 
         # equidistant pair from 50%
         if(last - 50 == 50 - first) {
-            pairs[[length(pairs) + 1]] <- c(first, last)
+            paired[[length(paired) + 1]] <- c(first, last)
             quants <- quants[c(-1, -length(quants))]
         }
 
         # last is more distant from 50%
         else if(last - 50 > 50 - first) {
-            singles[[length(singles) + 1]] <- last
+            unpaired[[length(unpaired) + 1]] <- last
             quants <- quants[-length(quants)]
         }
 
         # first is more distanct from 50%
         else {
-            singles[[length(singles) + 1]] <- first
+            unpaired[[length(unpaired) + 1]] <- first
             quants <- quants[-1]
         }
     }
 
     if(length(quants) == 1) {
-        singles[[length(singles) + 1]] <- quants[[1]]
+        unpaired[[length(unpaired) + 1]] <- quants[[1]]
     }
 
-    list(pairs=pairs, singles=sort(singles))
+    list(paired=paired, unpaired=sort(unpaired))
 }
