@@ -105,3 +105,52 @@ get_quantile <- function(df, perc) {
         stop(glue::glue("could not compute/obtain {perc}% quantile from data frame"))
     }
 }
+
+
+#' Pair up matching quantiles
+#'
+#' Given a list of quantiles, pair together the ones symmetrical around the median.
+#' For example, the 2.5% quantile and 97.5% quantile go together.
+#'
+#' @param quants A vector of distinct numbers between 0 and 100.
+#'
+#' @returns A named list with two elements: `pairs`, a list of pairs of quantiles,
+#'  and `singles`, a list of all the leftover quantiles.
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+pair_quantiles <- function(quants) {
+    pairs <- list()
+    singles <- list()
+
+    quants <- quants |> sort() |> unique()
+    while(length(quants) > 1) {
+        first <- quants[[1]]
+        last <- tail(quants, n=1)
+
+        # equidistant pair from 50%
+        if(last - 50 == 50 - first) {
+            pairs[[length(pairs) + 1]] <- c(first, last)
+            quants <- quants[c(-1, -length(quants))]
+        }
+
+        # last is more distant from 50%
+        else if(last - 50 > 50 - first) {
+            singles[[length(singles) + 1]] <- last
+            quants <- quants[-length(quants)]
+        }
+
+        # first is more distanct from 50%
+        else {
+            singles[[length(singles) + 1]] <- first
+            quants <- quants[-1]
+        }
+    }
+
+    if(length(quants) == 1) {
+        singles[[length(singles) + 1]] <- quants[[1]]
+    }
+
+    list(pairs=pairs, singles=singles)
+}
