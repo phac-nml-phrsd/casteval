@@ -6,15 +6,14 @@
 #'
 #' @template fcst
 #' @param obs An observations data frame.
-#' @param quants (Optional) A list of pairs of numbers between 0 and 100.
+#' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100.
 #' If provided, the score for each corresponding pair of quantiles will be calculated.
-#' If not provided, it will default to every symmetrical pair of quantiles that can be found in `fcst`.
-#' If `summarize` is `TRUE`, an additional column named 
+#' If not provided, it will default to every symmetrical pair of quantiles that can be found in `fcst`,
+#' ordered from widest to narrowest (e.x. the 25% and 75% quantiles are symmetrical).
 #' 
-#' If `quants` is `NULL`, `fcst` must contain quantile data,
-#' and the accuracy will be calculated for every symmetrical pair of quantiles provided.
-#' 
-#' Otherwise, 
+#' If `summarize` is `FALSE`, an additional column named `pair` will indicate which pair of quantiles each row represents.
+#' If `summarize` is `TRUE`, the output will be a vector with the same length as `quant_pairs`,
+#' containing the respective score for each pair.
 #' @template summarize
 #'
 #' @returns A number from 0 to 1,
@@ -23,40 +22,48 @@
 #' @autoglobal
 #'
 #' @examples
+#' # forecast with raw data
+#' fc1 <- create_forecast(dplyr::tibble(time=c(1,1,1,2,2,2,3,3,3), val=4:12))
+#' obs1 <- data.frame(time=1:3, val_obs=c(5, 7.4, 11.6))
+#' 
 #' # calculate quantiles and accuracy from raw data
 #' # returns 2/3
-#' accuracy(
-#'   create_forecast(dplyr::tibble(time=c(1,1,1,2,2,2,3,3,3), val=4:12)),
-#'   data.frame(time=1:3, val_obs=c(5, 7.4, 11.6)),
-#'   quants=c(25, 75)
-#' )
+#' accuracy(fc1, obs1, quant_pairs=list(c(25, 75)))
 #' 
-#' # provide two quantiles and specify them in `quants`
-#' # returns 1/3
-#' accuracy(
-#'   create_forecast(dplyr::tibble(
-#'     time=1:3, val_q25=4:6, val_q50=7:9, val_mean=100:102, val_q75=200:202
-#'   )),
-#'   data.frame(time=1:3, val_obs=c(4, 201, 1000)),
-#'   quants=c(25,50)
-#' )
+#' # forecast with quantile data
+#' fc2 <- create_forecast(dplyr::tibble(
+#'   time=1:3, val_q5=1:3, val_q25=4:6, val_q50=100:102, val_q75=200:202, val_q95=203:205
+#' ))
+#' obs2 <- data.frame(time=1:3, val_obs=c(4, 202, 1000))
+#' 
+#' # infer quantile pairs from forecast data (`c(5,95)` and `c(25, 75)`)
+#' # returns c(2/3, 1/3)
+#' accuracy(fc2, obs2)
 #'
-#' # return a data frame with a logical `score` column
-#' accuracy(
-#'   create_forecast(dplyr::tibble(
-#'     time=1:3, val_q2.5=4:6, val_q50=7:9, val_mean=100:102, val_q97.5=200:202
-#'   )),
-#'   data.frame(time=1:3, val_obs=c(4, 201, 1000)),
-#'   summarize=FALSE
-#' )
-accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
+#' # return a data frame with a `time`, `pair`, and `score` columns
+#' accuracy(fc2, obs2, summarize=FALSE)
+accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
     if(is.null(quants)) {
         stop("TODO")
     }
-    validate_quant_interval(quants)
 
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
+
+    if(is.null(quants)) { # default quants -> infer from forecast
+        quants <- pair_quantiles(get_quant_percentages(fcst$data))$paired
+        if(length(quants) == 0) {
+            stop("`quants` is NULL and `fcst` does not contain usable quantile data for scoring accuracy")
+        }
+    }
+    else { # provided quants
+        # check for numeric(0) shenanigans
+        if(length(quants) == 0) {
+            stop("no quantile pairs provided")
+        }
+        # validate
+        quants |> purrr::walk(validate_quant_interval)
+    }
 
     # get the low and high quantiles and name the columns correspondingly
     low <- get_quantile(df, quants[[1]]) |> dplyr::rename(low=quant)
@@ -81,9 +88,9 @@ accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
 
 #' Validate quantile interval vector
 #'
-#' Helper function for accuracy(). Performs input validation on its `quants` parameter.
+#' Helper function for accuracy(). Performs input validation on its `quant_pairs` parameter.
 #'
-#' @param quants Same as the `quants` parameter passed to accuracy()
+#' @param pair An element of `quant_pairs`
 #'
 #' @returns NULL if valid. Error otherwise.
 #' @autoglobal
@@ -103,24 +110,24 @@ accuracy <- function(fcst, obs, quants=c(2.5, 97.5), summarize=TRUE) {
 #' 
 #' # invalid
 #' try(casteval:::validate_quant_interval("50, 60"))
-validate_quant_interval <- function(quants) {
-    if(!is.numeric(quants)) {
-        stop("`quants` must be either NULL or vector of 2 numbers")
+validate_quant_interval <- function(pair) {
+    if(!is.numeric(pair)) {
+        stop("`pair` must be either NULL or vector of 2 numbers")
     }
 
-    if(length(quants) != 2) {
-        stop("`quants` vector must have length 2")
+    if(length(pairs) != 2) {
+        stop("quantile pair must have length 2")
     }
 
-    low <- quants[[1]]
-    high <- quants[[2]]
+    low <- pairs[[1]]
+    high <- pairs[[2]]
 
     if(low >= high) {
-        stop("`quants[[1]]` must be less than `quants[[2]]`")
+        stop("`first quantile in pair must be less than second quantile")
     }
 
     if(low < 0 || low > 100 || high < 0 || high > 100) {
-        stop("`quants[[1]]` and `quants[[2]]` must be between 0 and 100, inclusive")
+        stop("`quantiles in pair must be between 0 and 100, inclusive")
     }
 
     invisible(NULL)
