@@ -6,8 +6,9 @@
 #'
 #' @template fcst
 #' @param obs An observations data frame.
-#' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100.
-#' If provided, the score for each corresponding pair of quantiles will be calculated.
+#' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100,
+#' or a single pair of numbers between 0 and 100.
+#' If provided, the score for each corresponding pairs of quantiles will be calculated.
 #' If not provided, it will default to every symmetrical pair of quantiles that can be found in `fcst`,
 #' ordered from widest to narrowest (e.x. the 25% and 75% quantiles are symmetrical).
 #' 
@@ -42,23 +43,29 @@
 #' 
 #' # return a data frame with a `time`, `pair`, `val_obs`, and `score` columns
 #' accuracy(fc2, obs2, summarize=FALSE)
-accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
+accuracy <- function(fcst, obs, quant_pairs=NULL, summarize=TRUE) {
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    if(is.null(quant_pairs)) { # default quants -> infer from forecast
+    if(is.null(quant_pairs)) { # default quant_pairs -> infer from forecast
         quant_pairs <- pair_quantiles(get_quant_percentages(fcst$data))$paired
         if(length(quant_pairs) == 0) {
             stop("could not infer quantile pairs from forecast data")
         }
     }
-    else { # provided quants
-        # check for numeric(0) shenanigans
+    else if(is.numeric(quant_pairs)) { # provided a single pair
+        validate_quant_pair(quant_pairs)
+        quant_pairs <- list(quant_pairs)
+    }
+    else if(is.list(quant_pairs)) { # provided list of pairs
         if(length(quant_pairs) == 0) {
-            stop("no quantile pairs provided")
+            stop("`quant_pairs` is empty")
         }
         # validate 
-        quants |> purrr::walk(validate_quant_interval)
+        quant_pairs |> purrr::walk(validate_quant_pair)
+    }
+    else {
+        stop("`quant_pairs` must be either NULL, pair of quantiles, or list of pairs of quantiles")
     }
 
     scores <- quant_pairs |>
@@ -93,8 +100,8 @@ accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
 #' @examples
 #' # See `?accuracy`
 accuracy_help <- function(fcst, obs, pair) {
-    low <- get_quantile(df, pair[[1]]) |> dplyr::rename(low=quant)
-    high <- get_quantile(df, pair[[2]]) |> dplyr::rename(high=quant)
+    low <- get_quantile(fcst$data, pair[[1]]) |> dplyr::rename(low=quant)
+    high <- get_quantile(fcst$data, pair[[2]]) |> dplyr::rename(high=quant)
 
     # attach quant columns to obs data frame
     obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
@@ -103,10 +110,11 @@ accuracy_help <- function(fcst, obs, pair) {
     }
 
     # calculate accuracy
-    obs <- obs |> mutate(score=dplyr::between(val_obs, low, high))
+    obs <- obs |> dplyr::mutate(score=dplyr::between(val_obs, low, high))
 
     return(obs |> dplyr::select(time, val_obs, score))
 }
+
 
 #' Validate quantile interval vector
 #'
@@ -137,7 +145,7 @@ validate_quant_pair <- function(pair) {
         stop("quantile pair must be vector of 2 numbers")
     }
 
-    if(length(pairs) != 2) {
+    if(length(pair) != 2) {
         stop("quantile pair must have length 2")
     }
 
@@ -145,11 +153,11 @@ validate_quant_pair <- function(pair) {
     high <- pair[[2]]
 
     if(low >= high) {
-        stop("`first quantile in pair must be less than second quantile in pair")
+        stop("first quantile in pair must be less than second quantile in pair")
     }
 
     if(low < 0 || low > 100 || high < 0 || high > 100) {
-        stop("`quantiles in pair must be between 0 and 100, inclusive")
+        stop("quantiles in pair must be between 0 and 100, inclusive")
     }
 
     invisible(NULL)
