@@ -39,8 +39,8 @@
 #' # infer quantile pairs from forecast data (`c(5,95)` and `c(25, 75)`)
 #' # returns c(2/3, 1/3)
 #' accuracy(fc2, obs2)
-#'
-#' # return a data frame with a `time`, `pair`, and `score` columns
+#' 
+#' # return a data frame with a `time`, `pair`, `val_obs`, and `score` columns
 #' accuracy(fc2, obs2, summarize=FALSE)
 accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
     validate_fcst_obs_pair(fcst, obs)
@@ -61,25 +61,20 @@ accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
         quants |> purrr::walk(validate_quant_interval)
     }
 
-    # get the low and high quantiles and name the columns correspondingly
-    low <- get_quantile(df, quants[[1]]) |> dplyr::rename(low=quant)
-    high <- get_quantile(df, quants[[2]]) |> dplyr::rename(high=quant)
-
-    # attach quant columns to obs data frame
-    obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
-    if(nrow(obs) == 0) {
-        stop("observations and forecast data share no time points")
-    }
-
-    # calculate accuracy
-    obs <- obs |> mutate(score=dplyr::between(val_obs, low, high))
+    scores <- quant_pairs |>
+        # get the score data frame for each pair and give it a `pair` numbering
+        purrr::imap(\(pair, i)
+            accuracy_help(fcst, obs, pair) |> dplyr::mutate(pair=i)
+        ) |>
+        # combine them into one data frame
+        dplyr::bind_rows()
 
     if(!summarize) {
-        return(obs |> dplyr::select(time, val_obs, score))
+        return(scores)
     }
 
     # calculate success rate (aka accuracy)
-    mean(obs$score)
+    scores |> dplyr::group_by(pair) |> dplyr::summarize(acc=mean(score)) %>% .$acc
 }
 
 
@@ -92,13 +87,25 @@ accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
 #' @param obs An observations data frame.
 #' @param pair A valid quantile pair
 #'
-#' @returns A data frame with `time` and `score` columns
+#' @returns A data frame with `time`, `val_obs`, and `score` columns
 #' @autoglobal
 #'
 #' @examples
 #' # See `?accuracy`
 accuracy_help <- function(fcst, obs, pair) {
-    
+    low <- get_quantile(df, pair[[1]]) |> dplyr::rename(low=quant)
+    high <- get_quantile(df, pair[[2]]) |> dplyr::rename(high=quant)
+
+    # attach quant columns to obs data frame
+    obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
+    if(nrow(obs) == 0) {
+        stop("observations and forecast data share no time points")
+    }
+
+    # calculate accuracy
+    obs <- obs |> mutate(score=dplyr::between(val_obs, low, high))
+
+    return(obs |> dplyr::select(time, val_obs, score))
 }
 
 #' Validate quantile interval vector
