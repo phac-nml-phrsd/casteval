@@ -16,7 +16,7 @@
 #' @param score (Optional) A scoring function.
 #'  The function will be used to score the `obs` against the forecast.
 #'  A scoring function should accept a forecast object, an observations data frame, as well as a `summarize` argument.
-#'  See `accuracy()`, `neglog()` for examples
+#'  See `?accuracy`, `?neglog` for examples
 #'
 #' @returns A ggplot2 object
 #' @export

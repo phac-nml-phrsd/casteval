@@ -43,25 +43,21 @@
 #' # return a data frame with a `time`, `pair`, and `score` columns
 #' accuracy(fc2, obs2, summarize=FALSE)
 accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
-    if(is.null(quants)) {
-        stop("TODO")
-    }
-
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    if(is.null(quants)) { # default quants -> infer from forecast
-        quants <- pair_quantiles(get_quant_percentages(fcst$data))$paired
-        if(length(quants) == 0) {
-            stop("`quants` is NULL and `fcst` does not contain usable quantile data for scoring accuracy")
+    if(is.null(quant_pairs)) { # default quants -> infer from forecast
+        quant_pairs <- pair_quantiles(get_quant_percentages(fcst$data))$paired
+        if(length(quant_pairs) == 0) {
+            stop("could not infer quantile pairs from forecast data")
         }
     }
     else { # provided quants
         # check for numeric(0) shenanigans
-        if(length(quants) == 0) {
+        if(length(quant_pairs) == 0) {
             stop("no quantile pairs provided")
         }
-        # validate
+        # validate 
         quants |> purrr::walk(validate_quant_interval)
     }
 
@@ -86,6 +82,25 @@ accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
     mean(obs$score)
 }
 
+
+#' Calculate accuracy given a single quantile pair
+#'
+#' Helper for `accuracy()`.
+#' Calculates accuracy for a single quantile pair and returns the unsummarized result.
+#'
+#' @param fcst A forecast object.
+#' @param obs An observations data frame.
+#' @param pair A valid quantile pair
+#'
+#' @returns A data frame with `time` and `score` columns
+#' @autoglobal
+#'
+#' @examples
+#' # See `?accuracy`
+accuracy_help <- function(fcst, obs, pair) {
+    
+}
+
 #' Validate quantile interval vector
 #'
 #' Helper function for accuracy(). Performs input validation on its `quant_pairs` parameter.
@@ -97,33 +112,33 @@ accuracy <- function(fcst, obs, quant_pairs=c(2.5, 97.5), summarize=TRUE) {
 #'
 #' @examples
 #' # valid
-#' casteval:::validate_quant_interval(c(50, 70))
+#' casteval:::validate_quant_pair(c(50, 70))
 #' 
 #' # invalid
-#' try(casteval:::validate_quant_interval(c(70, 50)))
+#' try(casteval:::validate_quant_pair(c(70, 50)))
 #' 
 #' # invalid
-#' try(casteval:::validate_quant_interval(c(-1, 50)))
+#' try(casteval:::validate_quant_pair(c(-1, 50)))
 #' 
 #' # invalid
-#' try(casteval:::validate_quant_interval(c(50,60,70)))
+#' try(casteval:::validate_quant_pair(c(50,60,70)))
 #' 
 #' # invalid
-#' try(casteval:::validate_quant_interval("50, 60"))
-validate_quant_interval <- function(pair) {
+#' try(casteval:::validate_quant_pair("50, 60"))
+validate_quant_pair <- function(pair) {
     if(!is.numeric(pair)) {
-        stop("`pair` must be either NULL or vector of 2 numbers")
+        stop("quantile pair must be vector of 2 numbers")
     }
 
     if(length(pairs) != 2) {
         stop("quantile pair must have length 2")
     }
 
-    low <- pairs[[1]]
-    high <- pairs[[2]]
+    low <- pair[[1]]
+    high <- pair[[2]]
 
     if(low >= high) {
-        stop("`first quantile in pair must be less than second quantile")
+        stop("`first quantile in pair must be less than second quantile in pair")
     }
 
     if(low < 0 || low > 100 || high < 0 || high > 100) {

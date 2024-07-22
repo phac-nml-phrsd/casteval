@@ -114,7 +114,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 #' @autoglobal
 #'
 #' @examples
-#' # See `create_forecast()`
+#' # See `?create_forecast`
 create_forecast_ensemble <- function(time, vals) {
     ## validate `time` and `vals`
 

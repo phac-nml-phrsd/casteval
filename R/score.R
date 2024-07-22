@@ -11,7 +11,7 @@
 #' Removes rows from forecast data frame which should not be scored,
 #' i.e. the data generated for dates/times prior to when the forecast was created.
 #'
-#' @param df The forecast data frame. See `create_forecast()` for details
+#' @param df The forecast data frame. See `?create_forecast` for details
 #' @param forecast_time Either NULL or a time of the same type as the values in `dat$time`.
 #'  If non-NULL, all rows with time prior to `forecast_time` will be removed from `dat`.
 #'

@@ -165,7 +165,7 @@
 #'  If not provided, the quantile intervals will be inferred from the forecast.
 #'  Otherwise, each pair will be used as a quantile intervals.
 #' @param alpha (Optional) The alpha parameter to be passed to `ggplot2`
-#' @param palette (Optional) The colour palette to use (see `ggplot2::scale_fill_brewer()`)
+#' @param palette (Optional) The colour palette to use (see `?ggplot2::scale_fill_brewer`)
 #'
 #' @returns A `ggplot2` object.
 #' @autoglobal
