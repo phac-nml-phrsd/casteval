@@ -155,15 +155,15 @@
 # }
 
 
-#' Graph quantile bands
+#' Graph quantile intervals
 #'
-#' Given forecast data, highlight the specified quantile ranges.
+#' Given forecast data, highlight the specified quantile intervals.
 #'
 #' @template graph
 #' @template fcst
 #' @param quants (Optional) A list of pairs of numbers between 0 and 100.
-#'  If not provided, the quantile ranges will be inferred from the forecast.
-#'  Otherwise, each pair will be used as a quantile range.
+#'  If not provided, the quantile intervals will be inferred from the forecast.
+#'  Otherwise, each pair will be used as a quantile intervals.
 #' @param alpha (Optional) The alpha parameter to be passed to `ggplot2`
 #' @param palette (Optional) The colour palette to use (see `ggplot2::scale_fill_brewer()`)
 #'
@@ -172,6 +172,6 @@
 #'
 #' @examples
 #' #TODO
-graph_quantile_bands <- function(graph=NULL, fcst, quants=NULL, alpha=NULL, palette=1) {
+graph_quant_intervals <- function(graph=NULL, fcst, quants=NULL, alpha=NULL, palette=1) {
     
 }

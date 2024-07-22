@@ -1,46 +1,46 @@
-test_that("validate_quant_range() works", {
+test_that("validate_quant_interval() works", {
   expect_error(
-    validate_quant_range("a"),
+    validate_quant_interval("a"),
     "must be either NULL or vector of 2 numbers"
   )
 
   expect_error(
-    validate_quant_range(2),
+    validate_quant_interval(2),
     "vector must have length 2"
   )
 
   expect_error(
-    validate_quant_range(1:3),
+    validate_quant_interval(1:3),
     "vector must have length 2"
   )
 
   expect_error(
-    validate_quant_range(list(1,2)),
+    validate_quant_interval(list(1,2)),
     "must be either NULL or vector of 2 numbers"
   )
 
   expect_error(
-    validate_quant_range(c(2,2)),
+    validate_quant_interval(c(2,2)),
     "`quants.*1.*` must be less than `quants.*2.*`"
   )
   
   expect_error(
-    validate_quant_range(c(2,1)),
+    validate_quant_interval(c(2,1)),
     "`quants.*1.*` must be less than `quants.*2.*`"
   )
 
   expect_error(
-    validate_quant_range(c(-1, 90)),
+    validate_quant_interval(c(-1, 90)),
     "`quants.*1.*` and `quants.*2.*` must be between 0 and 100, inclusive"
   )
 
   expect_error(
-    validate_quant_range(c(10, 101)),
+    validate_quant_interval(c(10, 101)),
     "`quants.*1.*` and `quants.*2.*` must be between 0 and 100, inclusive"
   )
 
   expect_equal(
-    validate_quant_range(c(0,100)),
+    validate_quant_interval(c(0,100)),
     NULL
   )
 })
