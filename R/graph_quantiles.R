@@ -181,7 +181,7 @@ graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL
     }
 
     # get quantile pairs
-    quant_pairs <- parse_quant_pairs(quant_pairs)
+    quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data)
     # sort quantile pairs
     quant_pairs <- quant_pairs |>
         purrr::map(\(pair) pair[[1]]) |>
@@ -195,29 +195,33 @@ graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL
 
     ## calculate the high and low quantiles for each interval
 
+    # make a factor containing names of the intervals
+    names <- quant_pairs |>
+        purrr::map(\(pair) glue::glue("{pair[[1]]}%-{pair[[2]]}%")) |>
+        as.character() %>%
+        factor(., levels=.)
+
     intervals <- quant_pairs |>
         # for every pair,
         purrr::imap(\(pair, i)
             # get the low quantile in a data frame
             get_quantile(fcst$data, pair[[1]]) |>
-                # append the high quantile and assign a number
+                # append the high quantile and assign a name (which is a factor)
                 dplyr::mutate(
                     lo=quant,
                     hi=get_quantile(fcst$data, pair[[2]])$quant,
-                    num=i
+                    name=names[[i]]
                 )
         ) |>
         # combine into one data frame
-        dplyr::bind_rows() |>
-        # make the number a factor to make ggplot2 happy
-        dplyr::mutate(num = as.factor(num))
+        dplyr::bind_rows()
 
     ## graph the intervals
 
     graph +
         # graph ribbons, with fill varying by interval number
         ggplot2::geom_ribbon(
-            ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=num),
+            ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=name),
             alpha=alpha,
             data=intervals
         ) +
