@@ -118,7 +118,10 @@ accuracy_help <- function(fcst, obs, pair) {
 
 #' Validate quantile interval vector
 #'
-#' Helper function for accuracy(). Performs input validation on its `quant_pairs` parameter.
+#' Given a quantile pair, check that it is valid.
+#' A valid quantile pair is a numeric vector of length 2
+#' where both values are between 0 and 100,
+#' and the first number is smaller than the second.
 #'
 #' @param pair An element of `quant_pairs`
 #'
