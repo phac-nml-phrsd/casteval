@@ -363,3 +363,54 @@ validate_time_column <- function(times) {
         stop("time column must be either numeric, Date, or date-time (POSIXt) vector")
     }
 }
+
+
+#' Validate quantile interval vector
+#'
+#' Given a quantile pair, check that it is valid.
+#' A valid quantile pair is a numeric vector of length 2
+#' where both values are between 0 and 100,
+#' and the first number is smaller than the second.
+#'
+#' @param pair An element of `quant_pairs`
+#'
+#' @returns NULL if valid. Error otherwise.
+#' @autoglobal
+#'
+#' @examples
+#' # valid
+#' casteval:::validate_quant_pair(c(50, 70))
+#' 
+#' # invalid
+#' try(casteval:::validate_quant_pair(c(70, 50)))
+#' 
+#' # invalid
+#' try(casteval:::validate_quant_pair(c(-1, 50)))
+#' 
+#' # invalid
+#' try(casteval:::validate_quant_pair(c(50,60,70)))
+#' 
+#' # invalid
+#' try(casteval:::validate_quant_pair("50, 60"))
+validate_quant_pair <- function(pair) {
+    if(!is.numeric(pair)) {
+        stop("quantile pair must be vector of 2 numbers")
+    }
+
+    if(length(pair) != 2) {
+        stop("quantile pair must have length 2")
+    }
+
+    low <- pair[[1]]
+    high <- pair[[2]]
+
+    if(low >= high) {
+        stop("first quantile in pair must be less than second quantile in pair")
+    }
+
+    if(low < 0 || low > 100 || high < 0 || high > 100) {
+        stop("quantiles in pair must be between 0 and 100, inclusive")
+    }
+
+    invisible(NULL)
+}
