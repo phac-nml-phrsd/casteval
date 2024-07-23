@@ -172,6 +172,20 @@
 #'
 #' @examples
 #' #TODO
-graph_quant_intervals <- function(graph=NULL, fcst, quants=NULL, alpha=NULL, palette=1) {
-    
+graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL, palette=1) {
+    validate_forecast(fcst)
+    if(is.null(graph)) {
+        graph <- ggplot2::ggplot()
+    }
+
+    if(is.null(quant_pairs)) {
+        quant_pairs <- pair_quantiles(get_quant_percentages(fcst$data))$paired
+        if(length(quant_pairs) == 0) {
+            stop("could not infer quantile pairs from forecast data")
+        }
+    }
+
+    if(is.null(alpha)) {
+        alpha <- 0.5 / length(quant_pairs)
+    }
 }
