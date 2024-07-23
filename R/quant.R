@@ -161,15 +161,35 @@ pair_quantiles <- function(quants) {
 #' Pairs quantile pair(s)
 #'
 #' Helper function for funtions that accept a `quant_pairs` argument.
+#' Validates/formats the given pairs, or infers the quantile pairs from forecast data.
 #'
-#' @param name desc
+#' @param quant_pairs A list of pairs, a single pair, or NULL
+#' @param df A forecast data frame
 #'
-#' @returns desc
-#' @export
+#' @returns A list of pairs, either taken from `quant_pairs` or inferred from `df`
 #' @autoglobal
 #'
 #' @examples
-#' 
-parse_quant_pairs <- function(quant_pairs) {
-
+#' #TODO
+parse_quant_pairs <- function(quant_pairs, df) {
+    if(is.null(quant_pairs)) { # default quant_pairs -> infer from forecast
+        quant_pairs <- pair_quantiles(get_quant_percentages(df))$paired
+        if(length(quant_pairs) == 0) {
+            stop("could not infer quantile pairs from forecast data")
+        }
+    }
+    else if(is.numeric(quant_pairs)) { # provided a single pair
+        validate_quant_pair(quant_pairs)
+        quant_pairs <- list(quant_pairs)
+    }
+    else if(is.list(quant_pairs)) { # provided list of pairs
+        if(length(quant_pairs) == 0) {
+            stop("`quant_pairs` is empty")
+        }
+        # validate 
+        quant_pairs |> purrr::walk(validate_quant_pair)
+    }
+    else {
+        stop("`quant_pairs` must be either NULL, pair of quantiles, or list of pairs of quantiles")
+    }
 }
