@@ -173,7 +173,8 @@
 #' @examples
 #' #TODO
 graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL, palette=1) {
-    # validate
+    ## validate/process parameters
+
     validate_forecast(fcst)
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
@@ -192,22 +193,34 @@ graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL
         alpha <- 0.5 / length(quant_pairs)
     }
 
-    intervals <- quant_pairs |> purrr::imap(\(pair, i)
-        get_quantile(fcst$data, pair[[1]]) |>
-            dplyr::mutate(
-                lo=quant,
-                hi=get_quantile(fcst$data, pair[[2]])$quant,
-                num=i
-            )
-    ) |>
+    ## calculate the high and low quantiles for each interval
+
+    intervals <- quant_pairs |>
+        # for every pair,
+        purrr::imap(\(pair, i)
+            # get the low quantile in a data frame
+            get_quantile(fcst$data, pair[[1]]) |>
+                # append the high quantile and assign a number
+                dplyr::mutate(
+                    lo=quant,
+                    hi=get_quantile(fcst$data, pair[[2]])$quant,
+                    num=i
+                )
+        ) |>
+        # combine into one data frame
         dplyr::bind_rows() |>
+        # make the number a factor to make ggplot2 happy
         dplyr::mutate(num = as.factor(num))
 
+    ## graph the intervals
+
     graph +
+        # graph ribbons, with fill varying by interval number
         ggplot2::geom_ribbon(
             ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=num),
             alpha=alpha,
             data=intervals
-        ) + 
-        ggplot2::scale_fill_brewer()
+        ) +
+        # adjust the color palette
+        ggplot2::scale_fill_brewer(palette=palette)
 }
