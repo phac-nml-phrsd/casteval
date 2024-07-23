@@ -296,3 +296,50 @@ test_that("validate_data_frame() works", {
     NULL
   )
 })
+
+test_that("validate_quant_pair() works", {
+  expect_error(
+    validate_quant_pair("a"),
+    "quantile pair must be vector of 2 numbers"
+  )
+
+  expect_error(
+    validate_quant_pair(2),
+    "quantile pair must have length 2"
+  )
+
+  expect_error(
+    validate_quant_pair(1:3),
+    "quantile pair must have length 2"
+  )
+
+  expect_error(
+    validate_quant_pair(list(1,2)),
+    "quantile pair must be vector of 2 numbers"
+  )
+
+  expect_error(
+    validate_quant_pair(c(2,2)),
+    "first quantile in pair must be less than second quantile in pair"
+  )
+  
+  expect_error(
+    validate_quant_pair(c(2,1)),
+    "first quantile in pair must be less than second quantile in pair"
+  )
+
+  expect_error(
+    validate_quant_pair(c(-1, 90)),
+    "quantiles in pair must be between 0 and 100, inclusive"
+  )
+
+  expect_error(
+    validate_quant_pair(c(10, 101)),
+    "quantiles in pair must be between 0 and 100, inclusive"
+  )
+
+  expect_equal(
+    validate_quant_pair(c(0,100)),
+    NULL
+  )
+})
