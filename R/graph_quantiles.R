@@ -173,25 +173,35 @@
 #' @examples
 #' #TODO
 graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL, palette=1) {
+    # validate
     validate_forecast(fcst)
     if(is.null(graph)) {
         graph <- ggplot2::ggplot()
     }
 
+    # get quantile pairs
     quant_pairs <- parse_quant_pairs(quant_pairs)
+    # sort quantile pairs
+    quant_pairs <- quant_pairs |>
+        purrr::map(\(pair) pair[[1]]) |>
+        as.numeric() |>
+        order() %>%
+        quant_pairs[.] 
 
     if(is.null(alpha)) {
         alpha <- 0.5 / length(quant_pairs)
     }
 
     intervals <- quant_pairs |> purrr::imap(\(pair, i)
-        dplyr::tibble(
-            time=fcst$data$time,
-            lo=get_quantile(fcst$data, pair[[1]]),
-            hi=get_quantile(fcst$data, pair[[2]]),
-            num=i
-        )
-    ) |> dplyr::bind_rows()
+        get_quantile(fcst$data, pair[[1]]) |>
+            dplyr::mutate(
+                lo=quant,
+                hi=get_quantile(fcst$data, pair[[2]])$quant,
+                num=i
+            )
+    ) |>
+        dplyr::bind_rows() |>
+        dplyr::mutate(num = as.factor(num))
 
     graph +
         ggplot2::geom_ribbon(
