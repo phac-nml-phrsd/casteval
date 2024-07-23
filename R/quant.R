@@ -192,4 +192,6 @@ parse_quant_pairs <- function(quant_pairs, df) {
     else {
         stop("`quant_pairs` must be either NULL, pair of quantiles, or list of pairs of quantiles")
     }
+
+    quant_pairs
 }

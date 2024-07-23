@@ -47,26 +47,7 @@ accuracy <- function(fcst, obs, quant_pairs=NULL, summarize=TRUE) {
     validate_fcst_obs_pair(fcst, obs)
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    if(is.null(quant_pairs)) { # default quant_pairs -> infer from forecast
-        quant_pairs <- pair_quantiles(get_quant_percentages(fcst$data))$paired
-        if(length(quant_pairs) == 0) {
-            stop("could not infer quantile pairs from forecast data")
-        }
-    }
-    else if(is.numeric(quant_pairs)) { # provided a single pair
-        validate_quant_pair(quant_pairs)
-        quant_pairs <- list(quant_pairs)
-    }
-    else if(is.list(quant_pairs)) { # provided list of pairs
-        if(length(quant_pairs) == 0) {
-            stop("`quant_pairs` is empty")
-        }
-        # validate 
-        quant_pairs |> purrr::walk(validate_quant_pair)
-    }
-    else {
-        stop("`quant_pairs` must be either NULL, pair of quantiles, or list of pairs of quantiles")
-    }
+    quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data)
 
     scores <- quant_pairs |>
         # get the score data frame for each pair and give it a `pair` numbering
