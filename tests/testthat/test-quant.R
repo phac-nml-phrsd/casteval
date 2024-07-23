@@ -83,3 +83,53 @@ test_that("pair_quantiles() works", {
     list(paired=list(c(15,85), c(30,70)), unpaired=c(0,10,20,50,51,60,75))
   )
 })
+
+test_that("parse_quant_pairs() works", {
+  df1 <- data.frame(time=1, val_q25=2, val_q75=3)
+  df2 <- data.frame(time=1, val_q30=2)
+  
+  expect_error(
+    parse_quant_pairs(list(), df1),
+    "`quant_pairs` is empty"
+  )
+  
+  expect_error(
+    parse_quant_pairs(4, df1),
+    "quantile pair must have length 2"
+  )
+  
+  expect_error(
+    parse_quant_pairs("a", df1),
+    "`quant_pairs` must be either NULL, pair of quantiles, or list of pairs of quantiles"
+  )
+
+  expect_error(
+    parse_quant_pairs(NULL, df2),
+    "could not infer quantile pairs from forecast data"
+  )
+
+  expect_error(
+    parse_quant_pairs(c(50,30), df2),
+    "first quantile in pair must be less than second quantile in pair"
+  )
+
+  expect_error(
+    parse_quant_pairs(list(c(25,75), c(1,2,3))),
+    "quantile pair must have length 2"
+  )
+
+  expect_equal(
+    parse_quant_pairs(NULL, df1),
+    list(c(25,75))
+  )
+
+  expect_equal(
+    parse_quant_pairs(c(25,75), df1),
+    list(c(25,75))
+  )
+
+  expect_equal(
+    parse_quant_pairs(list(c(25,75)), df1),
+    list(c(25,75))
+  )
+})
