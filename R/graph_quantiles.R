@@ -178,14 +178,26 @@ graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL
         graph <- ggplot2::ggplot()
     }
 
-    if(is.null(quant_pairs)) {
-        quant_pairs <- pair_quantiles(get_quant_percentages(fcst$data))$paired
-        if(length(quant_pairs) == 0) {
-            stop("could not infer quantile pairs from forecast data")
-        }
-    }
+    quant_pairs <- parse_quant_pairs(quant_pairs)
 
     if(is.null(alpha)) {
         alpha <- 0.5 / length(quant_pairs)
     }
+
+    intervals <- quant_pairs |> purrr::imap(\(pair, i)
+        dplyr::tibble(
+            time=fcst$data$time,
+            lo=get_quantile(fcst$data, pair[[1]]),
+            hi=get_quantile(fcst$data, pair[[2]]),
+            num=i
+        )
+    ) |> dplyr::bind_rows()
+
+    graph +
+        ggplot2::geom_ribbon(
+            ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=num),
+            alpha=alpha,
+            data=intervals
+        ) + 
+        ggplot2::scale_fill_brewer()
 }
