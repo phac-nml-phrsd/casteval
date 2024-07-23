@@ -156,3 +156,20 @@ pair_quantiles <- function(quants) {
 
     list(paired=paired, unpaired=sort(unpaired))
 }
+
+
+#' Pairs quantile pair(s)
+#'
+#' Helper function for funtions that accept a `quant_pairs` argument.
+#'
+#' @param name desc
+#'
+#' @returns desc
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' 
+parse_quant_pairs <- function(quant_pairs) {
+
+}
