@@ -6,12 +6,12 @@ test_that("graph_observations() works", {
   obs <- data.frame(time=1:3, val_obs=c(5,9,13))
 
   vdiffr::expect_doppelganger("obs1", graph_observations(NULL, obs))
-  vdiffr::expect_doppelganger("obs2", graph_observations(NULL, neglog(fc1, obs)))
+  vdiffr::expect_doppelganger("obs2", graph_observations(NULL, neglog(fc1, obs,summarize=FALSE)))
   vdiffr::expect_doppelganger("obs3",
     graph_observations(graph_ensemble(NULL, fc1), obs)
   )
   vdiffr::expect_doppelganger("obs4",
-    graph_observations(graph_ensemble(NULL, fc1), neglog(fc1, obs))
+    graph_observations(graph_ensemble(NULL, fc1), neglog(fc1, obs,summarize=FALSE))
   )
 
   fc2 <- create_forecast(dplyr::tibble(
@@ -23,10 +23,10 @@ test_that("graph_observations() works", {
   obs2 <- data.frame(time=1:12, val_obs=3:14)
 
   vdiffr::expect_doppelganger("obs5",
-    NULL |> graph_quantiles(fc2) |> graph_observations(obs2)
+    NULL |> graph_quant_intervals(fc2) |> graph_observations(obs2)
   )
   vdiffr::expect_doppelganger("obs6",
-    NULL |> graph_quantiles(fc2) |> graph_observations(accuracy(fc2, obs2, summarize=FALSE, quants=c(25, 75)))
+    NULL |> graph_quant_intervals(fc2) |> graph_observations(accuracy(fc2, obs2, summarize=FALSE, quant_pairs=c(25, 75)))
   )
 
   fc3 <- create_forecast(list(
@@ -41,7 +41,7 @@ test_that("graph_observations() works", {
     val_obs=c(4,10,14)
   )
   vdiffr::expect_doppelganger("obs7",
-    NULL |> graph_confidence_intervals(fc3, c(50)) |> graph_observations(accuracy(fc3, obs3, quants=c(25,75), summarize=FALSE))
+    NULL |> graph_quant_intervals(fc3, c(25,75)) |> graph_observations(accuracy(fc3, obs3, quant_pairs=c(25,75), summarize=FALSE))
   )
 
   fc4 <- create_forecast(list(
