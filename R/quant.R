@@ -190,7 +190,11 @@ parse_quant_pairs <- function(quant_pairs, df, allow_empty=FALSE) {
     }
     else if(is.list(quant_pairs)) { # provided list of pairs
         if(length(quant_pairs) == 0) {
-            stop("`quant_pairs` is empty")
+            if(allow_empty) {
+                return(list())
+            } else {
+                stop("`quant_pairs` is empty")
+            }
         }
         # validate 
         quant_pairs |> purrr::walk(validate_quant_pair)
