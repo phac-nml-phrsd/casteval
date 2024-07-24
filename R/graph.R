@@ -6,17 +6,26 @@
 
 #' Graph a forecast
 #'
-#' Graph a forecast, along with corresponding observations, confidence intervals, etc.
+#' Graph a forecast, along with corresponding observations, quantile intervals, etc.
 #'
 #' @template fcst
 #' @param obs (Optional) An observations data frame.
 #'  If provided, they will be overlaid over the forecast as points.
-#' @param confs (Optional) A vector of numbers from 0 to 100.
-#'  The corresponding confidence interval(s) will be displayed in the resulting graph.
+#' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100,
+#' or a single pair of numbers between 0 and 100.
+#' If provided, the score for each corresponding pairs of quantiles will be calculated.
+#' If not provided, it will default to every symmetrical pair of quantiles that can be found in `fcst`,
+#' ordered from widest to narrowest (e.x. the 25% and 75% quantiles are symmetrical).
+#' 
+#' The corresponding quantile intervals, if present, will be displayed in the resulting graph.
+#' 
+#' `quant_pairs` can be set to `list()` in order to display no quantile intervals.
+#' 
 #' @param score (Optional) A scoring function.
-#'  The function will be used to score the `obs` against the forecast.
+#'  The function will be used to score `obs` against the forecast.
 #'  A scoring function should accept a forecast object, an observations data frame, as well as a `summarize` argument.
-#'  See `?accuracy`, `?neglog` for examples
+#'  See `?accuracy`, `?neglog` for examples.
+#'  See `vignette(topic='casteval', package='casteval')` for details.
 #'
 #' @returns A ggplot2 object
 #' @export
@@ -43,7 +52,7 @@
 #' 
 #' # show the negative log score of each observation
 #' graph_forecast(fc, obs, score=neglog)
-graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
+graph_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
@@ -64,17 +73,22 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
 
     # graph everything according to the parameters
     graph <- NULL
-    if("raw" %in% fcst$data_types) {
+    if("val" %in% colnames(fcst$data)) {
         graph <- graph |> graph_ensemble(fcst)
     }
 
-    # TODO graph mean if present
+    # TODO graph mean and/or quantiles if present
     # TODO parameters/flags for keeping/discarding fit data, observations data that doesn't correpsond to forecast data, etc.
 
-    if(!is.null(confs)) {
-        graph <- graph |> graph_confidence_intervals(fcst, confs)
+    # pass allow_empty=TRUE so that missing quantile intervals is allowed
+    quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data, allow_empty=TRUE)
+
+    # graph quant intervals if present
+    if(length(quant_pairs) > 0) {
+        graph <- graph |> graph_quant_intervals(fcst, quant_pairs)
     }
 
+    # graph observatinos if present
     if(!is.null(obs)) {
         graph <- graph |> graph_observations(obs)
     }
@@ -100,9 +114,9 @@ graph_forecast <- function(fcst, obs=NULL, confs=NULL, score=NULL) {
     # name the axes
     graph <- graph + ggplot2::xlab("time") + ggplot2::ylab("value")
 
-    # make both axes integers only
+    # make x axis integers only
     graph <- graph + ggplot2::scale_x_continuous(breaks=integer_breaks())
-    graph <- graph + ggplot2::scale_y_continuous(breaks=integer_breaks())
+    #graph <- graph + ggplot2::scale_y_continuous(breaks=integer_breaks())
 
     graph
 }
