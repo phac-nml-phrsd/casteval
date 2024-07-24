@@ -132,4 +132,9 @@ test_that("parse_quant_pairs() works", {
     parse_quant_pairs(list(c(25,75)), df1),
     list(c(25,75))
   )
+
+  expect_equal(
+    parse_quant_pairs(NULL, df2, allow_empty=TRUE),
+    list()
+  )
 })

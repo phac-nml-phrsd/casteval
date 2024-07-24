@@ -165,17 +165,23 @@ pair_quantiles <- function(quants) {
 #'
 #' @param quant_pairs A list of pairs, a single pair, or NULL
 #' @param df A forecast data frame
+#' @param allow_empty If `FALSE`, an error will be raised when no quantile pairs can be inferred.
+#' If `TRUE`, an empty list will be returned silently. Defaults to `FALSE`.
 #'
 #' @returns A list of pairs, either taken from `quant_pairs` or inferred from `df`
 #' @autoglobal
 #'
 #' @examples
 #' #TODO
-parse_quant_pairs <- function(quant_pairs, df) {
+parse_quant_pairs <- function(quant_pairs, df, allow_empty=FALSE) {
     if(is.null(quant_pairs)) { # default quant_pairs -> infer from forecast
         quant_pairs <- pair_quantiles(get_quant_percentages(df))$paired
         if(length(quant_pairs) == 0) {
-            stop("could not infer quantile pairs from forecast data")
+            if(allow_empty) {
+                return(list())
+            } else {
+                stop("could not infer quantile pairs from forecast data")
+            }
         }
     }
     else if(is.numeric(quant_pairs)) { # provided a single pair
