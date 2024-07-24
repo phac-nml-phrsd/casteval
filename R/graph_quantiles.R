@@ -210,7 +210,7 @@ graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL
                 dplyr::mutate(
                     lo=quant,
                     hi=get_quantile(fcst$data, pair[[2]])$quant,
-                    name=names[[i]]
+                    interval=names[[i]]
                 )
         ) |>
         # combine into one data frame
@@ -221,7 +221,7 @@ graph_quant_intervals <- function(graph=NULL, fcst, quant_pairs=NULL, alpha=NULL
     graph +
         # graph ribbons, with fill varying by interval number
         ggplot2::geom_ribbon(
-            ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=name),
+            ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=interval),
             alpha=alpha,
             data=intervals
         ) +
