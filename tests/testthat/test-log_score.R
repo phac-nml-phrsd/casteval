@@ -61,6 +61,16 @@ test_that("log_score() validates", {
     ),
     "either `at` or `after` must be provided for summarized score"
   )
+
+  expect_error(
+    log_score(
+      create_forecast(df),
+      data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
+      at=1,
+      bw=c(1,1)
+    ),
+    "`bw` must be either NULL or a single number"
+  )
 })
 
 test_that("log_score() works", {
@@ -162,4 +172,32 @@ test_that("log_score() works", {
     tolerance=0.001
   )
 
+  expect_equal(
+    log_score(
+      create_forecast(dplyr::tibble(time=rep(1,100), val=dat)),
+      data.frame(time=1, val_obs=0),
+      at=1,
+      bw=1
+    ),
+    -1.31011,
+    tolerance=0.001
+  )
+})
+
+test_that("log_score() diagnostic works", {
+  # check that the internals of scoringRules::logs_sample work the way we expect
+  # (specifically the way the bandwidth is calculated) 
+  dat <- c(5,6,6,7,5.5,1,8,7,6,4)
+  s1 <- log_score(
+    create_forecast(data.frame(time=rep(1,10), val=dat)),
+    data.frame(time=1, val_obs=4.1),
+    at=1
+  )
+  s2 <- log_score(
+    create_forecast(data.frame(time=rep(1,10), val=dat)),
+    data.frame(time=1, val_obs=4.1),
+    at=1,
+    bw=bw.nrd(dat)
+  )
+  expect_equal(s1,s2)
 })

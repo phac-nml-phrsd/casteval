@@ -14,6 +14,8 @@
 #'  time `fcst$forecast_time + after` will be returned.
 #'  Mutually exclusive with `at`.
 #' @template summarize
+#' @param bw (Optional) The bandwidth for calculating the Kernel Density Estimation (see `?scoringRules::logs_sample`).
+#' If not provided, a bandwidth will automatically be calculated by `scoringRules::logs_sample()`.
 #'
 #' @returns If `summarize` is `FALSE`,
 #'  a data frame containing times, raw data, observations, and scores for those times.
@@ -43,7 +45,12 @@
 #'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   after=1
 #' )
-log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
+log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
+    # validate bw (mostly just make sure it isn't a vector with length >1)
+    if(!(is.null(bw) || (is.numeric(bw) && length(bw)==1))) {
+        stop("`bw` must be either NULL or a single number")
+    }
+
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)
     if(!"val" %in% colnames(fcst$data)) {
@@ -65,7 +72,7 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     }
 
     # scoringRules::logs_sample computes the negative log score. we negate it again to compute the log score
-    df <- df |> dplyr::summarize(score = -scoringRules::logs_sample(val_obs[[1]], val), val_obs=val_obs[[1]])
+    df <- df |> dplyr::summarize(score = -scoringRules::logs_sample(val_obs[[1]], val, bw=bw), val_obs=val_obs[[1]])
     #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
 
     if(!summarize) { # return the whole data frame with the score column
