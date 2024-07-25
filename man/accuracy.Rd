@@ -24,7 +24,7 @@ containing the respective score for each pair.}
 \item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
 If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
 containing the scores for each individual time point.
-This can be used by graphing functions to colour-code observations, for example.}
+This can be used by plotting functions to colour-code observations, for example.}
 }
 \value{
 A number from 0 to 1,
