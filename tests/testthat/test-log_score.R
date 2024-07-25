@@ -182,22 +182,51 @@ test_that("log_score() works", {
     -1.31011,
     tolerance=0.001
   )
-})
 
-test_that("log_score() diagnostic works", {
   # check that the internals of scoringRules::logs_sample work the way we expect
   # (specifically the way the bandwidth is calculated) 
-  dat <- c(5,6,6,7,5.5,1,8,7,6,4)
+  dat2 <- c(5,6,6,7,5.5,1,8,7,6,4)
   s1 <- log_score(
-    create_forecast(data.frame(time=rep(1,10), val=dat)),
+    create_forecast(data.frame(time=rep(1,10), val=dat2)),
     data.frame(time=1, val_obs=4.1),
     at=1
   )
   s2 <- log_score(
-    create_forecast(data.frame(time=rep(1,10), val=dat)),
+    create_forecast(data.frame(time=rep(1,10), val=dat2)),
     data.frame(time=1, val_obs=4.1),
     at=1,
-    bw=bw.nrd(dat)
+    bw=bw.nrd(dat2)
   )
   expect_equal(s1,s2)
+})
+
+test_that("plot_KDE() works", {
+  # copied from above
+  dat <- c(1.65333590, -0.45354373, -0.72833227, -0.57932896,  0.22393422,  1.66474380,  1.25860070, -0.45031426,
+    -0.58147908, -1.73164891,  0.24132984,  0.72108102,  0.27306302,  0.78953771,  0.21258096,  0.51148515,
+    1.60507022,  0.13291209,  2.07626932,  0.28595342,  2.02495293,  0.18406124, -1.14137975,  0.65767118,
+    -1.81017731,  1.08294741, -0.65729608, -1.01951425, -0.06479469,  0.33779109, -1.68815086, -0.27856043,
+    -0.33903125,  0.50082201,  1.83337494, -0.49905936, -0.49954973,  0.93032174,  1.52456456,  0.41078019,
+    0.51515480,  2.36816279, -1.70674549,  0.71729515,  0.34001180,  0.04716158,  1.02993176, -0.20778095,
+    -0.33842630, -0.91057128, -1.22348392,  0.85716805,  1.57524314,  0.33917055,  0.27631658,  2.08379505,
+    -0.41617193, -1.05603959, -2.36761241, -0.90434849,  0.61006285, -0.20332468,  1.03185942, -0.33730511,
+    -0.39846780,  0.84869596,  0.23811838, -1.16306244,  0.57000307, -0.36170627, -0.85645369,  0.11934929,
+    1.31981967, -0.63112338,  0.53136779,  1.34573168,  1.44116216, -1.70906870,  1.47288145, -1.06678870,
+    1.02354016, -1.62647574, -0.23338090,  0.66764487,  0.67915059,  1.83020184,  0.79276787, -0.25752067,
+    -0.36335945, -0.27205022,  1.43151611, -0.30642817, -0.73670236,  0.47512493, -0.87048155, -0.57383307,
+    -1.58870961, -0.93340630, -1.05583011,  1.55527561)
+
+  fc <- create_forecast(dplyr::tibble(time=rep(1,100), val=dat))
+  obs <- data.frame(time=1, val_obs=1)
+  vdiffr::expect_doppelganger("kde1",
+    plot_KDE(fc,obs, at=1, binwidth=0.5, bw=2)
+  )
+
+  vdiffr::expect_doppelganger("kde2",
+    plot_KDE(fc,obs, at=1, binwidth=0.5, bw=0.2)
+  )
+
+  vdiffr::expect_doppelganger("kde3",
+    plot_KDE(fc,obs, at=1, binwidth=0.5)
+  )
 })

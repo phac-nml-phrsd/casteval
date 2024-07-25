@@ -18,7 +18,7 @@ A time of the same type as those in \code{fcst}
 }
 \description{
 Get the time according to the \code{at}/\code{after} params passed by the user.
-Helper for \code{log_score()} and \code{log_score_diagnostic()}.
+Helper for \code{log_score()} and \code{plot_KDE()}.
 }
 \examples{
 fc <- create_forecast(data.frame(time=1:3, val=4:6), forecast_time=2)

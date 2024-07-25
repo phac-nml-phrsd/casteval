@@ -95,6 +95,12 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
 #'
 #' Create a plot displaying the density function calculated by the Kernel Density Estimation (KDE),
 #' for the specified time in the forecast.
+#' 
+#' Creates a plot containing:
+#' - The density curve at the given time calculated by the KDE
+#' - The forecast data points at the given time, along the x-axis
+#' - A histogram of the density of the forecast data points
+#' - A vertical line showing the observation at the given time (if provided)
 #'
 #' @template fcst
 #' @param obs (Optional) An observations data frame. Data from if will be included in the graph if provided
@@ -103,6 +109,7 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
 #' @param bw (Optional) See `?log_score`
 #' @param from,to (Optional) The range over which the density will be plotted
 #' @param n (Optional) How many points to calculate the density for
+#' @param binwidth (Optional) The binwidth for the histogram. Not to be confused with `bw`, which stands for bandwidth and is unrelated.
 #'
 #' @returns A ggplot object
 #' @export
@@ -110,10 +117,12 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
 #'
 #' @examples
 #' #TODO
-plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to=NULL, n=101) {
+plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to=NULL, n=101, binwidth=NULL) {
     # this function is structured very similarly to `log_score()`
     # it just has a different goal and some different parameters
     
+    ## validate
+
     # validate bw (mostly just make sure it isn't a vector with length >1)
     if(!(is.null(bw) || (is.numeric(bw) && length(bw)==1))) {
         stop("`bw` must be either NULL or a single number")
@@ -125,7 +134,9 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
     } else {
         validate_fcst_obs_pair(fcst, obs)
     }
- 
+
+    ## compute density
+
     # get the time point
     t <- get_specified_time(fcst, at, after)
 
@@ -139,15 +150,16 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
         from <- min(samp) - 2*rng
     }
     if(is.null(to)) {
-        from <- max(samp) + 2*rng
+        to <- max(samp) + 2*rng
     }
 
     x <- seq(from, to, length.out=n)
 
-    # get the densities
-    densities <- scoringRules::logs_sample(x, samp, bw=bw) %>% # calculate negative-log score
-        -. %>% # undo negation
-        exp() # undo log
+    # calculate negative-log score
+    neglog <- x |> purrr::map(\(v) scoringRules::logs_sample(v, samp, bw=bw)) |> as.numeric()
+    
+    # get densities (undo negation and undo log)
+    densities <- exp(-neglog)
     
     if(!all(is.finite(densities))) {
         warning("infinite densities encountered in KDE")
@@ -158,14 +170,20 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
         x <- x[w]
     }
 
+    ## plot
+
     # make data frames
     data <- data.frame(x=x, y=densities)
     samp_data <- data.frame(x=samp, y=0)
 
     # plot the densities
-    plt <- ggplot2::ggplot(data=data, mapping=ggplot2::aes(x=x, y=y)) +
-        # plot the sample data along the x axis, with jitter
-        ggplot2::geom_jitter(ggplot2::aes(x=x,y=y), data=samp_data)
+    plt <- ggplot2::ggplot() + ggplot2::geom_line(data=data, mapping=ggplot2::aes(x=x, y=y))
+
+    plt <- plt +
+        # plot the sample data along the x axis as points
+        ggplot2::geom_point(ggplot2::aes(x=x,y=y), alpha=0.2, data=samp_data) +
+        # plot a histogram too for good measure
+        ggplot2::geom_histogram(mapping=ggplot2::aes(x=x,y=ggplot2::after_stat(density)), binwidth=binwidth, data=samp_data["x"], alpha=0.5)
 
     # plot observation point if given
     if(!is.null(obs)) {
@@ -176,7 +194,7 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
     if(is.null(bw)) {
         bw <- bw.nrd(samp)
     }
-    plt <- plt + ggplot2::labs(title=glue::glue("KDE at time {t} with bin width {bw}"))
+    plt <- plt + ggplot2::labs(title=glue::glue("KDE at time {t} with bandwidth {bw}"))
 
     # label axes
     plt <- plt + ggplot2::xlab("value") + ggplot2::ylab("density")
