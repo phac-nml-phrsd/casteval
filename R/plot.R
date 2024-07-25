@@ -1,12 +1,12 @@
 # TODO experiment with different color scales (viridis maybe?). Try to make the 2-12-50 example in the vignette more visible
 # TODO redo format of forecasts with facets in mind
-# TODO revisit graph_forecasts() after redoing formatting
+# TODO revisit plot_forecasts() after redoing formatting
 
 # TODO somehow provide a score decorator which can convert accuracy() TRUE/FALSE to HIT/MISS or something else, and also modify the colormap. use this to set viridis for neglog() too
 
-#' Graph a forecast
+#' Plot a forecast
 #'
-#' Graph a forecast, along with corresponding observations, quantile intervals, etc.
+#' Plot a forecast, along with corresponding observations, quantile intervals, etc.
 #'
 #' @template fcst
 #' @param obs (Optional) An observations data frame.
@@ -17,7 +17,7 @@
 #' If not provided, it will default to every symmetrical pair of quantiles that can be found in `fcst`,
 #' ordered from widest to narrowest (e.x. the 25% and 75% quantiles are symmetrical).
 #' 
-#' The corresponding quantile intervals, if present, will be displayed in the resulting graph.
+#' The corresponding quantile intervals, if present, will be displayed in the resulting plot.
 #' 
 #' `quant_pairs` can be set to `list()` in order to display no quantile intervals.
 #' 
@@ -32,27 +32,27 @@
 #' @autoglobal
 #'
 #' @examples
-#' fc <- create_forecast(dplyr::tibble(
+#' fc <- create_forecast(list(
 #'   time=1:3,
-#'   raw=list(c(4,5,4), c(7,6,6), c(8,7,6))
+#'   vals=list(c(4,7,8), c(5,6,7), c(4,6,6))
 #' ))
-#' obs <- data.frame(time=1:3, obs=5:7)
+#' obs <- data.frame(time=1:3, val_obs=5:7)
 #' 
-#' # graph forecast
-#' graph_forecast(fc)
+#' # plot forecast
+#' plot_forecast(fc)
 #' 
-#' # graph forecast and observations
-#' graph_forecast(fc, obs)
+#' # plot forecast and observations
+#' plot_forecast(fc, obs)
 #' 
-#' # graph forecast and confidence interval(s)
-#' graph_forecast(fc, confs=c(50,95))
+#' # plot forecast and confidence interval(s)
+#' plot_forecast(fc, confs=c(50,95))
 #' 
 #' # highlight the observations inside the 95% confidence interval
-#' graph_forecast(fc, obs, confs=95, score=\(...) accuracy(..., interval=c(2.5, 97.5)))
+#' plot_forecast(fc, obs, confs=95, score=\(...) accuracy(..., interval=c(2.5, 97.5)))
 #' 
 #' # show the negative log score of each observation
-#' graph_forecast(fc, obs, score=neglog)
-graph_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL) {
+#' plot_forecast(fc, obs, score=neglog)
+plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
@@ -71,54 +71,54 @@ graph_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL) {
         obs <- score(fcst, obs, summarize=FALSE)
     }
 
-    # graph everything according to the parameters
-    graph <- NULL
+    # plot everything according to the parameters
+    plt <- NULL
     if("val" %in% colnames(fcst$data)) {
-        graph <- graph |> graph_ensemble(fcst)
+        plt <- plt |> plot_ensemble(fcst)
     }
 
-    # TODO graph mean and/or quantiles if present
+    # TODO plot mean and/or quantiles if present
     # TODO parameters/flags for keeping/discarding fit data, observations data that doesn't correpsond to forecast data, etc.
 
     # pass allow_empty=TRUE so that missing quantile intervals is allowed
     quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data, allow_empty=TRUE)
 
-    # graph quant intervals if present
+    # plot quant intervals if present
     if(length(quant_pairs) > 0) {
-        graph <- graph |> graph_quant_intervals(fcst, quant_pairs)
+        plt <- plt |> plot_quant_intervals(fcst, quant_pairs)
     }
 
-    # graph observatinos if present
+    # plot observatinos if present
     if(!is.null(obs)) {
-        graph <- graph |> graph_observations(obs)
+        plt <- plt |> plot_observations(obs)
     }
 
-    # error if we didn't end up graphing anything
-    if(is.null(graph)) {
+    # error if we didn't end up plotting anything
+    if(is.null(plt)) {
         # could be turned into a warning
-        stop("nothing was graphed. Please specify raw data, quantiles, and/or observations to be graphed.")
+        stop("nothing was plotted. Please specify raw data, quantiles, and/or observations to be plotted.")
     }
 
     ## set labels and secondary features
 
     # mark the forecast time if provided
     if(!is.null(fcst$forecast_time)) {
-        graph <- graph + ggplot2::geom_vline(alpha=0.2, xintercept=fcst$forecast_time)
+        plt <- plt + ggplot2::geom_vline(alpha=0.2, xintercept=fcst$forecast_time)
     }
 
     # make the title the name if provided
     if(!is.null(fcst$name)) {
-        graph <- graph + ggplot2::labs(title=fcst$name)
+        plt <- plt + ggplot2::labs(title=fcst$name)
     }
 
     # name the axes
-    graph <- graph + ggplot2::xlab("time") + ggplot2::ylab("value")
+    plt <- plt + ggplot2::xlab("time") + ggplot2::ylab("value")
 
     # make x axis integers only
-    graph <- graph + ggplot2::scale_x_continuous(breaks=integer_breaks())
-    #graph <- graph + ggplot2::scale_y_continuous(breaks=integer_breaks())
+    plt <- plt + ggplot2::scale_x_continuous(breaks=integer_breaks())
+    #plt <- plt + ggplot2::scale_y_continuous(breaks=integer_breaks())
 
-    graph
+    plt
 }
 
 #' Integer breaks on ggplot2 axes

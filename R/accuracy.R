@@ -118,7 +118,7 @@ accuracy_help <- function(fcst, obs, pair) {
 #' acc <- make_accuracy(c(5,95))
 #' acc(fc, obs)
 #' 
-#' graph_forecast(fc, obs, make_accuracy(c(25,75)))
+#' plot_forecast(fc, obs, make_accuracy(c(25,75)))
 make_accuracy <- function(quant_pairs) {
     function(...) {
         accuracy(..., quant_pairs=quant_pairs)
