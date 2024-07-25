@@ -3,7 +3,7 @@
 export(accuracy)
 export(bias)
 export(create_forecast)
-export(graph_forecast)
 export(make_accuracy)
 export(neglog)
+export(plot_forecast)
 importFrom(magrittr,"%>%")

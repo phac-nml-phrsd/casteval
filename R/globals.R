@@ -15,22 +15,22 @@ utils::globalVariables(c(
   "val_obs", # <bias>
   "time", # <bias>
   "score", # <bias>
-  "time", # <graph_ensemble>
-  "val", # <graph_ensemble>
-  "sim", # <graph_ensemble>
-  "time", # <graph_observations>
-  "val_obs", # <graph_observations>
-  "score", # <graph_observations>
-  ".", # <graph_quant_intervals>
-  "quant", # <graph_quant_intervals>
-  "time", # <graph_quant_intervals>
-  "lo", # <graph_quant_intervals>
-  "hi", # <graph_quant_intervals>
-  "interval", # <graph_quant_intervals>
   "time", # <neglog>
   "val", # <neglog>
   "val_obs", # <neglog>
   "score", # <neglog>
+  "time", # <plot_ensemble>
+  "val", # <plot_ensemble>
+  "sim", # <plot_ensemble>
+  "time", # <plot_observations>
+  "val_obs", # <plot_observations>
+  "score", # <plot_observations>
+  ".", # <plot_quant_intervals>
+  "quant", # <plot_quant_intervals>
+  "time", # <plot_quant_intervals>
+  "lo", # <plot_quant_intervals>
+  "hi", # <plot_quant_intervals>
+  "interval", # <plot_quant_intervals>
   "time", # <get_quantile>
   "val", # <get_quantile>
   "time", # <filter_forecast_time>

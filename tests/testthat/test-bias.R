@@ -1,6 +1,6 @@
 test_that("bias() works", {
   expect_error(
-    bias(create_forecast(data.frame(time=1:3, val_q25=4:6)), data.frame(time=1:3, val_obs=4:6)),
+    bias(create_forecast(data.frame(time=1:3, val_q25=4:6, val_q75=7:9)), data.frame(time=1:3, val_obs=4:6)),
     "raw, mean, or median forecast values required to compute bias"
   )
 
