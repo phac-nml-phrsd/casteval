@@ -34,12 +34,6 @@ test_that("plot_forecast() works", {
     "scoring function provided without observations"
   )
 
-  # expect_error(
-  #   plot_forecast(
-  #     create_forecast(data.frame(time=c(1,2),val_q25=c(1,1),val_q75=c(2,2)))
-  #   ),
-  #   "nothing was plotted. Please specify raw data, confidence intervals, and/or observations to be plotted."
-  # )
   expect_error(
     plot_forecast(
       create_forecast(data.frame(time=1:3, val_mean=4:6))

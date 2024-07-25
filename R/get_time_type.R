@@ -11,7 +11,7 @@
 #' casteval:::get_time_type(data.frame(time=c(1,2,3)))
 #' 
 #' # "date"
-#' casteval:::get_time_type(data.frame(time=lubridate::as.Date(1:3)))
+#' casteval:::get_time_type(data.frame(time=lubridate::as_date(1:3)))
 #' 
 #' # "date-time"
 #' casteval:::get_time_type(data.frame(time=lubridate::ymd_hms("2024-01-01_12:34:56")))

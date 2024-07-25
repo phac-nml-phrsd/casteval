@@ -25,7 +25,7 @@ containing the scores for each individual time point.
 This can be used by plotting functions to colour-code observations, for example.}
 }
 \value{
-If \code{at} and \code{after} are both unspecified,
+If \code{summarize} is \code{FALSE},
 a data frame containing times, raw data, observations, and scores for those times.
 Otherwise, the score at the time speficied by either \code{at} or \code{after}.
 }
@@ -37,10 +37,11 @@ at the observation point.
 }
 \examples{
 df <- data.frame(time=c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3), val=c(1:5, 1:5, 1:5))
-# in the absence of `at` and `after`, return a data frame with a `score` column
+# return a data frame
 neglog(
   create_forecast(df),
-  data.frame(time=1:3, val_obs=c(-1, 2.5, 5))
+  data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
+  summarize=FALSE
 )
 
 # use `at` parameter to specify absolute times

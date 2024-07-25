@@ -19,13 +19,13 @@ Defaults to NULL, in which case a blank ggplot object will be created.}
 
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
+\item{quant_pairs}{(Optional) A list of pairs of numbers between 0 and 100.
+If not provided, the quantile intervals will be inferred from the forecast.
+Otherwise, each pair will be used as a quantile intervals.}
+
 \item{alpha}{(Optional) The alpha parameter to be passed to \code{ggplot2}}
 
 \item{palette}{(Optional) The colour palette to use (see \code{?ggplot2::scale_fill_brewer})}
-
-\item{quants}{(Optional) A list of pairs of numbers between 0 and 100.
-If not provided, the quantile intervals will be inferred from the forecast.
-Otherwise, each pair will be used as a quantile intervals.}
 }
 \value{
 A \code{ggplot2} object.

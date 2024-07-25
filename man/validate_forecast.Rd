@@ -34,7 +34,7 @@ try(casteval:::validate_forecast(data.frame(time=1:3, val=4:6)))
 
 # bad forecast_time type
 try(casteval:::validate_forecast(list(
-  forecast_time=lubridate::as.Date(1000),
+  forecast_time=lubridate::as_date(1000),
   data=data.frame(time=1:3, val=4:6)
 )))
 }

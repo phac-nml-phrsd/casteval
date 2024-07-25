@@ -26,5 +26,5 @@ obs <- data.frame(time=1:3, val_obs=5:7)
 acc <- make_accuracy(c(5,95))
 acc(fc, obs)
 
-plot_forecast(fc, obs, make_accuracy(c(25,75)))
+plot_forecast(fc, obs, score=make_accuracy(c(25,75)))
 }

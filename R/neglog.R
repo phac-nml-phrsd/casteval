@@ -15,7 +15,7 @@
 #'  Mutually exclusive with `at`.
 #' @template summarize
 #'
-#' @returns If `at` and `after` are both unspecified,
+#' @returns If `summarize` is `FALSE`,
 #'  a data frame containing times, raw data, observations, and scores for those times.
 #'  Otherwise, the score at the time speficied by either `at` or `after`.
 #' @export
@@ -23,10 +23,11 @@
 #'
 #' @examples
 #' df <- data.frame(time=c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3), val=c(1:5, 1:5, 1:5))
-#' # in the absence of `at` and `after`, return a data frame with a `score` column
+#' # return a data frame
 #' neglog(
 #'   create_forecast(df),
-#'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5))
+#'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
+#'   summarize=FALSE
 #' )
 #' 
 #' # use `at` parameter to specify absolute times

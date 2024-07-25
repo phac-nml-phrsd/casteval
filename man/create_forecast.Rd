@@ -60,7 +60,11 @@ create_forecast(
 create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), val=c(20,21,22,23,24,10,11,12,13,14)))
 
 # an already-combined ensemble with simulation numbers
-create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), sim=c(1,2,3,4,5,1,2,3,4,5), val=c(20,21,22,23,24,10,11,12,13,14)))
+create_forecast(dplyr::tibble(
+  time=c(1,1,1,1,1,2,2,2,2,2),
+  sim=c(1,2,3,4,5,1,2,3,4,5),
+  val=c(20,21,22,23,24,10,11,12,13,14)
+))
 
 # an ensemble of 4 realizations, each represented by a vector in `vals`
 create_forecast(list(

@@ -47,11 +47,11 @@ plot_forecast(fc)
 # plot forecast and observations
 plot_forecast(fc, obs)
 
-# plot forecast and confidence interval(s)
-plot_forecast(fc, confs=c(50,95))
+# plot forecast and quantile interval(s)
+plot_forecast(fc, quant_pairs=list(c(25,75), c(2.5,97.5)))
 
-# highlight the observations inside the 95\% confidence interval
-plot_forecast(fc, obs, confs=95, score=\(...) accuracy(..., interval=c(2.5, 97.5)))
+# highlight the observations inside the quantile interval
+plot_forecast(fc, obs, quant_pairs=c(2.5,97.5), score=make_accuracy(c(2.5,97.5)))
 
 # show the negative log score of each observation
 plot_forecast(fc, obs, score=neglog)

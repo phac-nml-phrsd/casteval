@@ -23,7 +23,7 @@
 #' 
 #' # bad forecast_time type
 #' try(casteval:::validate_forecast(list(
-#'   forecast_time=lubridate::as.Date(1000),
+#'   forecast_time=lubridate::as_date(1000),
 #'   data=data.frame(time=1:3, val=4:6)
 #' )))
 validate_forecast <- function(fcst) {
@@ -113,12 +113,12 @@ validate_obs <- function(obs) {
 #'
 #' @examples
 #' # both numeric (compatible)
-#' casteval:::validate_time(5, create_forecast(data.frame(time=6,raw=7)))
+#' casteval:::validate_time(5, create_forecast(data.frame(time=6,val=7)))
 #' 
 #' # one date, one date-time (incompatible)
 #' try(casteval:::validate_time(
 #'   lubridate::ymd("2024-01-01"),
-#'   create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
+#'   create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),val=6))
 #' ))
 validate_time <- function(t, fcst) {
     time_type <- get_time_type(fcst$data)
