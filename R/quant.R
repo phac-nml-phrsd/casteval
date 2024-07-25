@@ -129,7 +129,7 @@ pair_quantiles <- function(quants) {
     quants <- quants |> sort() |> unique()
     while(length(quants) > 1) {
         first <- quants[[1]]
-        last <- tail(quants, n=1)
+        last <- utils::tail(quants, n=1)
 
         # equidistant pair from 50%
         if(last - 50 == 50 - first) {

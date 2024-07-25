@@ -27,7 +27,6 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     dplyr,
-    forcats,
     ggplot2,
     glue,
     lubridate,
@@ -35,8 +34,7 @@ Imports:
     purrr,
     scoringRules,
     stats,
-    stringr,
-    tidyr
+    stringr
 Config/roxyglobals/filename: globals.R
 Config/roxyglobals/unique: FALSE
 VignetteBuilder: knitr
