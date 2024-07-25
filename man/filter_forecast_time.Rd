@@ -7,7 +7,7 @@
 filter_forecast_time(df, forecast_time)
 }
 \arguments{
-\item{df}{The forecast data frame. See \code{create_forecast()} for details}
+\item{df}{The forecast data frame. See \code{?create_forecast} for details}
 
 \item{forecast_time}{Either NULL or a time of the same type as the values in \code{dat$time}.
 If non-NULL, all rows with time prior to \code{forecast_time} will be removed from \code{dat}.}

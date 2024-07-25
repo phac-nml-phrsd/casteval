@@ -22,6 +22,8 @@ A ggplot object.
 }
 \description{
 Given a forecast with raw realizations, generate a graph displaying all of them.
+If the forecast provides simulation numbers (\code{sim} column), the ensemble of curves will be plotted.
+Otherwise, the data will be plotted as points.
 }
 \examples{
 casteval:::graph_ensemble(

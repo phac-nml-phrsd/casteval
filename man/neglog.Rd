@@ -22,7 +22,7 @@ Mutually exclusive with \code{at}.}
 \item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
 If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
 containing the scores for each individual time point.
-This can be used by graphing functions to color code observations, for example.}
+This can be used by graphing functions to colour-code observations, for example.}
 }
 \value{
 If \code{at} and \code{after} are both unspecified,

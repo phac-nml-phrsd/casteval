@@ -4,7 +4,7 @@
 \alias{graph_observations}
 \title{Intelligently graph observations}
 \usage{
-graph_observations(graph = NULL, obs)
+graph_observations(graph = NULL, obs, alpha = 0.4, colour = "black")
 }
 \arguments{
 \item{graph}{(Optional) A ggplot object.
@@ -12,21 +12,26 @@ it will be added to using the \code{+} operator.
 Defaults to NULL, in which case a blank ggplot object will be created.}
 
 \item{obs}{An observations data frame. If it contains a \code{score} column,
-the observation points will be color-coded according to the scores.}
+the observation points will be colour-coded according to the scores.
+Otherwise, the \code{alpha} and \code{colour} parameters will determine the opacity and colour of the points.}
+
+\item{alpha}{(Optional) The alpha value to be passed to \code{ggplot2}.}
+
+\item{colour}{(Optional) The colour to be passed to \code{ggplot2}.}
 }
 \value{
 A ggplot object.
 }
 \description{
-Graph observation points. If provided with a forecast,
-the points can be color-coded to convey information about score, accuracy, etc.
+Graph observation points. If scores are provided alongside the observations,
+the plot can be colour-coded to convey information about score, accuracy, etc.
 }
 \examples{
-fc <- create_forecast(dplyr::tibble(
+fc <- create_forecast(list(
   time=1:3,
-  val=4:12
+  vals=list(c(4,7,10), c(5,8,11), c(6,9,12))
 ))
-obs <- data.frame(time=1:3, obs=c(5,9,13))
+obs <- data.frame(time=1:3, val_obs=c(5,9,13))
 
 # graph observations on their own
 casteval:::graph_observations(NULL, obs)
@@ -34,6 +39,6 @@ casteval:::graph_observations(NULL, obs)
 # graph observations alongside forecast data
 casteval:::graph_observations(casteval:::graph_ensemble(NULL, fc), obs)
 
-# graph observations alongside forecast data, and color-code by score
-casteval:::graph_observations(casteval:::graph_ensemble(NULL, fc), neglog(fc, obs))
+# graph observations alongside forecast data, and colour-code by score
+casteval:::graph_observations(casteval:::graph_ensemble(NULL, fc), neglog(fc, val_obs))
 }

@@ -19,5 +19,5 @@ A forecast data frame
 Helper for \code{create_forecast()}.
 }
 \examples{
-# See `create_forecast()`
+# See `?create_forecast`
 }

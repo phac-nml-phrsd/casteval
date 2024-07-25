@@ -4,7 +4,7 @@
 \alias{graph_forecast}
 \title{Graph a forecast}
 \usage{
-graph_forecast(fcst, obs = NULL, confs = NULL, score = NULL)
+graph_forecast(fcst, obs = NULL, quant_pairs = NULL, score = NULL)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
@@ -12,19 +12,27 @@ graph_forecast(fcst, obs = NULL, confs = NULL, score = NULL)
 \item{obs}{(Optional) An observations data frame.
 If provided, they will be overlaid over the forecast as points.}
 
-\item{confs}{(Optional) A vector of numbers from 0 to 100.
-The corresponding confidence interval(s) will be displayed in the resulting graph.}
+\item{quant_pairs}{(Optional) A list of pairs of numbers between 0 and 100,
+or a single pair of numbers between 0 and 100.
+If provided, the score for each corresponding pairs of quantiles will be calculated.
+If not provided, it will default to every symmetrical pair of quantiles that can be found in \code{fcst},
+ordered from widest to narrowest (e.x. the 25\% and 75\% quantiles are symmetrical).
+
+The corresponding quantile intervals, if present, will be displayed in the resulting graph.
+
+\code{quant_pairs} can be set to \code{list()} in order to display no quantile intervals.}
 
 \item{score}{(Optional) A scoring function.
-The function will be used to score the \code{obs} against the forecast.
+The function will be used to score \code{obs} against the forecast.
 A scoring function should accept a forecast object, an observations data frame, as well as a \code{summarize} argument.
-See \code{accuracy()}, \code{neglog()} for examples}
+See \code{?accuracy}, \code{?neglog} for examples.
+See \code{vignette(topic='casteval', package='casteval')} for details.}
 }
 \value{
 A ggplot2 object
 }
 \description{
-Graph a forecast, along with corresponding observations, confidence intervals, etc.
+Graph a forecast, along with corresponding observations, quantile intervals, etc.
 }
 \examples{
 fc <- create_forecast(dplyr::tibble(
