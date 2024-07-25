@@ -25,7 +25,7 @@ The corresponding quantile intervals, if present, will be displayed in the resul
 \item{score}{(Optional) A scoring function.
 The function will be used to score \code{obs} against the forecast.
 A scoring function should accept a forecast object, an observations data frame, as well as a \code{summarize} argument.
-See \code{?accuracy}, \code{?neglog} for examples.
+See \code{?accuracy}, \code{?log_score} for examples.
 See \code{vignette(topic='casteval', package='casteval')} for details.}
 }
 \value{
@@ -53,6 +53,6 @@ plot_forecast(fc, quant_pairs=list(c(25,75), c(2.5,97.5)))
 # highlight the observations inside the quantile interval
 plot_forecast(fc, obs, quant_pairs=c(2.5,97.5), score=make_accuracy(c(2.5,97.5)))
 
-# show the negative log score of each observation
-plot_forecast(fc, obs, score=neglog)
+# show the log score of each observation
+plot_forecast(fc, obs, score=log_score)
 }

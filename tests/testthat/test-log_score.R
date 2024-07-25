@@ -1,14 +1,14 @@
-test_that("neglog() validates", {
+test_that("log_score() validates", {
   expect_error(
-    neglog(
+    log_score(
       create_forecast(dplyr::tibble(time=1:3, val_mean=4:6)),
       data.frame(time=1:3, val_obs=4:6)
     ),
-    "neglog\\(\\) requires raw forecast data"
+    "log_score\\(\\) requires raw forecast data"
   )
 
   expect_error(
-    neglog(
+    log_score(
       create_forecast(dplyr::tibble(time=c(1,1,2), val=c(2,3, 4))),
       data.frame(time=1:2, val_obs=3:4)
     ),
@@ -18,7 +18,7 @@ test_that("neglog() validates", {
   df <- dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3), val=c(1:5, 1:5, 1:5))
 
   expect_error(
-    neglog(
+    log_score(
       create_forecast(df),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
       at=2,
@@ -28,7 +28,7 @@ test_that("neglog() validates", {
   )
 
   expect_error(
-    neglog(
+    log_score(
       create_forecast(df),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
       after=lubridate::ymd("2024-01-01")
@@ -37,7 +37,7 @@ test_that("neglog() validates", {
   )
 
   expect_error(
-    neglog(
+    log_score(
       create_forecast(df),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
       after=5
@@ -46,7 +46,7 @@ test_that("neglog() validates", {
   )
 
   expect_error(
-    neglog(
+    log_score(
       create_forecast(df, forecast_time=2),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
       after=2
@@ -55,7 +55,7 @@ test_that("neglog() validates", {
   )
 
   expect_error(
-    neglog(
+    log_score(
       create_forecast(df),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5))
     ),
@@ -63,78 +63,78 @@ test_that("neglog() validates", {
   )
 })
 
-test_that("neglog() works", {
+test_that("log_score() works", {
   df <- dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3), val=c(1:5, 1:5, 1:5))
 
   expect_equal(
-    neglog(
+    log_score(
       create_forecast(df),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
       summarize=FALSE
     ),
     dplyr::tibble(
-      time=1:3, val_obs=c(-1, 2.5, 5), score=c(4.03779, 1.649454, 2.004065)
+      time=1:3, val_obs=c(-1, 2.5, 5), score=c(-4.03779, -1.649454, -2.004065)
     ),
     tolerance=0.0001
   )
 
   expect_equal(
-    neglog(
+    log_score(
       create_forecast(df, forecast_time=1),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
       at=2
     ),
-    1.649454,
+    -1.649454,
     tolerance=0.0001
   )
 
   expect_equal(
-    neglog(
+    log_score(
       create_forecast(df, forecast_time=1),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
       after=1
     ),
-    1.649454,
+    -1.649454,
     tolerance=0.0001
   )
 
   df2 <- dplyr::tibble(time=c(1,1), val=c(1,1))
 
   expect_equal(
-    neglog(
+    log_score(
       create_forecast(df2),
       data.frame(time=1, val_obs=1),
+      at=1
+    ),
+    Inf
+  )
+
+  expect_equal(
+    log_score(
+      create_forecast(df2),
+      data.frame(time=1, val_obs=1.1),
       at=1
     ),
     -Inf
   )
 
   expect_equal(
-    neglog(
-      create_forecast(df2),
-      data.frame(time=1, val_obs=1.1),
-      at=1
-    ),
-    Inf
-  )
-
-  expect_equal(
-    neglog(
+    log_score(
       create_forecast(dplyr::tibble(time=c(1,1,1), val=c(1,2,3))),
       data.frame(time=1, val_obs=27),
       at=1
     ),
-    715.7497,
+    -715.7497,
     tolerance=0.0001
   )
 
   expect_equal(
-    neglog(
+    log_score(
       create_forecast(dplyr::tibble(time=c(1,1,1), val=c(1,2,3))),
       data.frame(time=1, val_obs=28),
       at=1
     ),
-    Inf
+    -Inf
   )
 
   # generated with `rnorm(100)`
@@ -153,12 +153,12 @@ test_that("neglog() works", {
     -1.58870961, -0.93340630, -1.05583011,  1.55527561)
   
   expect_equal(
-    neglog(
+    log_score(
       create_forecast(dplyr::tibble(time=rep(1,100), val=dat)),
       data.frame(time=1, val_obs=0),
       at=1
     ),
-    1.115905,
+    -1.115905,
     tolerance=0.001
   )
 

@@ -26,7 +26,10 @@
 #' casteval:::plot_observations(casteval:::plot_ensemble(NULL, fc), obs)
 #' 
 #' # plot observations alongside forecast data, and colour-code by score
-#' casteval:::plot_observations(casteval:::plot_ensemble(NULL, fc), neglog(fc, obs, summarize=FALSE))
+#' casteval:::plot_observations(
+#'   casteval:::plot_ensemble(NULL, fc),
+#'   log_score(fc, obs, summarize=FALSE)
+#' )
 plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
     if(is.null(plt)) {
         plt <- ggplot2::ggplot()

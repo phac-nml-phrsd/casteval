@@ -1,7 +1,7 @@
-#' Get negative-log score for forecast
+#' Compute logarithmic score for forecast
 #'
 #' Given a forecast and set of observations,
-#'  compute the negative-log score for every time point.
+#'  compute the log score for every time point.
 #' Uses a Kernel Density Estimation (KDE) to interpolate the density
 #'  at the observation point.
 #'
@@ -24,30 +24,30 @@
 #' @examples
 #' df <- data.frame(time=c(1,1,1,1,1,2,2,2,2,2,3,3,3,3,3), val=c(1:5, 1:5, 1:5))
 #' # return a data frame
-#' neglog(
+#' log_score(
 #'   create_forecast(df),
 #'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   summarize=FALSE
 #' )
 #' 
 #' # use `at` parameter to specify absolute times
-#' neglog(
+#' log_score(
 #'   create_forecast(df, forecast_time=1),
 #'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   at=2
 #' )
 #' 
 #' # use `after` parameter to specify times relative to `forecast_time`
-#' neglog(
+#' log_score(
 #'   create_forecast(df, forecast_time=1),
 #'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   after=1
 #' )
-neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
+log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     # validate & filter
     validate_fcst_obs_pair(fcst, obs)
     if(!"val" %in% colnames(fcst$data)) {
-        stop("neglog() requires raw forecast data (`val`)")
+        stop("log_score() requires raw forecast data (`val`)")
     }
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
@@ -64,7 +64,8 @@ neglog <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
         stop(glue::glue("not enough data points at time {tm} (at least 2 required to calculate KDE)"))
     }
 
-    df <- df |> dplyr::summarize(score = scoringRules::logs_sample(val_obs[[1]], val), val_obs=val_obs[[1]])
+    # scoringRules::logs_sample computes the negative log score. we negate it again to compute the log score
+    df <- df |> dplyr::summarize(score = -scoringRules::logs_sample(val_obs[[1]], val), val_obs=val_obs[[1]])
     #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
 
     if(!summarize) { # return the whole data frame with the score column

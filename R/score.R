@@ -1,5 +1,5 @@
 # generic score-calculating helpers and wrappers
-# the actual scoring functions can be found in `accuracy.R`, `neglog.R`, etc.
+# the actual scoring functions can be found in `accuracy.R`, `log_score.R`, etc.
 
 # TODO score() functional (accepts 1 or more forecasts and a scoring function)
 
@@ -62,7 +62,7 @@ filter_forecast_time <- function(df, forecast_time) {
 #' ))
 join_fcst_obs <- function(df, obs) {
     # this function does very little input validation because
-    # it is meant to be used inside functions like `accuracy()` and `neglog()`,
+    # it is meant to be used inside functions like `accuracy()` and `log_score()`,
     # where the forecast and observations are already validated.
 
     # check that no collisions will occur

@@ -53,7 +53,7 @@ test_that("plot_forecast() works", {
   vdiffr::expect_doppelganger("plot2", plot_forecast(fc1, obs1))
   vdiffr::expect_doppelganger("plot3", plot_forecast(fc1, obs1, score=make_accuracy(c(5,95))))
   vdiffr::expect_doppelganger("plot4", plot_forecast(fc1, obs1, score=make_accuracy(c(5,95)), quant_pairs=list(c(5,95),c(25,75))))
-  vdiffr::expect_doppelganger("plot5", plot_forecast(fc1, obs1, score=neglog))
+  vdiffr::expect_doppelganger("plot5", plot_forecast(fc1, obs1, score=log_score))
 
   fc2 <- create_forecast(data.frame(
     time=1:3,
@@ -69,7 +69,7 @@ test_that("plot_forecast() works", {
   expect_error(plot_forecast(fc2, quant_pairs=c(15,85)), "could not compute/obtain 15% quantile from data frame")
   vdiffr::expect_doppelganger("plot7", plot_forecast(fc2, obs2, quant_pairs=c(25,75), score=make_accuracy(c(25,75))))
   vdiffr::expect_doppelganger("plot8", plot_forecast(fc2, obs2, quant_pairs=c(5,95), score=make_accuracy(c(5,95))))
-  expect_error(plot_forecast(fc2, obs2, score=neglog), "neglog\\(\\) requires raw forecast data")
+  expect_error(plot_forecast(fc2, obs2, score=log_score), "log_score\\(\\) requires raw forecast data")
 })
 
 test_that("forecast_time vline works", {
@@ -93,7 +93,7 @@ test_that("forecast_time vline works", {
 
   obs2 <- data.frame(time=1:3, val_obs=c(4,6,8))
 
-  vdiffr::expect_doppelganger("vline1", plot_forecast(fc1, obs1, quant_pairs=list(c(25,75), c(2.5,97.5)), score=neglog))
+  vdiffr::expect_doppelganger("vline1", plot_forecast(fc1, obs1, quant_pairs=list(c(25,75), c(2.5,97.5)), score=log_score))
 
   vdiffr::expect_doppelganger("vline2", plot_forecast(fc2, obs2, quant_pairs=c(25,75), score=make_accuracy(c(5,95))))
 })

@@ -2,7 +2,7 @@
 # TODO redo format of forecasts with facets in mind
 # TODO revisit plot_forecasts() after redoing formatting
 
-# TODO somehow provide a score decorator which can convert accuracy() TRUE/FALSE to HIT/MISS or something else, and also modify the colormap. use this to set viridis for neglog() too
+# TODO somehow provide a score decorator which can convert accuracy() TRUE/FALSE to HIT/MISS or something else, and also modify the colormap. use this to set viridis for log_score() too
 
 #' Plot a forecast
 #'
@@ -24,7 +24,7 @@
 #' @param score (Optional) A scoring function.
 #'  The function will be used to score `obs` against the forecast.
 #'  A scoring function should accept a forecast object, an observations data frame, as well as a `summarize` argument.
-#'  See `?accuracy`, `?neglog` for examples.
+#'  See `?accuracy`, `?log_score` for examples.
 #'  See `vignette(topic='casteval', package='casteval')` for details.
 #'
 #' @returns A ggplot2 object
@@ -50,8 +50,8 @@
 #' # highlight the observations inside the quantile interval
 #' plot_forecast(fc, obs, quant_pairs=c(2.5,97.5), score=make_accuracy(c(2.5,97.5)))
 #' 
-#' # show the negative log score of each observation
-#' plot_forecast(fc, obs, score=neglog)
+#' # show the log score of each observation
+#' plot_forecast(fc, obs, score=log_score)
 plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL) {
     # validate forecast and/or observations
     if(is.null(obs)) {

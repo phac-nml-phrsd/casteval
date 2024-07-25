@@ -6,12 +6,12 @@ test_that("plot_observations() works", {
   obs <- data.frame(time=1:3, val_obs=c(5,9,13))
 
   vdiffr::expect_doppelganger("obs1", plot_observations(NULL, obs))
-  vdiffr::expect_doppelganger("obs2", plot_observations(NULL, neglog(fc1, obs,summarize=FALSE)))
+  vdiffr::expect_doppelganger("obs2", plot_observations(NULL, log_score(fc1, obs,summarize=FALSE)))
   vdiffr::expect_doppelganger("obs3",
     plot_observations(plot_ensemble(NULL, fc1), obs)
   )
   vdiffr::expect_doppelganger("obs4",
-    plot_observations(plot_ensemble(NULL, fc1), neglog(fc1, obs,summarize=FALSE))
+    plot_observations(plot_ensemble(NULL, fc1), log_score(fc1, obs,summarize=FALSE))
   )
 
   fc2 <- create_forecast(dplyr::tibble(
@@ -62,6 +62,6 @@ test_that("plot_observations() works", {
   obs4 <- data.frame(time=1:10, val_obs=1:10)
 
   vdiffr::expect_doppelganger("obs8",
-    NULL |> plot_ensemble(fc4) |> plot_observations(neglog(fc4, obs4, summarize=FALSE))
+    NULL |> plot_ensemble(fc4) |> plot_observations(log_score(fc4, obs4, summarize=FALSE))
   )
 })

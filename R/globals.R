@@ -3,7 +3,6 @@
 utils::globalVariables(c(
   "pair", # <accuracy>
   "score", # <accuracy>
-  ".", # <accuracy>
   "quant", # <accuracy_help>
   "time", # <accuracy_help>
   "val_obs", # <accuracy_help>
@@ -15,10 +14,10 @@ utils::globalVariables(c(
   "val_obs", # <bias>
   "time", # <bias>
   "score", # <bias>
-  "time", # <neglog>
-  "val", # <neglog>
-  "val_obs", # <neglog>
-  "score", # <neglog>
+  "time", # <log_score>
+  "val", # <log_score>
+  "val_obs", # <log_score>
+  "score", # <log_score>
   "time", # <plot_ensemble>
   "val", # <plot_ensemble>
   "sim", # <plot_ensemble>
