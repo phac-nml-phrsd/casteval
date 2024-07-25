@@ -96,7 +96,7 @@ graph_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL) {
     # error if we didn't end up graphing anything
     if(is.null(graph)) {
         # could be turned into a warning
-        stop("nothing was graphed. Please specify raw data, confidence intervals, and/or observations to be graphed.")
+        stop("nothing was graphed. Please specify raw data, quantiles, and/or observations to be graphed.")
     }
 
     ## set labels and secondary features
