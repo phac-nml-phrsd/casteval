@@ -79,6 +79,55 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
         return(dplyr::select(df, time, val_obs, score))
     }
     
+    t <- get_specified_time(fcst, at, after)
+
+    df <- df |> dplyr::filter(time==t)
+
+    if(nrow(df) == 0) {
+        stop(glue::glue("score was not calculated for time {t}"))
+    }
+
+    df$score[[1]]
+}
+
+
+#' Show a diagnostic plot for the log score
+#'
+#' Create a diagnostic plot displaying the density function calculated by the Kernel Density Estimation (KDE).
+#'
+#' @param name desc
+#'
+#' @returns desc
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+log_score_diagnostic <- function(fcst, obs, at=NULL, after=NULL, bw=NULL) {
+    
+}
+
+
+#' Get relative/absolute time specified by user
+#'
+#' Get the time according to the `at`/`after` params passed by the user.
+#' Helper for `log_score()` and `log_score_diagnostic()`.
+#'
+#' @template fcst
+#' @param at (Optional) See `?log_score`
+#' @param after (Optional) See `?log_score`
+#'
+#' @returns A time of the same type as those in `fcst`
+#' @autoglobal
+#'
+#' @examples
+#' fc <- create_forecast(data.frame(time=1:3, val=4:6), forecast_time=2)
+#' # 1
+#' casteval:::get_specified_time(fc, at=1)
+#' 
+#' # 2+1=3
+#' casteval:::get_specified_time(fc, after=1)
+get_specified_time <- function(fcst, at=NULL, after=NULL) {
     if(!is.null(at) && !is.null(after)) { # mutually exclusive
         stop("`at` and `after` parameters cannot both be provided")
     }
@@ -99,14 +148,8 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
     }
     # neither provided, error
     else {
-        stop("either `at` or `after` must be provided for summarized score")
+        stop("either `at` or `after` must be provided")
     }
 
-    df <- df |> dplyr::filter(time==t)
-
-    if(nrow(df) == 0) {
-        stop(glue::glue("score was not calculated for time {t}"))
-    }
-
-    df$score[[1]]
+    t
 }
