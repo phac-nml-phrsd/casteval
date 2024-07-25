@@ -132,23 +132,23 @@ test_that("validate_column() works", {
   expect_error(validate_column(df4, "val_q"), "not in data frame")
 })
 
-# test_that("validate_fcst_obs_pair() works", {
-#   expect_equal(
-#     validate_fcst_obs_pair(
-#       create_forecast(data.frame(time=1:10, val=11:20)),
-#       data.frame(time=101:110, val_obs=111:120)
-#     ),
-#     NULL
-#   )
+test_that("validate_fcst_obs_pair() works", {
+  expect_equal(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:10, val=11:20)),
+      data.frame(time=101:110, val_obs=111:120)
+    ),
+    NULL
+  )
 
-#   expect_error(
-#     validate_fcst_obs_pair(
-#       create_forecast(data.frame(time=1:10, val=11:20)),
-#       data.frame(time=lubridate::ymd("2024-01-01"), val_obs=5)
-#     ),
-#     "observations time type must match forecast time type"
-#   )
-# })
+  expect_error(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:10, val=11:20)),
+      data.frame(time=lubridate::ymd("2024-01-01"), val_obs=5)
+    ),
+    "observations time type must match forecast time type"
+  )
+})
 
 test_that("validate_quant_order() works", {
   expect_error(
