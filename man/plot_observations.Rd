@@ -40,5 +40,8 @@ casteval:::plot_observations(NULL, obs)
 casteval:::plot_observations(casteval:::plot_ensemble(NULL, fc), obs)
 
 # plot observations alongside forecast data, and colour-code by score
-casteval:::plot_observations(casteval:::plot_ensemble(NULL, fc), log_score(fc, obs, summarize=FALSE))
+casteval:::plot_observations(
+  casteval:::plot_ensemble(NULL, fc),
+  log_score(fc, obs, summarize=FALSE)
+)
 }

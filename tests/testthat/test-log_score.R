@@ -59,7 +59,7 @@ test_that("log_score() validates", {
       create_forecast(df),
       data.frame(time=1:3, val_obs=c(-1, 2.5, 5))
     ),
-    "either `at` or `after` must be provided for summarized score"
+    "either `at` or `after` must be provided"
   )
 
   expect_error(

@@ -27,7 +27,7 @@
 #'  See `?accuracy`, `?log_score` for examples.
 #'  See `vignette(topic='casteval', package='casteval')` for details.
 #'
-#' @returns A ggplot2 object
+#' @returns A ggplot object
 #' @export
 #' @autoglobal
 #'

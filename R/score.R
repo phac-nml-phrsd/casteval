@@ -102,7 +102,7 @@ join_fcst_obs <- function(df, obs) {
 #' # 2 rows with time==2
 #' try(casteval:::get_time_point(data.frame(time=c(1,2,2,3), val=4:7), 2))
 #' 
-#' # data.frame(time=2, raw=5, mean=8)
+#' # data.frame(time=2, val=5, val_mean=8)
 #' casteval:::get_time_point(data.frame(time=1:3, val=4:6, val_mean=7:9), 2)
 get_time_point <- function(df, t) {
     #TODO add a flag for allowing multiple matches
@@ -110,8 +110,6 @@ get_time_point <- function(df, t) {
 
     if(nrow(df) == 0) {
         stop("no rows in data frame with given time")
-    } else if(nrow(df) > 1) {
-        stop("multiple rows in data frame with given time")
     }
 
     df

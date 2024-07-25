@@ -29,7 +29,7 @@ See \code{?accuracy}, \code{?log_score} for examples.
 See \code{vignette(topic='casteval', package='casteval')} for details.}
 }
 \value{
-A ggplot2 object
+A ggplot object
 }
 \description{
 Plot a forecast, along with corresponding observations, quantile intervals, etc.

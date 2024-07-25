@@ -93,17 +93,71 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
 
 #' Show a diagnostic plot for the log score
 #'
-#' Create a diagnostic plot displaying the density function calculated by the Kernel Density Estimation (KDE).
+#' Create a diagnostic plot displaying the density function calculated by the Kernel Density Estimation (KDE),
+#' for the specified time in the forecast.
 #'
-#' @param name desc
+#' @template fcst
+#' @param obs (Optional) An observations data frame. Data from if will be included in the graph if provided
+#' @param at (Optional) See `?log_score`
+#' @param after (Optional) See `?log_score`
+#' @param bw (Optional) See `?log_score`
+#' @param from,to (Optional) The range over which the density will be plotted
+#' @param n (Optional) How many points to calculate the density for
 #'
-#' @returns desc
+#' @returns A ggplot object
 #' @export
 #' @autoglobal
 #'
 #' @examples
 #' #TODO
-log_score_diagnostic <- function(fcst, obs, at=NULL, after=NULL, bw=NULL) {
+log_score_diagnostic <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to=NULL, n=101) {
+    # this function is structured very similarly to `log_score()`
+    # it just has a different goal and some different parameters
+    
+    # validate bw (mostly just make sure it isn't a vector with length >1)
+    if(!(is.null(bw) || (is.numeric(bw) && length(bw)==1))) {
+        stop("`bw` must be either NULL or a single number")
+    }
+
+    # validate fcst and/or obs
+    if(is.null(obs)) {
+        validate_forecast(fcst)
+    } else {
+        validate_fcst_obs_pair(fcst, obs)
+    }
+ 
+    # get the time point
+    t <- get_specified_time(fcst, at, after)
+
+    # get the data for this time point
+    samp <- get_time_point(fcst$data, t)$val
+    val_obs <- get_time_point(obs, t)$val_obs
+
+    # if not provided, `from` and `to` default to 2x the range beyond the max and min (of the sample)
+    rng <- max(samp) - min(samp)
+    if(is.null(from)) {
+        from <- min(samp) - 2*rng
+    }
+    if(is.null(to)) {
+        from <- max(samp) + 2*rng
+    }
+
+    x <- seq(from, to, length.out=n)
+
+    # get the densities
+    densities <- scoringRules::logs_sample(x, samp, bw=bw) %>% # calculate negative-log score
+        -. %>% # undo negation
+        exp() # undo log
+    
+    if(!all(is.finite(densities))) {
+        warning("infinite densities encountered in KDE")
+        
+        # remove infinite densities
+        w <- which(is.finite(densities))
+        densities <- densities[w]
+        x <- x[w]
+    }
+
     
 }
 

@@ -4,7 +4,7 @@
 \alias{log_score}
 \title{Compute logarithmic score for forecast}
 \usage{
-log_score(fcst, obs, at = NULL, after = NULL, summarize = TRUE)
+log_score(fcst, obs, at = NULL, after = NULL, summarize = TRUE, bw = NULL)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
@@ -23,6 +23,9 @@ Mutually exclusive with \code{at}.}
 If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
 containing the scores for each individual time point.
 This can be used by plotting functions to colour-code observations, for example.}
+
+\item{bw}{(Optional) The bandwidth for calculating the Kernel Density Estimation (see \code{?scoringRules::logs_sample}).
+If not provided, a bandwidth will automatically be calculated by \code{scoringRules::logs_sample()}.}
 }
 \value{
 If \code{summarize} is \code{FALSE},

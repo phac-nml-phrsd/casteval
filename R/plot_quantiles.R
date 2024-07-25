@@ -70,7 +70,7 @@
 #' @param alpha (Optional) The alpha parameter to be passed to `ggplot2`
 #' @param palette (Optional) The colour palette to use (see `?ggplot2::scale_fill_brewer`)
 #'
-#' @returns A `ggplot2` object.
+#' @returns A ggplot object.
 #' @autoglobal
 #'
 #' @examples

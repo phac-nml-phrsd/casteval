@@ -28,7 +28,7 @@ Otherwise, each pair will be used as a quantile intervals.}
 \item{palette}{(Optional) The colour palette to use (see \code{?ggplot2::scale_fill_brewer})}
 }
 \value{
-A \code{ggplot2} object.
+A ggplot object.
 }
 \description{
 Given forecast data, highlight the specified quantile intervals.

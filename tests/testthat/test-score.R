@@ -120,9 +120,9 @@ test_that("get_time_point() works", {
     "no rows in data frame with given time"
   )
 
-  expect_error(
-    get_time_point(data.frame(time=c(1,2,2,3), val=4:7), 2),
-    "multiple rows in data frame with given time"
+  expect_equal(
+    get_time_point(data.frame(time=c(1,1,2,2,3,3), val=c(4,5,6,7,8,9)), 2),
+    data.frame(time=c(2,2), val=c(6,7))
   )
 
   expect_equal(
