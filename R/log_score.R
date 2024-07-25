@@ -158,7 +158,29 @@ log_score_diagnostic <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, f
         x <- x[w]
     }
 
-    
+    # make data frames
+    data <- data.frame(x=x, y=densities)
+    samp_data <- data.frame(x=samp, y=0)
+
+    # plot the densities
+    plt <- ggplot2::ggplot(data=data, mapping=ggplot2::aes(x=x, y=y)) +
+        # plot the sample data along the x axis, with jitter
+        ggplot2::geom_jitter(ggplot2::aes(x=x,y=y), data=samp_data)
+
+    # plot observation point if given
+    if(!is.null(obs)) {
+        plt <- plt + ggplot2::geom_vline(alpha=0.2, xintercept=val_obs)
+    }
+
+    # create title
+    if(is.null(bw)) {
+        bw <- bw.nrd(samp)
+    }
+    plt <- plt + ggplot2::labs(title=glue::glue("KDE at time {t} with bin width {bw}"))
+
+    # label axes
+    plt <- plt + ggplot2::xlab("value") + ggplot2::ylab("density")
+    plt
 }
 
 
