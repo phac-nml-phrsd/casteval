@@ -48,6 +48,7 @@ accuracy <- function(fcst, obs, quant_pairs=NULL, summarize=TRUE) {
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
     quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data)
+    message(glue::glue("Scoring accuracy using quantile pairs {toString(quant_pairs)}"))
 
     scores <- quant_pairs |>
         # get the score data frame for each pair and give it a `pair` numbering
@@ -61,8 +62,11 @@ accuracy <- function(fcst, obs, quant_pairs=NULL, summarize=TRUE) {
         return(scores)
     }
 
-    # calculate success rate (aka accuracy)
-    scores |> dplyr::group_by(pair) |> dplyr::summarize(acc=mean(score)) %>% .$acc
+    # calculate accuracy
+    scores <- scores |> dplyr::group_by(pair) |> dplyr::summarize(n=dplyr::n(), acc=mean(score))
+    # print how many points used
+    message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
+    scores$acc
 }
 
 
