@@ -218,6 +218,16 @@ test_that("plot_KDE() works", {
 
   fc <- create_forecast(dplyr::tibble(time=rep(1,100), val=dat))
   obs <- data.frame(time=1, val_obs=1)
+
+  expect_error(
+    plot_KDE(fc, obs, at=1, bw=c(1,2)),
+    "`bw` must be either NULL or a single number"
+  )
+
+  vdiffr::expect_doppelganger("kde0",
+    plot_KDE(fc, at=1)
+  )
+
   vdiffr::expect_doppelganger("kde1",
     plot_KDE(fc,obs, at=1, binwidth=0.5, bw=2)
   )
@@ -227,6 +237,14 @@ test_that("plot_KDE() works", {
   )
 
   vdiffr::expect_doppelganger("kde3",
-    plot_KDE(fc,obs, at=1, binwidth=0.5)
+    plot_KDE(fc,obs, at=1)
+  )
+
+  expect_warning(
+    plot_KDE(
+      create_forecast(data.frame(time=c(1,1), val=c(0,0))),
+      at=1, from=0, to=1, n=11
+    ),
+    "infinite densities encountered in KDE"
   )
 })

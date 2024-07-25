@@ -142,7 +142,9 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
 
     # get the data for this time point
     samp <- get_time_point(fcst$data, t)$val
-    val_obs <- get_time_point(obs, t)$val_obs
+    if(!is.null(obs)) {
+        val_obs <- get_time_point(obs, t)$val_obs
+    }
 
     # if not provided, `from` and `to` default to 2x the range beyond the max and min (of the sample)
     rng <- max(samp) - min(samp)
