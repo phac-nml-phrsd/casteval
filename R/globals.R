@@ -18,8 +18,8 @@ utils::globalVariables(c(
   "val", # <log_score>
   "val_obs", # <log_score>
   "score", # <log_score>
-  ".", # <plot_KDE>
   "y", # <plot_KDE>
+  "density", # <plot_KDE>
   "time", # <plot_ensemble>
   "val", # <plot_ensemble>
   "sim", # <plot_ensemble>

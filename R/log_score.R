@@ -194,7 +194,7 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
 
     # create title
     if(is.null(bw)) {
-        bw <- bw.nrd(samp)
+        bw <- stats::bw.nrd(samp)
     }
     plt <- plt + ggplot2::labs(title=glue::glue("KDE at time {t} with bandwidth {bw}"))
 

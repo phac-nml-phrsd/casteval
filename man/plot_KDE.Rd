@@ -12,7 +12,8 @@ plot_KDE(
   bw = NULL,
   from = NULL,
   to = NULL,
-  n = 101
+  n = 101,
+  binwidth = NULL
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ plot_KDE(
 \item{from, to}{(Optional) The range over which the density will be plotted}
 
 \item{n}{(Optional) How many points to calculate the density for}
+
+\item{binwidth}{(Optional) The binwidth for the histogram. Not to be confused with \code{bw}, which stands for bandwidth and is unrelated.}
 }
 \value{
 A ggplot object
@@ -36,6 +39,15 @@ A ggplot object
 \description{
 Create a plot displaying the density function calculated by the Kernel Density Estimation (KDE),
 for the specified time in the forecast.
+}
+\details{
+Creates a plot containing:
+\itemize{
+\item The density curve at the given time calculated by the KDE
+\item The forecast data points at the given time, along the x-axis
+\item A histogram of the density of the forecast data points
+\item A vertical line showing the observation at the given time (if provided)
+}
 }
 \examples{
 #TODO
