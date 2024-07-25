@@ -25,5 +25,21 @@ Given a data frame, checks that:
 }
 }
 \examples{
-# TODO
+# valid
+casteval:::validate_data_frame(data.frame(
+  time=1:3,
+  val=4:6
+))
+
+# invalid (summary and unsummary data)
+try(casteval:::validate_data_frame(data.frame(
+  time=1:3,
+  val=4:6,
+  val_mean=7:9
+)))
+
+# invalid (no data columns)
+try(casteval:::validate_data_frame(data.frame(
+  time=1:3
+)))
 }

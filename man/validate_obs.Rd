@@ -22,5 +22,18 @@ Check that a given object:
 }
 }
 \examples{
-#TODO
+# valid
+casteval:::validate_obs(
+  data.frame(time=1:3, val_obs=4:6)
+)
+
+# valid (contains `score` column)
+casteval:::validate_obs(
+  data.frame(time=1:3, val_obs=4:6, score=c(1, 0, -1))
+)
+
+# invalid
+try(casteval:::validate_obs(
+  data.frame(time=1:3, val_obs=c("a", "b", "c"))
+))
 }

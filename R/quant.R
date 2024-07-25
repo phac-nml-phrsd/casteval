@@ -172,7 +172,36 @@ pair_quantiles <- function(quants) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # infer from forecast
+#' casteval:::parse_quant_pairs(
+#'   NULL,
+#'   data.frame(time=1, val_q10=2, val_q25=3, val_50=4, val_q75=5, val_q90=6)
+#' )
+#' 
+#' # single pair
+#' casteval:::parse_quant_pairs(
+#'   c(2.5,97.5),
+#'   data.frame(time=1, val=1)
+#' )
+#' 
+#' # multiple pairs
+#' casteval:::parse_quant_pairs(
+#'   list(c(2.5,97.5), c(25,75)),
+#'   data.frame(time=1, val=1)
+#' )
+#' 
+#' # allow empty
+#' casteval:::parse_quant_pairs(
+#'   NULL,
+#'   data.frame(time=1:3, val_q50=4:6),
+#'   allow_empty=TRUE
+#' )
+#' 
+#' casteval:::parse_quant_pairs(
+#'   list(),
+#'   data.frame(time=1, val=1),
+#'   allow_empty=TRUE
+#' )
 parse_quant_pairs <- function(quant_pairs, df, allow_empty=FALSE) {
     if(is.null(quant_pairs)) { # default quant_pairs -> infer from forecast
         quant_pairs <- pair_quantiles(get_quant_percentages(df))$paired

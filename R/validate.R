@@ -66,7 +66,20 @@ validate_forecast <- function(fcst) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # valid
+#' casteval:::validate_obs(
+#'   data.frame(time=1:3, val_obs=4:6)
+#' )
+#' 
+#' # valid (contains `score` column)
+#' casteval:::validate_obs(
+#'   data.frame(time=1:3, val_obs=4:6, score=c(1, 0, -1))
+#' )
+#' 
+#' # invalid
+#' try(casteval:::validate_obs(
+#'   data.frame(time=1:3, val_obs=c("a", "b", "c"))
+#' ))
 validate_obs <- function(obs) {
     if(!is.data.frame(obs)) {
         stop("obs must be data frame")
@@ -250,7 +263,23 @@ validate_quant_order <- function(df) {
 #' @autoglobal
 #'
 #' @examples
-#' # TODO
+#' # valid
+#' casteval:::validate_data_frame(data.frame(
+#'   time=1:3,
+#'   val=4:6
+#' ))
+#' 
+#' # invalid (summary and unsummary data)
+#' try(casteval:::validate_data_frame(data.frame(
+#'   time=1:3,
+#'   val=4:6,
+#'   val_mean=7:9
+#' )))
+#' 
+#' # invalid (no data columns)
+#' try(casteval:::validate_data_frame(data.frame(
+#'   time=1:3
+#' )))
 validate_data_frame <- function(df) {
     if(nrow(df) == 0) {
         stop("data frame has no rows")
@@ -322,7 +351,17 @@ validate_data_frame <- function(df) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # valid
+#' casteval:::validate_quant_name("val_q97.5")
+#' casteval:::validate_quant_name("val_q50")
+#' casteval:::validate_quant_name("val_q100")
+#' casteval:::validate_quant_name("val_q0")
+#' 
+#' # invalid
+#' try(casteval:::validate_quant_name("val_q50abc"))
+#' try(casteval:::validate_quant_name("val_q101"))
+#' try(casteval:::validate_quant_name("val_q-1"))
+#' try(casteval:::validate_quant_name("hello"))
 validate_quant_name <- function(name) {
     parts <- strsplit(name, "q")[[1]]
     if(length(parts) != 2) {
@@ -353,7 +392,14 @@ validate_quant_name <- function(name) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # valid
+#' casteval:::validate_time_column(c(1,2,3))
+#' casteval:::validate_time_column(lubridate::as_date(1000:1010))
+#' casteval:::validate_time_column(lubridate::as_datetime(10000:10100))
+#' 
+#' # invalid
+#' try(casteval:::validate_time_column(list(1,2,3)))
+#' try(casteval:::validate_time_column(c("monday", "tuesday")))
 validate_time_column <- function(times) {
     if(lubridate::is.Date(times) ||
         lubridate::is.POSIXt(times) ||

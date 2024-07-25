@@ -34,5 +34,25 @@ by assigning 1 for overprediction, 0 for equality, and -1 for underprediction.
 It then summarizes the score by taking the mean of the assigned values.
 }
 \examples{
-#TODO
+obs <- data.frame(time=1:5, val_obs=rep(10,5))
+
+# # a forecast with bias on individual days, but no overall bias
+fc1 <- create_forecast(dplyr::tibble(
+  time=c(1,1,2,2,3,3,4,4,5,5),
+  val=c(9, 9, 9, 10, 10, 10, 10, 11, 11, 11)
+))
+
+bias(fc1, obs, summarize=FALSE)
+
+bias(fc1, obs)
+
+# A forecast with an underprediction bias
+fc2 <- create_forecast(data.frame(
+  time=c(1,1,1,2,2,2,3,3,3),
+  val=c(9,9,9,10,10,10,11,9,9)
+))
+
+bias(fc2, obs, summarize=FALSE)
+
+bias(fc2, obs)
 }

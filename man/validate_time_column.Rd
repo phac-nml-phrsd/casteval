@@ -16,5 +16,12 @@ NULL if valid, error otherwise
 Check that the type of a time column is valid.
 }
 \examples{
-#TODO
+# valid
+casteval:::validate_time_column(c(1,2,3))
+casteval:::validate_time_column(lubridate::as_date(1000:1010))
+casteval:::validate_time_column(lubridate::as_datetime(10000:10100))
+
+# invalid
+try(casteval:::validate_time_column(list(1,2,3)))
+try(casteval:::validate_time_column(c("monday", "tuesday")))
 }

@@ -16,5 +16,15 @@ NULL if valid. Error otherwise
 Check that a quantile column name starts with \code{val_q} followed by a number between 0 and 100.
 }
 \examples{
-#TODO
+# valid
+casteval:::validate_quant_name("val_q97.5")
+casteval:::validate_quant_name("val_q50")
+casteval:::validate_quant_name("val_q100")
+casteval:::validate_quant_name("val_q0")
+
+# invalid
+try(casteval:::validate_quant_name("val_q50abc"))
+try(casteval:::validate_quant_name("val_q101"))
+try(casteval:::validate_quant_name("val_q-1"))
+try(casteval:::validate_quant_name("hello"))
 }
