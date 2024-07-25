@@ -64,7 +64,7 @@
 #'
 #' @template plt
 #' @template fcst
-#' @param quants (Optional) A list of pairs of numbers between 0 and 100.
+#' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100.
 #'  If not provided, the quantile intervals will be inferred from the forecast.
 #'  Otherwise, each pair will be used as a quantile intervals.
 #' @param alpha (Optional) The alpha parameter to be passed to `ggplot2`
