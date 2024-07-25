@@ -16,7 +16,7 @@
 #' If `summarize` is `TRUE`, the output will be a vector with the same length as `quant_pairs`,
 #' containing the respective score for each pair.
 #' @template summarize
-#'
+#' 
 #' @returns A number from 0 to 1,
 #'  the rate at which the observations were inside the specified quantile interval
 #' @export
@@ -94,4 +94,33 @@ accuracy_help <- function(fcst, obs, pair) {
     obs <- obs |> dplyr::mutate(score=dplyr::between(val_obs, low, high))
 
     return(obs |> dplyr::select(time, val_obs, score))
+}
+
+
+#' `accuracy()` function factory
+#'
+#' Given the desired quantile pairs,
+#' create a function wrapping `accuracy()` which passes those quantile pairs to it.
+#'
+#' @param quant_pairs See `?accuracy`
+#'
+#' @returns desc
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' fc <- create_forecast(list(
+#'   time=1:3,
+#'   vals=list(c(4,7,8), c(5,6,7), c(4,6,6))
+#' ))
+#' obs <- data.frame(time=1:3, val_obs=5:7)
+#' 
+#' acc <- make_accuracy(c(5,95))
+#' acc(fc, obs)
+#' 
+#' graph_forecast(fc, obs, make_accuracy(c(25,75)))
+make_accuracy <- function(quant_pairs) {
+    function(...) {
+        accuracy(..., quant_pairs=quant_pairs)
+    }
 }

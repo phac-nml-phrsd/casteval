@@ -290,3 +290,28 @@ test_that("accuracy(..., summarize=FALSE) works", {
     data.frame(time=3:5, val_obs=c(0,5,10), score=c(FALSE,TRUE,FALSE), pair=rep(1,3))
   )
 })
+
+test_that("make_accuracy() works", {
+  fc <- create_forecast(list(
+    time=1:3,
+    vals=list(c(4,7,8), c(5,6,7), c(4,6,6))
+  ))
+  fc2 <- create_forecast(data.frame(time=1:3, val_q10=c(6,6,6), val_q90=c(7,7,7)))
+
+  obs <- data.frame(time=1:3, val_obs=5:7)
+
+  expect_equal(
+    make_accuracy(c(5,95))(fc, obs),
+    2/3
+  )
+
+  expect_equal(
+    make_accuracy(list(c(5,95), c(53,90)))(fc,obs),
+    c(2/3,0)
+  )
+
+  expect_equal(
+    make_accuracy(NULL)(fc2,obs),
+    2/3
+  )
+})
