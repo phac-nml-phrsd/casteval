@@ -1,17 +1,17 @@
-test_that("graph_observations() works", {
+test_that("plot_observations() works", {
   fc1 <- create_forecast(list(
     time=1:3,
     vals=list(c(4,7,10), c(5,8,11), c(6,9,12))
   ))
   obs <- data.frame(time=1:3, val_obs=c(5,9,13))
 
-  vdiffr::expect_doppelganger("obs1", graph_observations(NULL, obs))
-  vdiffr::expect_doppelganger("obs2", graph_observations(NULL, neglog(fc1, obs,summarize=FALSE)))
+  vdiffr::expect_doppelganger("obs1", plot_observations(NULL, obs))
+  vdiffr::expect_doppelganger("obs2", plot_observations(NULL, neglog(fc1, obs,summarize=FALSE)))
   vdiffr::expect_doppelganger("obs3",
-    graph_observations(graph_ensemble(NULL, fc1), obs)
+    plot_observations(plot_ensemble(NULL, fc1), obs)
   )
   vdiffr::expect_doppelganger("obs4",
-    graph_observations(graph_ensemble(NULL, fc1), neglog(fc1, obs,summarize=FALSE))
+    plot_observations(plot_ensemble(NULL, fc1), neglog(fc1, obs,summarize=FALSE))
   )
 
   fc2 <- create_forecast(dplyr::tibble(
@@ -23,10 +23,10 @@ test_that("graph_observations() works", {
   obs2 <- data.frame(time=1:12, val_obs=3:14)
 
   vdiffr::expect_doppelganger("obs5",
-    NULL |> graph_quant_intervals(fc2) |> graph_observations(obs2)
+    NULL |> plot_quant_intervals(fc2) |> plot_observations(obs2)
   )
   vdiffr::expect_doppelganger("obs6",
-    NULL |> graph_quant_intervals(fc2) |> graph_observations(accuracy(fc2, obs2, summarize=FALSE, quant_pairs=c(25, 75)))
+    NULL |> plot_quant_intervals(fc2) |> plot_observations(accuracy(fc2, obs2, summarize=FALSE, quant_pairs=c(25, 75)))
   )
 
   fc3 <- create_forecast(list(
@@ -41,7 +41,7 @@ test_that("graph_observations() works", {
     val_obs=c(4,10,14)
   )
   vdiffr::expect_doppelganger("obs7",
-    NULL |> graph_quant_intervals(fc3, c(25,75)) |> graph_observations(accuracy(fc3, obs3, quant_pairs=c(25,75), summarize=FALSE))
+    NULL |> plot_quant_intervals(fc3, c(25,75)) |> plot_observations(accuracy(fc3, obs3, quant_pairs=c(25,75), summarize=FALSE))
   )
 
   fc4 <- create_forecast(list(
@@ -62,6 +62,6 @@ test_that("graph_observations() works", {
   obs4 <- data.frame(time=1:10, val_obs=1:10)
 
   vdiffr::expect_doppelganger("obs8",
-    NULL |> graph_ensemble(fc4) |> graph_observations(neglog(fc4, obs4, summarize=FALSE))
+    NULL |> plot_ensemble(fc4) |> plot_observations(neglog(fc4, obs4, summarize=FALSE))
   )
 })

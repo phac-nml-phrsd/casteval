@@ -23,4 +23,4 @@ usethis::use_data(denmark2020ens, overwrite=TRUE)
 usethis::use_data(denmark2020fc, overwrite=TRUE)
 usethis::use_data(denmark2020obs, overwrite=TRUE)
 
-# NULL |> graph_ensemble(fc) |> graph_observations(obs)
+# NULL |> plot_ensemble(fc) |> plot_observations(obs)

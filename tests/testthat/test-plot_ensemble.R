@@ -1,7 +1,7 @@
-test_that("graph_ensemble() works", {
+test_that("plot_ensemble() works", {
   expect_error(
-    graph_ensemble(NULL, create_forecast(data.frame(time=1:3,val_mean=4:6))),
-    "raw data needed to graph ensemble"
+    plot_ensemble(NULL, create_forecast(data.frame(time=1:3,val_mean=4:6))),
+    "raw data needed to plot ensemble"
   )
 
   fc0 <- create_forecast(data.frame(
@@ -28,22 +28,22 @@ test_that("graph_ensemble() works", {
   ))
 
   vdiffr::expect_doppelganger("ens0",
-    graph_ensemble(NULL, fc0)
+    plot_ensemble(NULL, fc0)
   )
 
   vdiffr::expect_doppelganger("ens1",
-    graph_ensemble(NULL, fc1)
+    plot_ensemble(NULL, fc1)
   )
 
   vdiffr::expect_doppelganger("ens2",
-    graph_ensemble(NULL, fc2)
+    plot_ensemble(NULL, fc2)
   )
 
   vdiffr::expect_doppelganger("ens3",
-    graph_ensemble(NULL, fc3)
+    plot_ensemble(NULL, fc3)
   )
 
   vdiffr::expect_doppelganger("ens4",
-    graph_ensemble(NULL, fc3, alpha=0.9, colour="#33ccff")
+    plot_ensemble(NULL, fc3, alpha=0.9, colour="#33ccff")
   )
 })
