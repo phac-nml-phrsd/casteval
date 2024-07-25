@@ -12,37 +12,37 @@
 #   ))
 
 #   vdiffr::expect_doppelganger("conf1",
-#     graph_confidence_intervals(NULL, fc1, c(90,50,80))
+#     plot_confidence_intervals(NULL, fc1, c(90,50,80))
 #   )
 
 #   expect_error(
-#     graph_confidence_intervals(NULL, fc1, c(90,50,80,2)),
+#     plot_confidence_intervals(NULL, fc1, c(90,50,80,2)),
 #     "could not compute/obtain.*quantile from data frame"
 #   )
   
 #   vdiffr::expect_doppelganger("conf2",
-#     graph_confidence_intervals(NULL, fc1, c(50,80))
+#     plot_confidence_intervals(NULL, fc1, c(50,80))
 #   )
 
 #   vdiffr::expect_doppelganger("conf3",
-#     graph_confidence_intervals(NULL, fc1)
+#     plot_confidence_intervals(NULL, fc1)
 #   )
 
 #   expect_error(
-#     graph_confidence_intervals(NULL, fc2),
+#     plot_confidence_intervals(NULL, fc2),
 #     "no confidence intervals specified and none inferrable from data frame"
 #   )
 
 #   vdiffr::expect_doppelganger("conf4",
-#     graph_confidence_intervals(NULL, fc2, c(90,50))
+#     plot_confidence_intervals(NULL, fc2, c(90,50))
 #   )
 
 #   vdiffr::expect_doppelganger("conf5",
-#     NULL |> graph_ensemble(fc2) |> graph_confidence_intervals(fc2, c(90,50))
+#     NULL |> plot_ensemble(fc2) |> plot_confidence_intervals(fc2, c(90,50))
 #   )
 # })
 
-test_that("graph_quant_intervals() works", {
+test_that("plot_quant_intervals() works", {
   fc1 <- create_forecast(dplyr::tibble(
     time=1:3,
     val_q5=8:6, val_q95=22:20,
@@ -57,32 +57,32 @@ test_that("graph_quant_intervals() works", {
   ))
 
   vdiffr::expect_doppelganger("interval1",
-    graph_quant_intervals(NULL, fc1, list(c(25,75), c(5,95), c(10,90)))
+    plot_quant_intervals(NULL, fc1, list(c(25,75), c(5,95), c(10,90)))
   )
 
   expect_error(
-    graph_quant_intervals(NULL, fc1, list(c(2.5, 97.5))),
+    plot_quant_intervals(NULL, fc1, list(c(2.5, 97.5))),
     "could not compute/obtain 2.5% quantile from data frame"
   )
 
   vdiffr::expect_doppelganger("interval2",
-    graph_quant_intervals(NULL, fc1)
+    plot_quant_intervals(NULL, fc1)
   )
 
   vdiffr::expect_doppelganger("interval3",
-    graph_quant_intervals(NULL, fc1, list(c(25,75), c(10,90)), palette="Greens", alpha=1)
+    plot_quant_intervals(NULL, fc1, list(c(25,75), c(10,90)), palette="Greens", alpha=1)
   )
 
   expect_error(
-    graph_quant_intervals(NULL, fc2),
+    plot_quant_intervals(NULL, fc2),
     "could not infer quantile pairs from forecast data"
   )
 
   vdiffr::expect_doppelganger("interval4",
-    graph_quant_intervals(NULL, fc2, list(c(5, 95), c(25,75)))
+    plot_quant_intervals(NULL, fc2, list(c(5, 95), c(25,75)))
   )
 
   vdiffr::expect_doppelganger("interval5",
-    NULL |> graph_ensemble(fc2) |> graph_quant_intervals(fc2, list(c(25, 75), c(5, 95)))
+    NULL |> plot_ensemble(fc2) |> plot_quant_intervals(fc2, list(c(25, 75), c(5, 95)))
   )
 })
