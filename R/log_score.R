@@ -91,9 +91,9 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
 }
 
 
-#' Show a diagnostic plot for the log score
+#' Plot the KDE used in `log_score`
 #'
-#' Create a diagnostic plot displaying the density function calculated by the Kernel Density Estimation (KDE),
+#' Create a plot displaying the density function calculated by the Kernel Density Estimation (KDE),
 #' for the specified time in the forecast.
 #'
 #' @template fcst
@@ -110,7 +110,7 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
 #'
 #' @examples
 #' #TODO
-log_score_diagnostic <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to=NULL, n=101) {
+plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to=NULL, n=101) {
     # this function is structured very similarly to `log_score()`
     # it just has a different goal and some different parameters
     
@@ -187,7 +187,7 @@ log_score_diagnostic <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, f
 #' Get relative/absolute time specified by user
 #'
 #' Get the time according to the `at`/`after` params passed by the user.
-#' Helper for `log_score()` and `log_score_diagnostic()`.
+#' Helper for `log_score()` and `plot_KDE()`.
 #'
 #' @template fcst
 #' @param at (Optional) See `?log_score`
