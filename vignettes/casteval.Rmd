@@ -27,18 +27,24 @@ In this vignette, we demonstrate `{casteval}`'s main functionality via deliberat
 
 # Forecast data frames
 
-In the context of this package, a "forecast data frame" is a data frame which has:
+Internally, `{casteval}` works with what are called "forecast data frames".
+All forecast data frames contain a `time` column, which can contain either numbers, dates, or datetimes.
+In addition, they must contain either unsummarized or summarized forecast data.
 
-- a `time` column, containing the time
+Unsummarized data is stored in the `val` column.
+A `sim` column may also be provided to 
+
+Summarized data is stored in the following columns:
+- Quantile columns must start with `val_q` followed by a number from 0 to 100, e.x. `val_50` would be the median
+- The mean column must be named `val_mean`
+
+- a `time` column
 - (optional) a `sim` column, containing the simulation number (a.k.a. the realization number)
-- (optional) any number of columns that start with `grp_`, e.x. `grp_scenario`, `grp_province`, `grp_variable`, etc.
 - (optional) a `val` column, containing raw forecast values
-- (optional) any number of columns that start with `val_`, e.x. `val_q2.5`, `val_mean`
+- (optional) columns starting with `val_q`, followed by a number from 0 to 100, containing quantile data
+- (optional) a `val_mean` column, containing mean data
 
-`sim` is required for any curve-based scoring methods, as well as for plotting of raw ensemble curves.
-It is not required for fixe-time scoring methods.
 
-Columns starting with `grp_` will be used to group the data before scoring and plotting.
 
 Columns starting with `val_` contain summary data (`val` itself contains unsummarized raw data) such as quantiles (e.x. `val_q50` for the median) and the mean.
 
