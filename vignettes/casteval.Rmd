@@ -31,57 +31,127 @@ A typical workflow using `{casteval}` might go as follows:
 
 In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples. For a more realistic start-to-finish demonstration of the package's usage with real forecasts, please see [`vignette("denmark2020")`](denmark2020.html).
 
-# Forecast data frames
+# Data format
 
-Internally, `{casteval}` works with what are called "forecast data frames".
+`{casteval}` expects the data you pass it to be in certain formats.
+In particular:
+
+- *Forecast data frames* contain forecast data
+- *Forecast objects* contain metadata about a forecast, as well as a forecast data frame
+- *Observations data frames* contain observations data
+
+`{casteval}` contains tools which aid in the creation and manipulation of these objects, to make your life easier.
+These tools are described in later sections.
+
+## Forecast data frames
+
 All forecast data frames contain a `time` column, which can contain either numbers, dates, or datetimes.
-In addition, they must contain either unsummarized or summarized forecast data.
+In addition, they should contain either unsummarized or summarized forecast data, but not both.
 
-Unsummarized data is stored in the `val` column.
-A `sim` column may also be provided to 
+Unsummarized data is stored in a `val` column.
+A `sim` column may optionally be provided to specify simulation numbers in an ensemble of data.
 
-Summarized data is stored in the following columns:
+```{r fdf_unsummarized}
+# unsummarized forecast over with numeric times, without simulation numbers
+data.frame(
+  time=c(1,1,1,2,2,2,3,3,3,4,4,4,5,5,5),
+  val=c(100,101,102,110,111,112,120,121,122,130,131,132,140,141,142)
+)
+
+# unsummarized forecast data with dates, with simulation numbers
+data.frame(
+  time=lubridate::as_date(c(1,1,1,2,2,2,3,3,3,4,4,4,5,5,5)),
+  sim=c(1,2,3,1,2,3,1,2,3,1,2,3,1,2,3),
+  val=c(100,101,102,110,111,112,120,121,122,130,131,132,140,141,142)
+)
+```
+
+Summarized data may be stored in the following columns:
 - Quantile columns must start with `val_q` followed by a number from 0 to 100, e.x. `val_50` would be the median
 - The mean column must be named `val_mean`
 
-- a `time` column
-- (optional) a `sim` column, containing the simulation number (a.k.a. the realization number)
-- (optional) a `val` column, containing raw forecast values
-- (optional) columns starting with `val_q`, followed by a number from 0 to 100, containing quantile data
-- (optional) a `val_mean` column, containing mean data
+Note that summarized data never contains a `sim` column.
 
+```{r fdf_summarized}
+# summarized forecast data with the 25th, 50th, and 75th percentiles
+data.frame(
+  time=lubridate::as_datetime(1:5),
+  val_q25=c(100,105,103,104,105),
+  val_q50=c(201, 210, 205, 201, 200),
+  val_q75=c(304, 305, 303, 303, 302)
+)
 
+# summarized forecast data with the mean, and the 2.5th and 97.5th percentiles
+data.frame(
+  time=1:5,
+  val_q2.5=c(100,103,104,105,102),
+  val_mean=c(150,155,160,155,154)
+  val_97.5=c(200,200,2204,205,206),
+)
+```
 
-Columns starting with `val_` contain summary data (`val` itself contains unsummarized raw data) such as quantiles (e.x. `val_q50` for the median) and the mean.
+All data columns as well as the `sim` column must be numeric.
 
-# Input formatting
+## Forecast objects
 
-At a high level, a time series forecast is specified with two pieces of information: forecasted values and the accompanying time at which the forecasted values are predicted to be observed. In practice, forecasts can be presented in various ways. A forecast may be given as many individual realizations of a model, or this ensemble may be summarized into a mean and confidence interval for each predicted time point. Additionally, a forecast may be produced for a single scenario (_e.g._ a simple, status quo forecast) or several, distinct scenarios may be considered (status quo alongside the introduction of an intervention with varying degrees of success in controlling an outbreak). 
+A forecast object is a list with the following fields:
 
-With these applications in mind, `{casteval}` accepts several input formats, including:
+- `data`: a forecast data frame (see above)
+- `name`: (optional) the name of the forecast
+- `forecast_time`: (optional) the time that the forecast was created. Its type must match that of the times in `data`
 
-- A single data frame with a [`time` column](#input-time) and one or more [forecast data columns](#input-forecast-data) 
-- A list of data frames, each with a `time` column and a [`raw` data column](#input-forecast-data)
-- A named list `l`, where `l$time` is a vector of times and `l$ensemble` is a list of vectors containing forecast data, each one the same length as `l$time`
+Scoring functions will take `forecast_time` into account when scoring if it is provided.
+Plotting functions will use `name` to title the plots they produce.
 
-*Note: As this is a work in progress, the number of formats supported is still limited*
+`{casteval}` provides a function for creating forecast objects, `create_forecast()`, which we describe below.
+We recommend against creating or modifying forecast objects by hand, but it is useful to know what they look like.
 
-## Time {#input-time}
+```{r forecast_object}
+# a forecast object with no optional metadata
+list(
+  data=data.frame(
+    time=1:5,
+    val=6:10
+  ),
+  name=NULL,
+  forecast_time=NULL
+)
 
-Times can be one of the following types:
+# a forecast object with metadata
+list(
+  data=data.frame(
+    time=lubridate::as_date(1:5),
+    val=6:10
+  ),
+  name="A forecast",
+  forecast_time=lubridate::as_date(3)
+)
+```
 
-- `numeric` (-1, 0, 1, 1.5, etc.)
-- `Date` (_e.g._ from `{lubridate}`)
-- date-time formats `POSIXct` and `POSIXt`
+## Observations data frames
 
-## Forecast data {#input-forecast-data}
+All observations data frames contain a `time` column and a `val_obs` column.
+Similar to forecast data frames, `time` may be either numeric, dates, or date-times.
+`val_obs` must be numeric.
 
-All forecast data columns must contain numeric data.
-The current supported forecast data columns are:
+An observations data frame may also contain a `score` column, which usually gets attached by a scoring function.
+`score` can have many different types, but it is typically numeric or logical.
 
-- `raw`: values for individual realisations of a forecast
-- `mean`: mean value for each time point of an ensemble
-- `quant_x`: quantile for each time point of an ensemble, where `x` is a percentage from 0 to 100 (_e.g._, `quant_50`, `quant_2.5`, `quant_97.5`, etc.)
+```{r obsdf}
+# An observations data frame
+data.frame(
+  time=1:5,
+  val_obs=c(50,60,55,57,59)
+)
+
+# An observations data frame that holds the score for some forecast
+data.frame(
+  time=lubridate::as_date(1:5),
+  val_obs=c(50,60,55,57,59),
+  score=c(1.5, 6, 0, -1, 5, 6)
+)
+```
+
 
 ## Examples
 
