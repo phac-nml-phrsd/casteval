@@ -439,7 +439,7 @@ plot_forecast(fc, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)))
 # Create some observations
 obs <- data.frame(time=1:10, val_obs=c(1,4,8,10,11,8,5,3,3,2))
 
-# Plot them over the forecast and its confidence intervals
+# Plot them over the forecast and its quantile intervals
 plot_forecast(fc, obs=obs, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)))
 
 # We use a function factory to wrap accuracy() (see `?make_accuracy`)
