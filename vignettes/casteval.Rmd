@@ -238,24 +238,25 @@ These functions accept an optional `summarize` parameter, which is a boolean.
 If `summarize` is set to `TRUE` (the default), the scoring function will usually return the score as a single number (one exception being `accuracy()`, which might return a vector of numbers).
 
 Otherwise, it will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point that was scored.
-The type of the `score` column is not necessarily numeric (for example, in `accuracy()`, it contains booleans).
+The type of the `score` column is not necessarily numeric (for example, in `accuracy()`, it is logical instead).
 One use of these unsummarized values is for color-coding observation points when graphing them.
 
 The currently supported scoring functions are described below.
 
 ## Accuracy
 
-`accuracy(fcst, obs, quant_pairs=NULL, summarize=TRUE)` calculates the rate at which the observations fall inside a quantile interval of the forecast's predicted values.
+`accuracy(fcst, obs, quant_pairs=NULL, summarize=TRUE)` calculates the rate at which the observations fall inside a quantile interval of the forecast data.
 
 `quant_pairs` should be one of:
+
 - `NULL`
 - a pair of quantiles (e.x. `c(2.5, 97.5)`)
 - a list of pairs of quantiles (e.x. `list(c(2.5, 97.5), c(10, 90))`)
 
-If `quant_pairs` is not `NULL`, then a separate score will be calculated for each given pair of quantiles.
+If `quant_pairs` is not `NULL`, a separate score will be calculated for each given pair of quantiles.
 If `quant_pairs` is `NULL`, then `fcst` should contain quantile data, and the quantile pairs for scoring will be inferred from `fcst`'s quantile columns.
 
-If `summarize` is `TRUE`, then the score(s) will be returned as a vector of numbers from 0 to 1.
+If `summarize` is `TRUE`, then the score(s) will be returned as a vector of numbers from 0 to 1, one score per quantile pair.
 
 If `summarize` is `FALSE`, then the returned data frame will contain an additional column named `pair`, which will indicate which quantile pair each row corresponds to.
 
@@ -321,26 +322,26 @@ accuracy(fc2, obs, summarize=FALSE)
 It uses Kernel Density Estimation (KDE) to obtain a probability distribution for each point in time in the forecast.
 If `f(x)` is the estimated probability distribution and `x_0` is the corresponding observation, then the log score at that point in time is `log(f(x_0))` (`log()` is the natural logarithm).
 
-`fcst` must contain unsummarized data with 2 or more realizations per time point.
+`fcst` must contain unsummarized data with 2 or more values per time point.
 
 If `summarize` is TRUE, then exactly one af `at` (a compatible time) and `after` (a number) must be provided.
 The score at time equal to `at` or `fcst$forecast_time + after` will be returned.
 
-If `summarize` is FALSE, then `at` and `after` are ignored, and the output will be as described above.
+If `summarize` is FALSE, then `at` and `after` are ignored, and the output will be a data frame as described above.
 
 The KDE requires a bandwidth in order to calculate the distribution.
 If `bw` is left `NULL`, then a reasonable bandwidth will be automatically determined.
 Otherwise, the value of `bw` (which must be a number greater than 0) will be used as the bandwidth.
 
 ### Visualizing the KDE
-When evaluating forecasts using `log_score()` you may want to inspect inspect KDE as a sanity check, especially if your data is very sparse.
-You may also want to see how setting the `bw` parameter affects the resulting distribution, or whether the automatically calculated binwidth is good enough.
+When evaluating forecasts using `log_score()` you may want to inspect inspect the KDE as a sanity check, especially if your data is very sparse.
+You may also want to see how setting the `bw` parameter affects the resulting distribution, or whether the automatically calculated binwidth is sufficient.
 
 `plot_KDE()` allows you to do this.
-Like `log_score()`, it accepts the parameters `fcst`, `obs` (which is now optional), `at`, `after`, and `bw` (it does not have a `summarize` flag).
-It also accepts the optional parameters `from`, `to`, `n`, and `binwidth` (not to be confused with bandwidth). See `?plot_KDE` for a detailed explanation of these parameters.
+Like `log_score()`, it accepts the parameters `fcst`, `obs` (which is now optional), `at`, `after`, and `bw`.
+It also accepts the optional parameters `from`, `to`, `n`, and `binwidth` (not to be confused with bandwidth). See `?plot_KDE` for a detailed explanation of these extra parameters.
 
-`plod_KDE()` will plot the following elements:
+`plot_KDE()` will plot the following elements:
 
 - the data points of the `fcst` and/or `obs` at the time point specified by `at` or `after`
 - a histogram showing the distribution of `fcst`'s data points (once again specified by `at` or `after`), normalized to integrate to 1
