@@ -23,7 +23,8 @@ Suggests:
     DT,
     htmltools,
     vdiffr,
-    readr
+    readr,
+    emo
 Config/testthat/edition: 3
 Imports: 
     dplyr,
