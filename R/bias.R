@@ -1,3 +1,5 @@
+# TODO print number of points used, simmilar to accuracy()
+
 #' Calculate forecast bias
 #'
 #' Given a forecast and a set of observations, compute the bias of the forecast's predictions.

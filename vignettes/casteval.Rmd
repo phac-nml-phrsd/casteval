@@ -216,28 +216,24 @@ print(fc3)
 
 Scoring functions accept the following arguments:
 
-- A forecast object `fcst` (such as the ones outputted by `create_forecast()`)
-- A data frame of observations `obs` (as described above)
+- A forecast object `fcst`
+- An observations data frame `obs`
 - Additional arguments specific to particular scoring functions
 
-### Forecast-observations compatibility
-`fcst` and `obs` must use the same time type for scoring to be possible.
-That is to say, `fcst$data$time` and `obs$time` must contain elements of the same type.
+In order for scoring to be possible, `fcst` and `obs` must use the same time type.
+That is to say, `fcst$data$time` and `obs$time` must have the same type.
 
 If `fcst$forecast_time` is not `NULL`, then all data prior to `fcst$forecast_time` will be ignored when scoring `fcst`.
 
-If `obs` contains data for time points that `fcst` does not have, those time points will be ignored.
-However, the reverse cannot happen (if `fcst` contains time points that `obs` does not have, an error will be raised).
+If `fcst` or `obs` contain times not contained by the other, they will be ignored when scoring.
 
-*Note: In the future a flag might be added to tell the scoring functions to discard rows with missing observations.*
-
-### `summarize` flag
-Many scoring functions calculate intermediate values for each time point, and then select/summarize those scores as a single value.
-These functions accept a `summarize` parameter.
+### The `summarize` flag
+Many scoring functions calculate intermediate values for each time point, and then select/combine those scores in order to return a single value.
+These functions accept an optional `summarize` parameter, which is a boolean.
 
 If `summarize` is set to `TRUE` (the default), the scoring function will return the score as a single number.
 
-Otherwise, it will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point.
+Otherwise, it will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point that was scored.
 The type of the `score` column is not necessarily numeric (for example, in `accuracy()`, it contains booleans).
 One use of these unsummarized values is for color-coding observation points when graphing them.
 
@@ -245,43 +241,60 @@ The currently supported scoring functions are described below.
 
 ## Accuracy
 
-`accuracy(fcst, obs, interval=NULL, summarize=TRUE)` calculates the rate at which the observations fall inside a confidence interval predicted by the forecast.
-It returns a number from 0 to 1.
+`accuracy(fcst, obs, quant_pairs=NULL, summarize=TRUE)` calculates the rate at which the observations fall inside a quantile interval of the forecast's predicted values.
 
-The `interval` parameter should be a vector of two percentages from 0 to 100 (defaults to `c(2.5, 97.5)`). The corresponding quantiles will be calculated from the raw data and/or provided quantile columns in order to calculate the score.
+`quant_pairs` should be one of:
+- `NULL`
+- a pair of quantiles (e.x. `c(2.5, 97.5)`)
+- a list of pairs of quantiles (e.x. `list(c(2.5, 97.5), c(10, 90))`)
+
+If `quant_pairs` is not `NULL`, then a separate score will be calculated for each given pair of quantiles.
+If `quant_pairs` is `NULL`, then `fcst` should contain quantile data, and the quantile pairs for scoring will be inferred from `fcst`'s quantile columns.
+
+If `summarize` is `TRUE`, then the score(s) will be returned as a vector of numbers from 0 to 1.
+
+If `summarize` is `FALSE`, then the returned data frame will contain an additional column named `pair`, which will indicate which quantile pair each row corresponds to.
 
 ### Examples
 
 ```{r accuracy_examples}
-# A forecast with raw data
-fc1 <- create_forecast(dplyr::tibble(
-  time=1:5,
-  raw=list(0:10, 0:10, 0:10, 0:10, 0:10)
+# A forecast with unsummarized data
+fc1 <- create_forecast(data.frame(
+  time=rep(1:5, each=10),
+  val=rep(0:10, 5)
 ))
 
 # A forecast with quantile data
 fc2 <- create_forecast(dplyr::tibble(
   time=1:5,
-  quant_5=c(1,1,1,1,1),
-  quant_25=c(2.5,2.5,2.5,2.5,2.5),
-  quant_75=c(7.5,7.5,7.5,7.5,7.5),
-  quant_95=c(9.5,9.5,9.5,9.5,9.5)
+  val_q5=c(0.5,0.5,0.5,0.5,0.5),
+  val_q10=c(1,1,1,1,1,),
+  val_q25=c(2.5,2.5,2.5,2.5,2.5),
+  val_q75=c(7.5,7.5,7.5,7.5,7.5),
+  val_q90=c(9,9,9,9,9),
+  val_q95=c(9.5,9.5,9.5,9.5,9.5)
 ))
 
 # Another forecast with quantile data
-fc3 <- create_forecast(dplyr::tibble(
+fc3 <- create_forecast(data.frame(
     time=1:5,
-    quant_2.5=c(6,6,6,6,6),
-    quant_97.5=c(10,10,10,10,10)
+    val_q2.5=c(6,6,6,6,6),
+    val_q97.5=c(10,10,10,10,10)
 ))
 
-obs <- data.frame(time=1:5, obs=c(0, 2.4, 5, 9.5, 10))
+obs <- data.frame(time=1:5, val_obs=c(0, 2.4, 5, 9.5, 10))
 
-# Calculate accuracy from raw data (50% confidence interval)
-accuracy(fc1, obs, interval=c(25, 75))
+# Calculate accuracy from unsummarized data
+accuracy(fc1, obs, quant_pairs=c(25, 75))
 
-# Calculate accuracy using provided quantiles (90% confidence interval)
-accuracy(fc2, obs, interval=c(5, 95))
+# Calculate the accuracy for every quantile pair present
+accuracy(fc2, obs)
+
+# Calculate the accuracy for a subset of quantile pairs
+accuracy(fc2, obs, quant_pairs=list(c(5,95), c(25,75)))
+
+# Calculate accuracy for only one quantile pair
+accuracy(fc2, obs, quant_pairs=c(5, 95))
 
 # If `forecast_time` is NULL, every time point in the forecast will be scored
 accuracy(fc3, obs)
@@ -294,9 +307,12 @@ accuracy(fc3, obs)
 df <- accuracy(fc3, obs, summarize=FALSE)
 df
 mean(df$score)
+
+# `pair` column maps rows to quantile pairs
+accuracy(fc2, obs, summarize=FALSE)
 ```
 
-## Negative log score
+## Logarithmic score
 `neglog(fcst, obs, at=NULL, after=NULL, summarize=TRUE)` calculates the negative log score of a forecast.
 `fcst` must contain raw data with 2 or more realizations per row.
 It uses Kernel Density Estimation (KDE) to obtain a probability distribution for each point in time in the forecast.
