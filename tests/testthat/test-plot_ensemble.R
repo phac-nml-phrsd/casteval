@@ -27,6 +27,11 @@ test_that("plot_ensemble() works", {
     val=c(20,30,40)
   ))
 
+  fc4 <- create_forecast(data.frame(
+    time=c(1,1,1,2,2,2,3,3,3),
+    val=4:12
+  ))
+
   vdiffr::expect_doppelganger("ens0",
     plot_ensemble(NULL, fc0)
   )
@@ -45,5 +50,9 @@ test_that("plot_ensemble() works", {
 
   vdiffr::expect_doppelganger("ens4",
     plot_ensemble(NULL, fc3, alpha=0.9, colour="#33ccff")
+  )
+
+  vdiffr::expect_doppelganger("ens5",
+    plot_ensemble(NULL, fc4)
   )
 })
