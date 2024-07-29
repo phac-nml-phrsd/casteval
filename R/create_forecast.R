@@ -1,3 +1,6 @@
+# TODO warning if sim number counts are not all equal, and if time point counts are not all equal (two different checks)
+# TODO warning on leftover columns
+
 #' Create a forecast object
 #' 
 #' `create_forecast()` creates a forecast object given data and optional metadata.

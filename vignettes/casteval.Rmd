@@ -40,12 +40,12 @@ In particular:
 - *Forecast objects* contain metadata about a forecast, as well as a forecast data frame
 - *Observations data frames* contain observations data
 
-`{casteval}` contains tools which aid in the creation and manipulation of these objects, to make your life easier.
+`{casteval}` contains tools which aid in the creation and manipulation of these objects.
 These tools are described in later sections.
 
 ## Forecast data frames
 
-All forecast data frames contain a `time` column, which can contain either numbers, dates, or datetimes.
+All forecast data frames contain a `time` column, which can contain either numbers, dates, or date-times.
 In addition, they should contain either unsummarized or summarized forecast data, but not both.
 
 Unsummarized data is stored in a `val` column.
@@ -67,6 +67,7 @@ data.frame(
 ```
 
 Summarized data may be stored in the following columns:
+
 - Quantile columns must start with `val_q` followed by a number from 0 to 100, e.x. `val_50` would be the median
 - The mean column must be named `val_mean`
 
@@ -98,7 +99,7 @@ A forecast object is a list with the following fields:
 
 - `data`: a forecast data frame (see above)
 - `name`: (optional) the name of the forecast
-- `forecast_time`: (optional) the time that the forecast was created. Its type must match that of the times in `data`
+- `forecast_time`: (optional) the time that the forecast was created. Its type must match that of the time column in `data`
 
 Scoring functions will take `forecast_time` into account when scoring if it is provided.
 Plotting functions will use `name` to title the plots they produce.
@@ -134,7 +135,7 @@ All observations data frames contain a `time` column and a `val_obs` column.
 Similar to forecast data frames, `time` may be either numeric, dates, or date-times.
 `val_obs` must be numeric.
 
-An observations data frame may also contain a `score` column, which usually gets attached by a scoring function.
+An observations data frame may also contain a `score` column, which usually gets attached by a scoring function, and can be passed to some plotting functions.
 `score` can have many different types, but it is typically numeric or logical.
 
 ```{r obsdf}
@@ -144,7 +145,7 @@ data.frame(
   val_obs=c(50,60,55,57,59)
 )
 
-# An observations data frame that holds the score for some forecast
+# An observations data frame that holds scoring information for some forecast
 data.frame(
   time=lubridate::as_date(1:5),
   val_obs=c(50,60,55,57,59),
@@ -162,10 +163,11 @@ Its first argument is `dat`, which may be one of the following formats:
   - `time` is a vector of either numbers, dates, or date-times
   - `vals` is a list of numeric vectors, where each vector is the same length as `time`. Each vector corresponds to a realization in the forecast
 
-In addition, `create_forecast()` accepts the optional arguments `name` and `forecast_time`, which will be stored in the forecast object.
+In addition, `create_forecast()` accepts the optional arguments `name` and `forecast_time`, which will be stored in the forecast object as metadata.
 
 `create_forecast()` performs input validation on the provided parameters.
 For example, it checks that:
+
 - `forecast_time`'s type is consistent with `dat`
 - quantile values are logically possible (e.x. the median can't be less than the 25th percentile)
 - there are no conflicting rows (e.x. there can't be two rows with the same time providing the mean)
@@ -186,21 +188,23 @@ fc1 <- create_forecast(dat1, name="forecast 1", forecast_time=3)
 # the same data but formatted as a forecast data frame
 dat2 <- data.frame(
   time=rep(1:4, each=3),
-  sim=rep(1:4, time=3),
+  sim=rep(1:3, times=4),
   val=c(100, 200, 300, 102, 195, 301, 110, 197, 300, 108, 196, 302)
 )
 
 fc2 <- create_forecast(dat2, name="forecast 2", forecast_time=3)
 
 print(fc1)
-waldo::compare(fc1$data, fc2$data)
+
+# aside from the order of rows, the resulting forecast data frames are identical
+waldo::compare(arrange(fc1$data, time), fc2$data)
 
 # mean-and-quantiles forecast data
 dat3 <- data.frame(
   time=1:5,
   val_q2.5=c(100,103,104,105,102),
   val_mean=c(150,155,160,155,154),
-  val_97.5=c(200,200,2204,205,206)
+  val_q97.5=c(200,200,2204,205,206)
 )
 
 # note how we omit `forecast_time`
