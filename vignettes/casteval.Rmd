@@ -86,7 +86,7 @@ data.frame(
   time=1:5,
   val_q2.5=c(100,103,104,105,102),
   val_mean=c(150,155,160,155,154),
-  val_97.5=c(200,200,2204,205,206),
+  val_97.5=c(200,200,2204,205,206)
 )
 ```
 
@@ -148,7 +148,7 @@ data.frame(
 data.frame(
   time=lubridate::as_date(1:5),
   val_obs=c(50,60,55,57,59),
-  score=c(1.5, 6, 0, -1, 5, 6)
+  score=c(1.5, 0, -1, 5, 6)
 )
 ```
 
@@ -200,7 +200,7 @@ dat3 <- data.frame(
   time=1:5,
   val_q2.5=c(100,103,104,105,102),
   val_mean=c(150,155,160,155,154),
-  val_97.5=c(200,200,2204,205,206),
+  val_97.5=c(200,200,2204,205,206)
 )
 
 # note how we omit `forecast_time`
@@ -260,7 +260,7 @@ If `summarize` is `FALSE`, then the returned data frame will contain an addition
 ```{r accuracy_examples}
 # A forecast with unsummarized data
 fc1 <- create_forecast(data.frame(
-  time=rep(1:5, each=10),
+  time=rep(1:5, each=11),
   val=rep(0:10, 5)
 ))
 
@@ -268,7 +268,7 @@ fc1 <- create_forecast(data.frame(
 fc2 <- create_forecast(dplyr::tibble(
   time=1:5,
   val_q5=c(0.5,0.5,0.5,0.5,0.5),
-  val_q10=c(1,1,1,1,1,),
+  val_q10=c(1,1,1,1,1),
   val_q25=c(2.5,2.5,2.5,2.5,2.5),
   val_q75=c(7.5,7.5,7.5,7.5,7.5),
   val_q90=c(9,9,9,9,9),
