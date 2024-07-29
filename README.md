@@ -1,10 +1,19 @@
-An R package for automating forecast scoring/evaluation. Work in progress.
+An R package for automating forecast scoring/evaluation.
 
 # Installation
-TODO
+
+## With `renv`
+In an R session, run `renv::install("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")`
+
+## Without `renv`
+In an R session, run `install.packages("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")`
 
 # Usage
-TODO
+
+Put `library(casteval)` in your R script/interactive session to use the package.
+
+A vignette explaining how `{casteval}` works can be found [here](http://phrsd.pages.cscscience.ca/risk/casteval/articles/casteval.html).
+A function reference can be found [here](http://phrsd.pages.cscscience.ca/risk/casteval/reference/index.html).
 
 # Development
 
