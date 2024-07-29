@@ -53,3 +53,7 @@ test_that("bias() works", {
     dplyr::tibble(time=1:3, val_obs=c(10,10,10), score=c(-1, -1, -1))
   )
 })
+
+# TODO test summarizing/unsummarizing of raw, mean, and median formats
+# add output messages for whether using raw, mean, or median
+# test graphing of bias unsummarized scoring
