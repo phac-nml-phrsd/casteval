@@ -45,7 +45,7 @@
 #' accuracy(fc2, obs2, summarize=FALSE)
 accuracy <- function(fcst, obs, quant_pairs=NULL, summarize=TRUE) {
     validate_fcst_obs_pair(fcst, obs)
-    df <- filter_forecast_time(fcst$data, fcst$forecast_time)
+    fcst$data <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
     quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data)
     message(glue::glue("Scoring accuracy using quantile pairs {toString(quant_pairs)}"))

@@ -238,7 +238,7 @@ test_that("accuracy() quant works", {
       data.frame(time=1:5, val_obs=c(0, 2.4, 5, 9.5, 10)),
       list(c(25, 75))
     ),
-    2/5
+    2/3
   )
 })
 
