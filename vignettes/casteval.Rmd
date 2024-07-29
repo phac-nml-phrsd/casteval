@@ -85,7 +85,7 @@ data.frame(
 data.frame(
   time=1:5,
   val_q2.5=c(100,103,104,105,102),
-  val_mean=c(150,155,160,155,154)
+  val_mean=c(150,155,160,155,154),
   val_97.5=c(200,200,2204,205,206),
 )
 ```
@@ -152,146 +152,64 @@ data.frame(
 )
 ```
 
+# Creating forecast objects
 
-## Examples
+You can create forecast objects using `create_forecast()`.
+Its first argument is `dat`, which may be one of the following formats:
 
-The following are examples of valid forecast inputs to `{casteval}`:
+- A forecast data frame, as described above
+- A list with fields `time` and `vals`, where:
+  - `time` is a vector of either numbers, dates, or date-times
+  - `vals` is a list of numeric vectors, where each vector is the same length as `time`. Each vector corresponds to a realization in the forecast
 
-```{r input_formats}
-# Create some dates and date-times for convenience
-dates <- c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02"), lubridate::ymd("2024-01-03"))
-datetimes <- c(lubridate::ymd_hms("2024-02-01_12:00:00"),
-  lubridate::ymd_hms("2024-02-01_13:00:00"),
-  lubridate::ymd_hms("2024-02-01_14:00:00"))
+In addition, `create_forecast()` accepts the optional arguments `name` and `forecast_time`, which will be stored in the forecast object.
 
-## Single data frame format
+`create_forecast()` performs input validation on the provided parameters.
+For example, it checks that:
+- `forecast_time`'s type is consistent with `dat`
+- quantile values are logically possible (e.x. the median can't be less than the 25th percentile)
+- there are no conflicting rows (e.x. there can't be two rows with the same time providing the mean)
 
-# A forecast with dates and raw data points
-A <- data.frame(
-  time=dates,
-  raw=c(400, 450, 500)
-)
-A
-
-# A forecast with date-times and quartiles
-B <- data.frame(
-  time=datetimes,
-  quant_25=c(50, 60, 70),
-  quant_50=c(100, 110, 120),
-  quant_75=c(150, 160, 170)
-)
-B
-
-# A forecast with numeric times, the mean, and 95% confidence interval
-C <- data.frame(
-  time=c(1, 2, 3),
-  mean=c(1000, 900, 800),
-  quant_2.5=c(950, 850, 750),
-  quant_97.5=c(1050, 950, 850)
-)
-C
-
-# A forecast with raw data containing 3 realizations over 4 days
-# We use tibbles here to make entering the list-column easier
-time_vec <- 1:4
-realized_t1 <- c(100, 200, 300)
-realized_t2 <- c(102, 195, 301)
-realized_t3 <- c(110, 197, 300)
-realized_t4 <- c(108, 196, 302)
-D <- dplyr::tibble(
-  time=time_vec,
-  raw=list(realized_t1, realized_t2, realized_t3, realized_t4)
-)
-D
-
-## List of data frames format
-
-# A forecast with the same data as D, but with one data frame for each realization
-df1 = dplyr::tibble(time=1:4, raw=c(100, 102, 110, 108))
-df2 = dplyr::tibble(time=1:4, raw=c(200, 195, 197, 196))
-df3 = dplyr::tibble(time=1:4, raw=c(300, 301, 300, 302))
-E <- list(df1, df2, df3)
-E
-
-## Ensemble of realizations format
-
-# A forecast with the same data as D, but with one vector for each realization
-F <- list(
+```{r create_forecast}
+# forecast data with 4 time points and an ensemble of 3 simulations
+dat1 <- list(
   time=1:4,
-  ensemble=list(
+  vals=list(
     c(100, 102, 110, 108),
     c(200, 195, 197, 196),
     c(300, 301, 300, 302)
   )
 )
-F
-```
 
-*Note: The format of the `raw` column may change in future versions of the package*
+fc1 <- create_forecast(dat1, name="forecast 1", forecast_time=3)
 
-As demonstrated above, the `raw` column can store multiple realizations as a list of vectors, where each vector corresponds to a time point in the forecast.
-For instance, the `j`th value of the vector stored in row `i` of the input data frame would give the value of the `j`th realisation for time `i`. In this format, `{casteval}` expects that all vectors in such a list-column are the same length (missing values can be specified using `NA`).
+# the same data but formatted as a forecast data frame
+dat2 <- data.frame(
+  time=rep(1:4, each=3),
+  sim=rep(1:4, time=3),
+  val=c(100, 200, 300, 102, 195, 301, 110, 197, 300, 108, 196, 302)
+)
 
-# Passing forecasts to `{casteval}`
+fc2 <- create_forecast(dat2, name="forecast 2", forecast_time=3)
 
-We start by passing our forecast to `create_forecast()`, which accepts a forecast in any of the above formats, as well as several optional arguments.
-This function:
+print(fc1)
+waldo::compare(fc1$data, fc2$data)
 
-- Performs input validation
-- Infers the format of the given data
-- Converts the data into a standardized format
-- Returns the forecast and its metadata as a named list
+# mean-and-quantiles forecast data
+dat3 <- data.frame(
+  time=1:5,
+  val_q2.5=c(100,103,104,105,102),
+  val_mean=c(150,155,160,155,154),
+  val_97.5=c(200,200,2204,205,206),
+)
 
-The named list contains fields such as `$name` (the name of the forecast), `$forecast_time` (when the forecast was generated), and `$data`, which is a data frame containing the formatted forecast data.
-This named list can then be passed to any function in `{casteval}` which accepts a forecast.
+# note how we omit `forecast_time`
+fc3 <- create_forecast(
+  dat3,
+  name="forecast 3"
+)
 
-## Examples
-
-```{r create_forecast}
-# A forecast with a name
-fc1 <- create_forecast(A, name="Jan 1 to Jan 3 2024 forecast")
-
-# `name` and `forecast_time` are optional, and default to NULL
-fc2 <- create_forecast(B)
-
-# A forecast with a name and a forecast time
-# All data from before the forecast time will be ignored when scoring the forecast
-# The given forecast time must have the same type as the values in the `time` column
-fc3 <- create_forecast(C, name="Mean-and-quantiles forecast", forecast_time=2)
-
-# Metadata and data are easily accessible
-fc3$name
-fc3$forecast_time
-fc3$time_type
-fc3$data_types
-fc3$data
-
-# A forecast of 3 realizations over 4 days
-fc4 <- create_forecast(D)
-fc4$data
-
-# Same as fc4
-fc5 <- create_forecast(E)
-waldo::compare(fc4, fc5)
-
-# Same as fc4 
-fc6 <- create_forecast(F)
-waldo::compare(fc4, fc6)
-```
-
-As demonstrated above, raw data can be entered in multiple different formats, depending on which is most convenient for you.
-
-# Observations
-
-Observations are data frames with a `time` column and a numeric `obs` column.
-Note how observations are simply data frames, whereas forecasts are encapsulated in a named list.
-The reasoning for this is that forecasts contain certain metadata (such as `forecast_time`) which affect the way they are evaluated.
-
-*Note: This may change in future versions if it turns out that observations require metadata too, or if there is a better way to store metadata.*
-
-```{r observations}
-# An observations data frame with numeric times
-obs <- data.frame(time=1:3, obs=c(10,15,12))
+print(fc3)
 ```
 
 # Scoring
