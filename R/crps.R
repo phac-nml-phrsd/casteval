@@ -11,7 +11,7 @@
 #'
 #' @template fcst
 #' @param obs An observations data frame.
-#' 
+#' @template at_after
 #'
 #' @returns desc
 #' @export
