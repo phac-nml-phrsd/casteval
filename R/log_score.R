@@ -199,53 +199,6 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
 }
 
 
-#' Calcuate relative/absolute time specified by user
-#'
-#' Calculate the time according to the `at`/`after` params passed by the user.
-#' Helper for `log_score()` and `plot_KDE()`.
-#'
-#' @template fcst
-#' @param at (Optional) See `?log_score`
-#' @param after (Optional) See `?log_score`
-#'
-#' @returns A time of the same type as those in `fcst`
-#' @autoglobal
-#'
-#' @examples
-#' fc <- create_forecast(data.frame(time=1:3, val=4:6), forecast_time=2)
-#' # 1
-#' casteval:::calc_specified_time(fc, at=1)
-#' 
-#' # 2+1=3
-#' casteval:::calc_specified_time(fc, after=1)
-calc_specified_time <- function(fcst, at=NULL, after=NULL) {
-    if(!is.null(at) && !is.null(after)) { # mutually exclusive
-        stop("`at` and `after` parameters cannot both be provided")
-    }
-    
-    # only one provided, calculate time
-    if(!is.null(at)) {
-        validate_time(at, fcst)
-        t <- at
-    }
-    else if(!is.null(after)) {
-        if(!is.numeric(after)) {
-            stop("`after` not numeric")
-        }
-        if(is.null(fcst$forecast_time)) {
-            stop("`after` cannot be used if `fcst$forecast_time` is NULL")
-        }
-        t <- fcst$forecast_time + after
-    }
-    # neither provided, error
-    else {
-        stop("either `at` or `after` must be provided")
-    }
-
-    t
-}
-
-
 #' `log_score()` function factory
 #'
 #' Create a function wrapping `log_score()` with specified parameters.
