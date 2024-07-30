@@ -393,6 +393,28 @@ It searches for these three kinds of data:
 
 It uses the first kind that it can find to calculate the bias.
 
+## Scoring function factories
+
+To make the use of scoring functions easier, we provide the following function factories:
+
+- `make_accuracy(quant_pairs=NULL)` creates a function wrapping `accuracy()` with the given quantile pairs
+- `make_log_score(at=NULL, after=NULL, bw=NULL)` creates a function wrapping `log_score()` with the given parameters
+
+```{r scoring_factories}
+fc <- create_forecast(list(
+time=1:3,
+  vals=list(c(4,7,8), c(5,6,7), c(4,6,6))
+))
+obs <- data.frame(time=1:3, val_obs=5:7)
+
+acc <- make_accuracy(c(5,95))
+acc(fc, obs)
+plot_forecast(fc, obs, score=make_accuracy(c(25,75)))
+
+# use make_log_accuracy() to set binwidth
+plot_forecast(fc, obs, score=make_log_score(bw=0.5))
+```
+
 ## Defining your own scoring functions
 You are free to define your own scoring functions and use them just like `{casteval}`'s scoring functions.
 Like the functions described above, it should accept a forecast object `fcst`, an observations data frame `obs`, and possibly additional arguments.
