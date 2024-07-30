@@ -16,8 +16,8 @@ quantiles at each time point
 
 ✅ Includes multiple scoring methods
 
-✅ Provides a suite of visualiation tools to help assess forecast
-performance
+✅ Provides a suite of visualiation tools to help assess forecast and
+scoring performance
 
 ## Installation
 

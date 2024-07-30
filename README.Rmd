@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 `r emo::ji("white heavy check mark")` Includes multiple scoring methods
 
-`r emo::ji("white heavy check mark")` Provides a suite of visualiation tools to help assess forecast performance
+`r emo::ji("white heavy check mark")` Provides a suite of visualiation tools to help assess forecast and scoring performance
 
 ## Installation
 
