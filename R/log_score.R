@@ -7,13 +7,13 @@
 #'
 #' @template fcst
 #' @param obs An observations data frame.
+#' @template summarize
 #' @param at (Optional) A time (compatible with `fcst` and `obs`).
 #'  If specified, the score for this time point will be returned.
 #'  Mutually exclusive with `after`.
 #' @param after (Optional) A number. If specified, the score at
 #'  time `fcst$forecast_time + after` will be returned.
 #'  Mutually exclusive with `at`.
-#' @template summarize
 #' @param bw (Optional) The bandwidth for calculating the Kernel Density Estimation (see `?scoringRules::logs_sample`).
 #' If not provided, a bandwidth will automatically be calculated by `scoringRules::logs_sample()`.
 #'
@@ -45,7 +45,7 @@
 #'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   after=1
 #' )
-log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
+log_score <- function(fcst, obs, summarize=TRUE, at=NULL, after=NULL, bw=NULL) {
     # validate bw (mostly just make sure it isn't a vector with length >1)
     if(!(is.null(bw) || (is.numeric(bw) && length(bw)==1))) {
         stop("`bw` must be either NULL or a single number")

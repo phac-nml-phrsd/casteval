@@ -4,12 +4,17 @@
 \alias{log_score}
 \title{Compute logarithmic score for forecast}
 \usage{
-log_score(fcst, obs, at = NULL, after = NULL, summarize = TRUE, bw = NULL)
+log_score(fcst, obs, summarize = TRUE, at = NULL, after = NULL, bw = NULL)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
 \item{obs}{An observations data frame.}
+
+\item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
+If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
+containing the scores for each individual time point.
+This can be used by plotting functions to colour-code observations, for example.}
 
 \item{at}{(Optional) A time (compatible with \code{fcst} and \code{obs}).
 If specified, the score for this time point will be returned.
@@ -18,11 +23,6 @@ Mutually exclusive with \code{after}.}
 \item{after}{(Optional) A number. If specified, the score at
 time \code{fcst$forecast_time + after} will be returned.
 Mutually exclusive with \code{at}.}
-
-\item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
-If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
-containing the scores for each individual time point.
-This can be used by plotting functions to colour-code observations, for example.}
 
 \item{bw}{(Optional) The bandwidth for calculating the Kernel Density Estimation (see \code{?scoringRules::logs_sample}).
 If not provided, a bandwidth will automatically be calculated by \code{scoringRules::logs_sample()}.}

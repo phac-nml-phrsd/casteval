@@ -7,30 +7,30 @@ test_that("accuracy() validates", {
   )
 
   expect_error(
-    accuracy(fc, obs, "hi"),
+    accuracy(fc, obs, quant_pairs="hi"),
     "`quant_pairs` must be either NULL, pair of quantiles, or list of pairs of quantiles"
   )
 
   expect_error(
-    accuracy(fc, obs, list()),
+    accuracy(fc, obs, quant_pairs=list()),
     "`quant_pairs` is empty"
   )
 
   expect_error(
     accuracy(
-      fc, obs, list(c(20,80), c(60,40))
+      fc, obs, quant_pairs=list(c(20,80), c(60,40))
     ),
     "first quantile in pair must be less than second quantile in pair"
   )
 
   expect_error(
-    accuracy(fc, obs, numeric(0)),
+    accuracy(fc, obs, quant_pairs=numeric(0)),
     "quantile pair must have length 2"
   )
 
   expect_equal(
     accuracy(
-        fc, obs, list(c(2.5, 97.5))
+        fc, obs, quant_pairs=list(c(2.5, 97.5))
     ),
     1
   )
@@ -39,7 +39,7 @@ test_that("accuracy() validates", {
     accuracy(
         create_forecast(data.frame(time=1:3, val_q25=4:6, val_q75=7:9)),
         data.frame(time=1:3, val_obs=4:6),
-        list(c(2.5, 97.5))
+        quant_pairs=list(c(2.5, 97.5))
     ),
     "could not compute/obtain 2.5% quantile from data frame"
   )
@@ -62,7 +62,7 @@ test_that("accuracy() validates", {
       accuracy(
           create_forecast(data.frame(time=1:3, val_q2.5=4:6, val_q74=7:9)),
           data.frame(time=1:3, val_obs=4:6),
-          list(c(2.5, 97.5))
+          quant_pairs=list(c(2.5, 97.5))
       ),
       "2.5% quantile is unpaired"
     ),
@@ -71,7 +71,7 @@ test_that("accuracy() validates", {
 
   expect_error(
     accuracy(
-      fc, data.frame(time=4:6, val_obs=7:9), c(0.5,99.5)
+      fc, data.frame(time=4:6, val_obs=7:9), quant_pairs=c(0.5,99.5)
     ),
     "observations and forecast data share no time points"
   )
@@ -165,7 +165,7 @@ test_that("accuracy() raw values works", {
     accuracy(
       fc,
       data.frame(time=1:3, val_obs=c(5.1, 7.5, 11.5)),
-      list(c(25, 75), c(40,60), c(49,51))
+      quant_pairs=list(c(25, 75), c(40,60), c(49,51))
     ),
     c(1, 1/3, 0)
   )
@@ -174,7 +174,7 @@ test_that("accuracy() raw values works", {
     accuracy(
       fc,
       data.frame(time=1:3, val_obs=c(5, 7.4, 11.6)),
-      list(c(25, 75))
+      quant_pairs=list(c(25, 75))
     ),
     1/3
   )
@@ -183,7 +183,7 @@ test_that("accuracy() raw values works", {
     accuracy(
       fc,
       data.frame(time=1:3, val_obs=c(0, 7.4, 11.6)),
-      c(25, 75)
+      quant_pairs=c(25, 75)
     ),
     0
   )
@@ -192,7 +192,7 @@ test_that("accuracy() raw values works", {
     accuracy(
       create_forecast(dplyr::tibble(time=1:3, val=c(4,5,6))),
       data.frame(time=1:3, val_obs=c(4,5,7)),
-      c(25, 75)
+      quant_pairs=c(25, 75)
     ),
     2/3
   )
@@ -201,7 +201,7 @@ test_that("accuracy() raw values works", {
     accuracy(
       fc,
       data.frame(time=1:3, val_obs=c(4, 9, 13)),
-      c(0,100)
+      quant_pairs=c(0,100)
     ),
     2/3
   )
@@ -215,7 +215,7 @@ test_that("accuracy() quant works", {
     accuracy(
       fc,
       data.frame(time=1:3, val_obs=c(4, 201, 1000)),
-      list(c(25, 75), c(25, 50))
+      quant_pairs=list(c(25, 75), c(25, 50))
     ),
     c(2/3, 1/3)
   )
@@ -224,7 +224,7 @@ test_that("accuracy() quant works", {
     accuracy(
       fc,
       data.frame(time=1:3, val_obs=c(4, 201, 1000)),
-      c(25,50)
+      quant_pairs=c(25,50)
     ),
     1/3
   )
@@ -236,7 +236,7 @@ test_that("accuracy() quant works", {
         forecast_time=3
       ),
       data.frame(time=1:5, val_obs=c(0, 2.4, 5, 9.5, 10)),
-      list(c(25, 75))
+      quant_pairs=list(c(25, 75))
     ),
     2/3
   )
@@ -266,7 +266,7 @@ test_that("accuracy(..., summarize=FALSE) works", {
     accuracy(
       fc2,
       data.frame(time=1:3, val_obs=c(4, 201, 1000)),
-      list(c(25, 75), c(25, 50)),
+      quant_pairs=list(c(25, 75), c(25, 50)),
       summarize=FALSE
     ),
     data.frame(
@@ -284,8 +284,8 @@ test_that("accuracy(..., summarize=FALSE) works", {
         forecast_time=3
       ),
       data.frame(time=3:5, val_obs=c(0,5,10)),
-      quant_pairs=c(25, 75),
-      summarize=FALSE
+      summarize=FALSE,
+      quant_pairs=c(25, 75)
     ),
     data.frame(time=3:5, val_obs=c(0,5,10), score=c(FALSE,TRUE,FALSE), pair=rep(1,3))
   )
