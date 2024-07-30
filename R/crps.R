@@ -12,13 +12,14 @@
 #' @template fcst
 #' @param obs An observations data frame.
 #' @template at_after
+#' @template summarize
 #'
-#' @returns desc
+#' @template at_after_returns
 #' @export
 #' @autoglobal
 #'
 #' @examples
-#' 
+#' #TODO
 crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
 
 }

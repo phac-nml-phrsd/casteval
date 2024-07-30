@@ -13,7 +13,7 @@
 #' If not provided, a bandwidth will automatically be calculated by `scoringRules::logs_sample()`.
 #'
 #' @returns If `summarize` is `FALSE`,
-#'  a data frame containing times, raw data, observations, and scores for those times.
+#'  a data frame containing times, observations, and scores for those times.
 #'  Otherwise, the score at the time speficied by either `at` or `after`.
 #' @export
 #' @autoglobal
