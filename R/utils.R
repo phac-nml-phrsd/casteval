@@ -174,7 +174,10 @@ calc_specified_time <- function(fcst, at=NULL, after=NULL) {
     
     # only one provided, calculate time
     if(!is.null(at)) {
-        validate_time(at, fcst)
+        tryCatch(
+            validate_time(at, fcst),
+            error = \(e) stop("type of `at` must match type of forecast times")
+        ) 
         t <- at
     }
     else if(!is.null(after)) {
