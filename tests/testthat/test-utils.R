@@ -150,3 +150,37 @@ test_that("get_time_type() works", {
     "time column has unsupported type"
   )
 })
+
+test_that("calc_specified_time() works", {
+  fc <- create_forecast(data.frame(time=1:3, val=4:6), forecast_time=2)
+
+  expect_equal(calc_specified_time(fc, at=1), 1)
+  expect_equal(calc_specified_time(fc, after=1), 3)
+
+  expect_error(
+    calc_specified_time(fc, at=1, after=1),
+    "`at` and `after` parameters cannot both be provided"
+  )
+
+  expect_error(
+    calc_specified_time(fc, after=FALSE),
+    "`after` not numeric"
+  )
+
+  fc2 <- create_forecast(data.frame(time=1:3, val=4:6))
+
+  expect_error(
+    calc_specified_time(fc2, after=1),
+    "`after` cannot be used if `fcst\\$forecast_time` is NULL"
+  )
+
+  expect_error(
+    calc_specified_time(fc),
+    "either `at` or `after` must be provided"
+  )
+
+  expect_error(
+    calc_specified_time(fc, at=lubridate::as_date(1)),
+    "type of `at` must match type of forecast times"
+  )
+})
