@@ -238,7 +238,7 @@ The type of the `score` column is not necessarily numeric (for example, in `accu
 
 ## Accuracy score {#accuracy-score}
 
-`accuracy(fcst, obs, quant_pairs=NULL, summarize=TRUE)` calculates the proportion of observations that fall inside a quantile interval of the forecast data.
+`accuracy(fcst, obs, summarize=TRUE, quant_pairs=NULL)` calculates the proportion of observations that fall inside a quantile interval of the forecast data.
 
 If `fcts` contains summarized forecast data, accuracy will be calculated using the quantiles provided. 
 If `fcst` contains raw forecast data, you can use the `quant_pairs` argument to specify a pair of quantiles (_e.g._, `c(2.5, 97.5)`) or a list of pairs of quantiles (_e.g._, `list(c(2.5, 97.5), c(10, 90))`) against which to calculate accuracy. 
@@ -307,7 +307,7 @@ accuracy(fc2, obs, summarize=FALSE)
 
 ## Logarithmic score
 
-`log_score(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL)` calculates the (positive) log score of a forecast.
+`log_score(fcst, obs, summarize=TRUE, at=NULL, after=NULL, bw=NULL)` calculates the (positive) log score of a forecast.
 It uses [Kernel Density Estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation) (KDE) to obtain a probability distribution of forecasted values at each point in time in the forecast.
 If `f(x)` is the estimated probability distribution and `x_0` is the corresponding observation, then the log score at that point in time is `log(f(x_0))` (`log()` is the natural logarithm).
 
