@@ -4,12 +4,17 @@
 \alias{accuracy}
 \title{Get accuracy from quantiles}
 \usage{
-accuracy(fcst, obs, quant_pairs = NULL, summarize = TRUE)
+accuracy(fcst, obs, summarize = TRUE, quant_pairs = NULL)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
 \item{obs}{An observations data frame.}
+
+\item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
+If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
+containing the scores for each individual time point.
+This can be used by plotting functions to colour-code observations, for example.}
 
 \item{quant_pairs}{(Optional) A list of pairs of numbers between 0 and 100,
 or a single pair of numbers between 0 and 100.
@@ -20,11 +25,6 @@ ordered from widest to narrowest (e.x. the 25\% and 75\% quantiles are symmetric
 If \code{summarize} is \code{FALSE}, an additional column named \code{pair} will indicate which pair of quantiles each row represents.
 If \code{summarize} is \code{TRUE}, the output will be a vector with the same length as \code{quant_pairs},
 containing the respective score for each pair.}
-
-\item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
-If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
-containing the scores for each individual time point.
-This can be used by plotting functions to colour-code observations, for example.}
 }
 \value{
 A number from 0 to 1,

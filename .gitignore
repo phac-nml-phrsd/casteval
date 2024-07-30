@@ -11,3 +11,4 @@ public/
 /Meta/
 data-raw/test.R
 tests/vdiffr.Rout.fail
+/public/

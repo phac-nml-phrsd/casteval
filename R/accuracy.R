@@ -6,6 +6,7 @@
 #'
 #' @template fcst
 #' @param obs An observations data frame.
+#' @template summarize
 #' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100,
 #' or a single pair of numbers between 0 and 100.
 #' If provided, the score for each corresponding pairs of quantiles will be calculated.
@@ -15,7 +16,6 @@
 #' If `summarize` is `FALSE`, an additional column named `pair` will indicate which pair of quantiles each row represents.
 #' If `summarize` is `TRUE`, the output will be a vector with the same length as `quant_pairs`,
 #' containing the respective score for each pair.
-#' @template summarize
 #' 
 #' @returns A number from 0 to 1,
 #'  the rate at which the observations were inside the specified quantile interval
@@ -43,7 +43,7 @@
 #' 
 #' # return a data frame with a `time`, `pair`, `val_obs`, and `score` columns
 #' accuracy(fc2, obs2, summarize=FALSE)
-accuracy <- function(fcst, obs, quant_pairs=NULL, summarize=TRUE) {
+accuracy <- function(fcst, obs, summarize=TRUE, quant_pairs=NULL) {
     validate_fcst_obs_pair(fcst, obs)
     fcst$data <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
