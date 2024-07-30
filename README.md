@@ -32,21 +32,24 @@ The simplest way to install `{casteval}` is to:
 
 See `vignette("casteval")` to get started.
 
-## Development
+## For developers
 
 ### `renv`
 
-`renv` tries to intelligently discover dependencies for package projects
-by looking at the fields in the DESCRIPTION file that are relevant for
-users, like `Imports` and `Depends` (see
+This project uses [`renv`](https://rstudio.github.io/renv/index.html) to
+manage dependencies.
+
+For R package projects, `renv` tries to intelligently discover
+dependencies by looking at the fields in the DESCRIPTION file that are
+relevant for users, like `Imports` and `Depends` (see
 `renv::settings$package.dependency.fields()`). For developers, the
 `Suggests` field can be equally important to track as it can include
 packages used in the process of development but not in the actual source
-code of the package, like `devtools`, `covr`. Our project’s CI pipeline
-relies on both of these packages, and the only reference it has for
-which packages to install/load when running is from the `renv` lockfile.
-Thus, it’s important for us to track our development packages with
-`renv`.
+code of the package, like `devtools`, `covr`. This project’s GitLab CI
+pipeline relies on both of these packages, and the only reference it has
+for which packages to install/load when running is from the `renv`
+lockfile. Thus, it’s important for us to track our development packages
+with `renv`.
 
 The `renv` FAQ page [recommends tracking development dependencies in
 `Suggests`](https://rstudio.github.io/renv/articles/faq.html#how-should-i-handle-development-dependencies).
