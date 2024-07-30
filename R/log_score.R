@@ -249,3 +249,24 @@ get_specified_time <- function(fcst, at=NULL, after=NULL) {
 
     t
 }
+
+
+#' `log_score()` function factory
+#'
+#' Create a function wrapping `log_score()` with specified parameters.
+#'
+#' @param at See `?log_score`
+#' @param after See `?log_score`
+#' @param bw See `?log_score`
+#'
+#' @returns A function wrapping `log_score()` with the given parameters
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+make_log_score <- function(at=NULL, after=NULL, bw=NULL) {
+    function(...) {
+        log_score(..., at=at, after=after, bw=bw)
+    }
+}
