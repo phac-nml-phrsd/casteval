@@ -10,7 +10,7 @@ make_accuracy(quant_pairs)
 \item{quant_pairs}{See \code{?accuracy}}
 }
 \value{
-desc
+A function wrapping \code{accuracy()} with the given quantile pairs
 }
 \description{
 Given the desired quantile pairs,

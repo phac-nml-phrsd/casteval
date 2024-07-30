@@ -424,7 +424,7 @@ plot_forecast(fc, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)))
 # Create some observations
 obs <- data.frame(time=1:10, val_obs=c(1,4,8,10,11,8,5,3,3,2))
 
-# Plot them over the forecast and its confidence intervals
+# Plot them over the forecast and its quantile intervals
 plot_forecast(fc, obs=obs, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)))
 
 # Colour code points using `log_score()`
@@ -433,19 +433,19 @@ plot_forecast(fc, obs=obs, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)))
 plot_forecast(fc, obs=obs, score=log_score, quant_pairs = c(2.5, 97.5))
 ```
 
-If you need to pass additional arguments to a scoring function, it needs to be wrapped so that it only accepts `fcts`, `obs`, and `summarize`. For example, `accuracy()` needs a quantile pair specified, so we can wrap it as follows:
+If you need to pass additional arguments to a scoring function, it needs to be wrapped so that it only accepts `fcts`, `obs`, and `summarize`. `{casteval}` contains the utilities `make_accuracy()` and `make_log_score()` to easily make wrapped scoring functions. For example, `accuracy()` needs a quantile pair specified, so we can do:
 
 ```{r plot_forecast_examples2}
 # We use a function factory to wrap accuracy() (see `?make_accuracy`)
 quant <- c(5,95)
-acc <- make_accuracy(quant)
+acc90 <- make_accuracy(quant)
 
 # Identify the observations inside the 5%-95% quantile interval
-pp <- plot_forecast(fc, obs=obs, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)), score=acc)
+pp <- plot_forecast(fc, obs=obs, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)), score=acc90)
 pp
 ```
 
-Note that since `plot_forecast()` returns a `ggplot2::ggplot` object, you can further customize the plot to suit your application:
+Since `plot_forecast()` returns a `ggplot2::ggplot` object, you can further customize the plot to suit your application:
 
 ```{r plot_forecast_examples3}
 (pp

@@ -108,7 +108,7 @@ accuracy_help <- function(fcst, obs, pair) {
 #'
 #' @param quant_pairs See `?accuracy`
 #'
-#' @returns desc
+#' @returns A function wrapping `accuracy()` with the given quantile pairs
 #' @export
 #' @autoglobal
 #'

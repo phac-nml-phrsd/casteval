@@ -21,12 +21,7 @@ scoring performance
 
 ## Installation
 
-The simplest way to install `{casteval}` is to:
-
-1.  Install the `devtools` package
-2.  Clone the `{casteval}` repository locally
-3.  Open an R session at the top level of the `casteval` repo
-4.  Execute `devtools::install()`
+The simplest way to install `{casteval}` is to use `install.packages("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")`
 
 ## Usage
 
