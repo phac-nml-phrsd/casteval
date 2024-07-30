@@ -14,6 +14,10 @@ utils::globalVariables(c(
   "val_obs", # <bias>
   "time", # <bias>
   "score", # <bias>
+  "time", # <crps>
+  "val", # <crps>
+  "val_obs", # <crps>
+  "score", # <crps>
   "time", # <log_score>
   "val", # <log_score>
   "val_obs", # <log_score>

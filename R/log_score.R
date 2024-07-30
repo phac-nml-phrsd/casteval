@@ -12,9 +12,7 @@
 #' @param bw (Optional) The bandwidth for calculating the Kernel Density Estimation (see `?scoringRules::logs_sample`).
 #' If not provided, a bandwidth will automatically be calculated by `scoringRules::logs_sample()`.
 #'
-#' @returns If `summarize` is `FALSE`,
-#'  a data frame containing times, observations, and scores for those times.
-#'  Otherwise, the score at the time speficied by either `at` or `after`.
+#' @template at_after_returns
 #' @export
 #' @autoglobal
 #'

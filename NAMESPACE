@@ -3,6 +3,7 @@
 export(accuracy)
 export(bias)
 export(create_forecast)
+export(crps)
 export(log_score)
 export(make_accuracy)
 export(make_log_score)
