@@ -390,7 +390,7 @@ If your scoring function returns a score for each observation (in [the same way 
 # Visualize forecast evaluation {#visualize-forecast-evaluation}
 
 `{casteval}` provides plotting functions which allow you to visualize your forecasts, observations, and sometimes scores.
-Several modular functions (`plot_ensemble()`, `plot_observations()`, `plot_quantile_intervals()`) implement individual plotting functionality, while the more user-friendly `plot_forecast()` combines them all.
+Several modular functions (`plot_ensemble()`, `plot_observations()`, `plot_quant_intervals()`) implement individual plotting functionality, while the more user-friendly `plot_forecast()` combines them all.
 We describe these functions below.
 
 ## Plot a forecast
