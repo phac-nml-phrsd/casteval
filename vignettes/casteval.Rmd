@@ -219,20 +219,20 @@ data.frame(
 
 - `fcst`: a [forecast object](#forecast-object)
 - `obs`: an [observations data frame](#observations-data-frame)
-- Additional arguments specific to particular scoring functions, such as [the `summarise` flag](#summarise-flag)
+- Additional arguments specific to particular scoring functions, such as [the `summarize` flag](#summarize-flag)
 
 In order for scoring to be possible, `fcst` and `obs` must use the same `time` type. If `fcst` or `obs` contain times not contained by the other, these times will be ignored when scoring.
 
 If the forecast object includes a forecast date, then all data prior to `fcst$forecast_time` will be ignored when scoring.
 
-### The `summarize` flag {#summarise-flag}
+### The `summarize` flag {#summarize-flag}
 
 Many scoring functions calculate intermediate scores for each time point, and then select/combine those scores in order to return a single value.
 These functions accept an optional `summarize` parameter, which is a boolean.
 
 If `summarize=TRUE` (the default), the scoring function will usually return the score as a single number^[One exception is `accuracy()`, which returns a vector of numbers if a list of quantile pairs is provided, as expained [below](#accuracy-score)]. 
 
-If `summarise=FALSE`, the scoring function will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point that was scored.
+If `summarize=FALSE`, the scoring function will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point that was scored.
 The type of the `score` column is not necessarily numeric (for example, in `accuracy()`, it is logical in this case instead).
 
 ## Accuracy score {#accuracy-score}
@@ -385,7 +385,7 @@ It uses the first of these that it can find to calculate the bias.
 
 You can define your own scoring functions and use them just as you would `{casteval}`'s built-in scoring functions.
 Like the functions described above, it should accept a forecast object `fcst`, an observations data frame `obs`, and possibly additional arguments.
-If your scoring function returns a score for each observation (in [the same way that `summarize=FALSE` does](#summarise-flag) for the functions above), then the plotting functions can readily use this added information when visualizing forecast scores (discussed further below).
+If your scoring function returns a score for each observation (in [the same way that `summarize=FALSE` does](#summarize-flag) for the functions above), then the plotting functions can readily use this added information when visualizing forecast scores (discussed further below).
 
 # Visualize forecast evaluation {#visualize-forecast-evaluation}
 
