@@ -7,7 +7,7 @@
 filter_forecast_time(df, forecast_time)
 }
 \arguments{
-\item{df}{The forecast data frame. See \code{create_forecast()} for details}
+\item{df}{The forecast data frame. See \code{?create_forecast} for details}
 
 \item{forecast_time}{Either NULL or a time of the same type as the values in \code{dat$time}.
 If non-NULL, all rows with time prior to \code{forecast_time} will be removed from \code{dat}.}
@@ -20,9 +20,9 @@ Removes rows from forecast data frame which should not be scored,
 i.e. the data generated for dates/times prior to when the forecast was created.
 }
 \examples{
-# data.frame(time=5:10, raw=15:20)
-casteval:::filter_forecast_time(data.frame(time=1:10, raw=11:20), 5)
+# data.frame(time=5:10, val=15:20)
+casteval:::filter_forecast_time(data.frame(time=1:10, val=11:20), 5)
 
 # unchanged
-casteval:::filter_forecast_time(data.frame(time=1:10, raw=11:20), NULL)
+casteval:::filter_forecast_time(data.frame(time=1:10, val=11:20), NULL)
 }

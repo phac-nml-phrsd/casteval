@@ -9,3 +9,5 @@ inst/doc
 /doc/
 /Meta/
 data-raw/test.R
+tests/vdiffr.Rout.fail
+/public/

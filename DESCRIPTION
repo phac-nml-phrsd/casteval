@@ -1,6 +1,6 @@
 Package: casteval
 Title: Modular tools for scoring and comparing infectious disease forecasts
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
     person("Daniel", "Yu", , "daniel.yu@phac-aspc.gc.ca", role = c("aut", "cre")),
     person("Irena", "Papst", , "irena.papst@phac-aspc.gc.ca", role = c("aut"))
@@ -23,18 +23,19 @@ Suggests:
     DT,
     htmltools,
     vdiffr,
-    readr
+    readr,
+    emo
 Config/testthat/edition: 3
 Imports: 
     dplyr,
-    forcats,
     ggplot2,
+    glue,
     lubridate,
+    magrittr,
     purrr,
     scoringRules,
     stats,
-    stringr,
-    tidyr
+    stringr
 Config/roxyglobals/filename: globals.R
 Config/roxyglobals/unique: FALSE
 VignetteBuilder: knitr

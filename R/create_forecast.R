@@ -1,230 +1,156 @@
-#' Create a forecast
-#'
+# TODO warning if sim number counts are not all equal, and if time point counts are not all equal (two different checks)
+# TODO warning on leftover columns
+
+#' Create a forecast object
+#' 
 #' `create_forecast()` creates a forecast object given data and optional metadata.
 #' It accepts a variety of forecast formats as input and intelligently converts them into a standard format.
 #'
-#' @param dat Forecast data. Currently, the following formats for `dat` are supported:
-#' - A single data frame containing raw or summary data.
-#' - A list of data frames each containing raw data.
-#' - A named list containing a numeric vector `time` and a list of vectors `ensemble`.
-#' Each vector corresponds to a realization in a forecast ensemble.
-#'  The `time` vector and `ensemble` vectors must all have the same length.
+#' @param dat Forecast data. It can be in one of the following formats:
+#' - A data frame containing forecast data
+#' - A named list with a `time` field (vector of times) and a `vals` field (list of realization vectors).
+#'  Each of the vectors in `vals` must have the same length as `time`
 #' 
-#' All data frames in `dat` must additionally have a `time` column containing either integers, dates, or date-times.
-#' 
-#' Raw data columns should be named `raw`, and should contain numeric vectors of length 1 or more.
-#' The lengths of the vectors must all be the same.
-#' 
-#' Summary data columns may be named `mean`, or `quant_` followed by a number from 0 to 100 (e.x. `quant_2.5`, `quant_50`, etc.).
+#' In the first option above, the data frame should contain:
+#' - A `time` column
+#' - (Optional) a `sim` column, containing simulation numbers for raw data
+#' - (Optional) a `val` column, containing raw data.
+#'  If `sim` is present then `val` must be present as well.
+#' - (Optional) columns starting with `val_q` followed by a number from 0 to 100, containing quantile data
+#' - (Optional) a `val_mean` column, containing mean data
 #'
-#' See below for examples.
+#' Times can be either numeric, dates, or date-times. All data must be numeric.
+#' `sim` must also be numeric if present.
 #' 
-#' See [get_format()] for further details on data frame formatting.
-#' 
-#' @param name (Optional) A string specifying the name of the forecast/model.
+#' @param name (Optional) A string specifying the name of the forecast
 #' @param forecast_time (Optional) An integer, date, or date-time specifying when the forecast was created.
 #'  Its type should match the type of values in the `time` column(s) of `data`
 #'  If provided, this forecast will be scored only using data corresponding to dates/times greater than or equal to `forecast_time`.
 #'  Additionally, plots of this forecast may graphically distinguish between values to the left and right of `forecast_time`.
 #' 
-#' @returns A named list containing the forecast and its metadata.
-#'  The (possibly processed) data frame is stored in `$data`.
-#'  The name and forecast time are stored in `$name` and `$forecast_time`.
-#'  The type of the time column (one of "date", "date-time", or "numeric") is stored in `$time_type`
-#'  The types of the data columns (a character vector containing "mean", "quant", and/or "raw") are stored in `$data_types`
+#' @returns A named list with fields `data`, `name`, `forecast_time`.
+#' `data` is a data frame containing forecast data.
+#' `name` and `forecast_time` are the same as the parameters passed to `create_forecast()`
 #' @export
+#' @autoglobal
 #'
 #' @examples
 #' # forecast with numeric times and raw data
-#' create_forecast(data.frame(time=1:3, raw=10:12), name="a forecast", forecast_time=2)
+#' create_forecast(data.frame(time=1:3, val=10:12), name="a forecast", forecast_time=2)
 #' 
 #' # forecast with dates and mean-and-quantiles data
 #' create_forecast(
 #'   data.frame(
 #'     time=c(lubridate::ymd("2024-01-01"), lubridate::ymd("2024-01-02")),
-#'     mean=10:11, quant_2.5=5:6, quant_97.5=15:16
+#'     val_mean=10:11, val_q2.5=5:6, val_q97.5=15:16
 #'   ),
 #'   name="another forecast"
 #' )
-#'
-#' # an ensemble of 3 realizations, each represented by a data frame
-#' create_forecast(list(
-#'   dplyr::tibble(time=1:5,raw=6:10),
-#'   dplyr::tibble(time=2:6,raw=7:11),
-#'   dplyr::tibble(time=3:7,raw=8:12)
-#' ))
 #' 
 #' # an already-combined ensemble
-#' create_forecast(dplyr::tibble(time=1:2, raw=list(10:15, 20:25)))
+#' create_forecast(dplyr::tibble(time=c(1,1,1,1,1,2,2,2,2,2), val=c(20,21,22,23,24,10,11,12,13,14)))
 #' 
-#' # an ensemble of 4 realizations, each represented by a vector
+#' # an already-combined ensemble with simulation numbers
+#' create_forecast(dplyr::tibble(
+#'   time=c(1,1,1,1,1,2,2,2,2,2),
+#'   sim=c(1,2,3,4,5,1,2,3,4,5),
+#'   val=c(20,21,22,23,24,10,11,12,13,14)
+#' ))
+#' 
+#' # an ensemble of 4 realizations, each represented by a vector in `vals`
 #' create_forecast(list(
 #'   time=1:3,
-#'   ensemble=list(4:6, 7:9, 10:12, 13:15)
+#'   vals=list(4:6, 7:9, 10:12, 13:15)
 #' ))
 create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
-    # TODO third option where you provide a list of vertical vectors instead of list of data frames)
-    # TODO support even more input data formats
-    # TODO consider changing the format so that each realization is its own column
-    # TODO update vignette
-    # TODO detect lists that should be vectors and convert them to vectors
+    # TODO grouping & corresponding input formats
+    # TODO warn about extra columns
 
-    ## Figure out the format of `dat` and dispatch the corresponding helper function
+    #TODO messages & quiet mode
 
-    # we check for data frame first since data frames are also lists
-    if(is.data.frame(dat)) { # A single data frame
-        forecast <- create_forecast_single(dat, name, forecast_time)
+    #check quant symmetry
+    if(is.data.frame(dat)) {
+        validate_data_frame(dat)
+        df <- dat
     }
     
     else if(is.list(dat)) {
-        if(length(names(dat)) > 0) {
-            # time + ensemble
-            if("time" %in% names(dat) && "ensemble" %in% names(dat)) {
-                forecast <- create_forecast_ensemble(dat, name, forecast_time)
-            }
-            else {
-                stop("expected `time` and `ensemble` to be in `dat`")
-            }
+        if("time" %in% names(dat) && "vals" %in% names(dat)) {
+            df <- create_forecast_ensemble(dat$time, dat$vals)
+        } else {
+            stop("`dat` list must contain `time` and `vals` fields")
         }
-
-        else { # A list of data frames, to be combined.
-            forecast <- create_forecast_multiple(dat, name, forecast_time)
-        }
-    } else {
-        # TODO figure out the vignette command and put it in the message
-        stop("`dat` has invalid type. See ?create_forecast() or vignette for proper usage")
     }
 
-    # TODO sort the rows by time?
-
-    # check forecast_time type consistency
-    if(!is.null(forecast$forecast_time)) {
-        validate_time(forecast$forecast_time, forecast)
+    else {
+        stop("`dat` has invalid type. See `?create_forecast` or `vignette(topic='casteval', package='casteval')` for proper usage")
     }
 
-    forecast
+    # TODO? sort rows by time, maybe it will improve performance
+
+    # check time type compatibility
+    fcst <- list(name=name, forecast_time=forecast_time, data=df)
+    if(!is.null(fcst$forecast_time)) {
+        validate_time(fcst$forecast_time, fcst)
+    }
+
+    # warn if unpaired quantiles that aren't the median
+    quants <- get_quant_percentages(df)
+    unpaired <- pair_quantiles(quants)$unpaired
+    unpaired <- unpaired[unpaired != 50]
+    if(length(unpaired) > 0) {
+        warning(glue::glue("{unpaired[[1]]}% quantile is unpaired"))
+    }
+
+    fcst
 }
 
 
-#' Create forecast from single data frame
-#'
-#' Helper for `create_forecast()`.
-#'
-#' @param df A data frame
-#' @param name A string
-#' @param forecast_time A number, date, or date-time
-#'
-#' @returns A forecast object
-#' @autoglobal
-#'
-#' @examples
-#' # See `create_forecast()`
-create_forecast_single <- function(df, name, forecast_time) {
-    forecast <- list(name=name, forecast_time=forecast_time)
-
-    # validate data frame & get its format
-    fmt <- get_format(df)
-    # store the format as metadata
-    forecast$time_type <- fmt$time_type
-    forecast$data_types <- fmt$data_types
-    forecast$data <- df
-    forecast
-}
-
-
-#' Create forecast from multiple data frames
-#'
-#' Helper for `create_forecast()`.
-#'
-#' @param dfs A list of data frames
-#' @param name A string
-#' @param forecast_time A number, date, or date-time
-#'
-#' @returns A forecast object
-#' @autoglobal
-#'
-#' @examples
-#' # See `create_forecast()`
-create_forecast_multiple <- function(dfs, name, forecast_time) {
-    forecast <- list(name=name, forecast_time=forecast_time)
-
-    if(length(dfs) == 0) {
-        stop("list of data frames is empty")
-    }
-
-    if(!all(as.logical(purrr::map(dfs, is.data.frame)))) {
-        stop("received list containing non-data-frames")
-    }
-
-    # validate data frames & get their formats
-    fmts <- dfs |> purrr::map(~ get_format(.x))
-
-    if((fmts |> purrr::map(~ .x$time_type) |> unique() |> length()) > 1) {
-        stop("all data frames must have same time type")
-    }
-
-    if(!all(as.logical(purrr::map(fmts, ~ "raw" %in% .x$data_types)))) {
-        stop("all data frames must contain raw data")
-    }
-
-    forecast$time_type <- fmts[[1]]$time_type
-    forecast$data_types <- "raw"
-    forecast$data <- combine_data_frames(dfs)
-    forecast
-}
+# TODO support a format with a list of vectors for each time point
 
 
 #' Create forecast from time vector and ensemble of realizations
 #'
 #' Helper for `create_forecast()`.
 #'
-#' @param dat A named list containing names `time` and `ensemble`
-#' @param name A string
-#' @param forecast_time A number, date, or date-time
+#' @param time A vector of times
+#' @param vals A list of vectors of values.
+#'  Each vector corresponds to a realization which will be assigned a simulation number.
 #'
-#' @returns A forecast object
+#' @returns A forecast data frame
 #' @autoglobal
 #'
 #' @examples
-#' # See `create_forecast()`
-create_forecast_ensemble <- function(dat, name, forecast_time) {
-    forecast <- list(name=name, forecast_time=forecast_time)
-    
-    ## do input validation
-    tm <- dat$time
-    ens <- dat$ensemble
+#' # See `?create_forecast`
+create_forecast_ensemble <- function(time, vals) {
+    ## validate `time` and `vals`
 
-    if(!is.numeric(tm)) {
-        stop("`dat$time` must be numeric vector")
-    }
+    validate_time_column(time)
 
-    if(!is.list(ens)) {
-        stop("`dat$ensemble` must be list")
-    }
-
-    if(length(tm) == 0) {
+    if(length(time) == 0) {
         stop("`dat$time` is empty")
     }
-
-    if(length(ens) == 0) {
-        stop("`dat$ensemble` is empty")
+    
+    if(!is.list(vals)) {
+        stop("`dat$vals` must be a list")
     }
 
-    if(!all(as.logical(purrr::map(ens, is.numeric)))) {
-        stop("`dat$ensemble` must be list of numeric vectors")
+    if(length(vals) == 0) {
+        stop("`dat$vals` is empty")
     }
 
-    lens <- ens |> purrr::map(length) |> as.numeric()
-    if(any(length(tm) != lens)) {
-        stop("all vectors in `dat$ensemble` must have the same length as `dat$time`")
+    if(!all(as.logical(purrr::map(vals, is.numeric)))) {
+        stop("`dat$vals` must be list of numeric vectors")
     }
 
-    # transpose list of vectors
-    raw <- ens |> purrr::list_transpose() |> purrr::map(as.numeric)
-    # build data frame
-    df <- dplyr::tibble(time=tm, raw=raw)
-    forecast$time_type <- get_time_type(tm)
-    forecast$data_types <- "raw"
-    forecast$data <- df
-    forecast
+    lens <- vals |> purrr::map(length) |> as.numeric()
+    if(any(length(time) != lens)) {
+        stop("all vectors in `dat$vals` must have the same length as `dat$time`")
+    }
+
+    # create a data frame from each vector in vals, give them each a unique sim number, then bind them together
+    vals |> purrr::imap(\(val, i) data.frame(time=time, sim=i, val=val)) |>
+        dplyr::bind_rows()
 }
+
+# TODO filter out NAs in forecast data and observations

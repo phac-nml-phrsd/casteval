@@ -7,24 +7,24 @@
 get_quantile(df, perc)
 }
 \arguments{
-\item{df}{A forecast data frame. It should contain raw and/or quantile data.}
+\item{df}{A forecast data frame. It should contain raw or quantile data.}
 
 \item{perc}{A percentage, from 0 to 100.}
 }
 \value{
-A numeric vector with one entry for each row in \code{df}.
+A data frame with a \code{time} column and a \code{quant} column, containing the requested quantile data
 }
 \description{
 Given a forecast data frame, compute quantiles from raw data or existing quantile columns,
 depending on what is present.
 }
 \examples{
-df1 <- dplyr::tibble(time=1:3, quant_50=c(1000,2000,3000), raw=list(4:6, 7:9, 10:12))
-df2 <- dplyr::select(df1, time, quant_50)
+df1 <- data.frame(time=rep(1:3,each=3), sim=rep(1:3, 3), val=c(4:6, 7:9, 10:12))
+df2 <- data.frame(time=1:3, val_q50=c(1000, 2000, 3000))
 
 # c(5, 8, 11)
 casteval:::get_quantile(df1, 50)
 
-# c(1000, 3000, 3000)
+# c(1000, 2000, 3000)
 casteval:::get_quantile(df2, 50)
 }

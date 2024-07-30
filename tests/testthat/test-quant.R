@@ -1,73 +1,145 @@
 test_that("get_quant_percentages() works", {
   expect_equal(
-    get_quant_percentages(data.frame(quant_0=0, quant_2.5=1, quant_50=2, quant_97.5=3, quant_100=4)),
+    get_quant_percentages(data.frame(val_q0=0, val_q2.5=1, val_q50=2, val_q97.5=3, val_q100=4)),
     c(0, 2.5, 50, 97.5, 100)
   )
 })
 
 test_that("get_quant_col() works", {
   expect_equal(
-    get_quant_col(data.frame(quant_2.5=1:10, quant_50=11:20), 2.5),
+    get_quant_col(data.frame(val_q2.5=1:10, val_q50=11:20), 2.5),
     1:10
   )
 
   expect_equal(
-    get_quant_col(data.frame(quant_2.5=1:10, quant_50=11:20), 50),
+    get_quant_col(data.frame(val_q2.5=1:10, val_q50=11:20), 50),
     11:20
   )
 
   expect_equal(
-    get_quant_col(dplyr::tibble(quant_2.5=as.list(1:10), quant_50=as.list(11:20)), 50),
+    get_quant_col(dplyr::tibble(val_q2.5=as.list(1:10), val_q50=as.list(11:20)), 50),
     11:20
   )
 })
 
 test_that("quant_name() works", {
-  expect_equal(quant_name(50), "quant_50")
-  expect_equal(quant_name(0), "quant_0")
-  expect_equal(quant_name(100), "quant_100")
-  expect_equal(quant_name(2.5), "quant_2.5")
-  expect_equal(quant_name(1.2345), "quant_1.2345")
-})
-
-test_that("raw2quant() works", {
-  expect_error(raw2quant(list(c(1,2,NA),4:6)), "raw data contains NA values")
-  expect_error(raw2quant(c(1,NA,3)), "raw data contains NA values")
-  expect_error(raw2quant(list(1, NA, 3), "raw data contains NA values"))
-  expect_equal(raw2quant(list(), 50), numeric(0))
-  expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 50), c(2, 2, 4.5, 9))
-  expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 0), c(1, 2, 3, 7))
-  expect_equal(raw2quant(list(1:3, 2, 3:6, 7:11), 100), c(3, 2, 6, 11))
-  expect_equal(raw2quant(list(0:100), 26), 26)
+  expect_equal(quant_name(50), "val_q50")
+  expect_equal(quant_name(0), "val_q0")
+  expect_equal(quant_name(100), "val_q100")
+  expect_equal(quant_name(2.5), "val_q2.5")
+  expect_equal(quant_name(1.2345), "val_q1.2345")
 })
 
 test_that("get_quantile() works", {
   # error if not found
   expect_error(
-    get_quantile(data.frame(time=1:3, quant_51=6:8), 50),
+    get_quantile(data.frame(time=1:3, val_q51=6:8), 50),
     "could not compute/obtain.*quantile from data frame"
   )
 
-  df <- dplyr::tibble(time=1:3, quant_50=c(1000,2000,3000), raw=list(4:6, 7:9, 10:12))
+  df <- dplyr::tibble(time=c(1,1,1,2,2,2,3,3,3), val=c(4:12))
 
-  # raw supersedes quant_*
+  df2 <- dplyr::tibble(time=1:3, val_q50=c(1000,2000,3000))
+
   expect_equal(
     get_quantile(df, 50),
-    c(5, 8, 11)
+    dplyr::tibble(time=1:3, quant=c(5, 8, 11))
   )
 
   expect_equal(
-    get_quantile(df |> dplyr::select(time, quant_50), 50),
-    c(1000,2000,3000)
+    get_quantile(df2, 50),
+    dplyr::tibble(time=1:3, quant=c(1000,2000,3000))
   )
 
   expect_equal(
-    get_quantile(dplyr::tibble(time=1:2, raw=list(c(1,2,NA), 4:6)), 50),
-    c(1.5, 5)
+    get_quantile(dplyr::tibble(time=c(1,1,2,2,2), val=c(1,2, 4:6)), 50),
+    dplyr::tibble(time=1:2, quant=c(1.5, 5))
   )
 
   expect_error(
-    get_quantile(dplyr::tibble(time=1:2, raw=c(NA,2)), 50),
-    "forecast data frame contains row with no raw data"
+    get_quantile(dplyr::tibble(time=1:2, val=c(NA,2)), 50),
+    "missing values and NaN's not allowed if 'na.rm' is FALSE"
+  )
+})
+
+test_that("pair_quantiles() works", {
+  expect_equal(
+    pair_quantiles(numeric(0)),
+    list(paired=list(), unpaired=numeric(0))
+  )
+
+  expect_equal(
+    pair_quantiles(c(50)),
+    list(paired=list(), unpaired=c(50))
+  )
+
+  expect_equal(
+    pair_quantiles(c(20, 30, 10)),
+    list(paired=list(), unpaired=c(10, 20, 30))
+  )
+
+  expect_equal(
+    pair_quantiles(c(0, 10, 15, 20, 30, 50, 51, 60, 70, 75, 85)),
+    list(paired=list(c(15,85), c(30,70)), unpaired=c(0,10,20,50,51,60,75))
+  )
+})
+
+test_that("parse_quant_pairs() works", {
+  df1 <- data.frame(time=1, val_q25=2, val_q75=3)
+  df2 <- data.frame(time=1, val_q30=2)
+  
+  expect_error(
+    parse_quant_pairs(list(), df1),
+    "`quant_pairs` is empty"
+  )
+  
+  expect_error(
+    parse_quant_pairs(4, df1),
+    "quantile pair must have length 2"
+  )
+  
+  expect_error(
+    parse_quant_pairs("a", df1),
+    "`quant_pairs` must be either NULL, pair of quantiles, or list of pairs of quantiles"
+  )
+
+  expect_error(
+    parse_quant_pairs(NULL, df2),
+    "could not infer quantile pairs from forecast data"
+  )
+
+  expect_error(
+    parse_quant_pairs(c(50,30), df2),
+    "first quantile in pair must be less than second quantile in pair"
+  )
+
+  expect_error(
+    parse_quant_pairs(list(c(25,75), c(1,2,3))),
+    "quantile pair must have length 2"
+  )
+
+  expect_equal(
+    parse_quant_pairs(NULL, df1),
+    list(c(25,75))
+  )
+
+  expect_equal(
+    parse_quant_pairs(c(25,75), df1),
+    list(c(25,75))
+  )
+
+  expect_equal(
+    parse_quant_pairs(list(c(25,75)), df1),
+    list(c(25,75))
+  )
+
+  expect_equal(
+    parse_quant_pairs(NULL, df2, allow_empty=TRUE),
+    list()
+  )
+
+  expect_equal(
+    parse_quant_pairs(list(), df1, allow_empty=TRUE),
+    list()
   )
 })

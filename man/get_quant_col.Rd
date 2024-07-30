@@ -7,7 +7,7 @@
 get_quant_col(df, num)
 }
 \arguments{
-\item{df}{The data frame. Should contain a "quant_*" column corresponding to \code{num}}
+\item{df}{The data frame. Should contain a "val_q*" column corresponding to \code{num}}
 
 \item{num}{A number between 0 and 100 inclusive.}
 }
@@ -20,5 +20,5 @@ column from the data frame.
 }
 \examples{
 # returns 4:6
-casteval:::get_quant_col(data.frame(time=1:3, quant_50=4:6), 50)
+casteval:::get_quant_col(data.frame(time=1:3, val_q50=4:6), 50)
 }

@@ -8,3 +8,5 @@
 ^\.gitlab-ci\.yml$
 ^man-roxygen$
 ^data-raw$
+^_pkgdown\.yml$
+^README\.Rmd$

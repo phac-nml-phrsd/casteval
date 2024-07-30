@@ -13,35 +13,28 @@ validate_forecast(fcst)
 NULL if valid (error if invalid)
 }
 \description{
-\code{validate_forecast()} validates a forecast by checking that it:
+\code{validate_forecast()} validates a forecast by checking that:
 \itemize{
-\item is a named list
-\item contains a \code{time_type} field
-\item contains a \code{data_types} field
-\item contains a valid data frame
-\item data frame format matches \code{time_type} and \code{data_type}
+\item it is a named list
+\item it contains a valid data frame
+\item its forecast time is compatible with its time type
 If any of these conditions fail, it stops with an appropriate an error message
 }
 }
 \examples{
-# incorrect time type
-try(casteval:::validate_forecast(list(
-  time_type="date", data_types="raw", data=data.frame(time=1:3, raw=4:6)
-)))
-
-# invalid `forecast_time` type
-try(casteval:::validate_forecast(list(
-  time_type="numeric",
-  data_types="raw",
-  data=data.frame(time=1,raw=4),
-  forecast_time=lubridate::ymd("2024-01-01")
-)))
-
-# a valid forecast
+# valid forecast
 casteval:::validate_forecast(list(
-  time_type="numeric",
-  data_types=c("mean", "quant"),
-  data=data.frame(time=1:3, mean=4:6, quant_50=7:9),
-  forecast_time=2
+  name="hello",
+  forecast_time=5,
+  data=data.frame(time=1:3, val=4:6)
 ))
+
+# not a forecast
+try(casteval:::validate_forecast(data.frame(time=1:3, val=4:6)))
+
+# bad forecast_time type
+try(casteval:::validate_forecast(list(
+  forecast_time=lubridate::as_date(1000),
+  data=data.frame(time=1:3, val=4:6)
+)))
 }

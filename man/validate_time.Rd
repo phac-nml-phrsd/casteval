@@ -19,11 +19,11 @@ Check that the type of a given time matches the time type of a given forecast.
 }
 \examples{
 # both numeric (compatible)
-casteval:::validate_time(5, create_forecast(data.frame(time=6,raw=7)))
+casteval:::validate_time(5, create_forecast(data.frame(time=6,val=7)))
 
 # one date, one date-time (incompatible)
 try(casteval:::validate_time(
   lubridate::ymd("2024-01-01"),
-  create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),raw=6))
+  create_forecast(data.frame(time=lubridate::ymd_hms("2024-01-01_00:00:00"),val=6))
 ))
 }
