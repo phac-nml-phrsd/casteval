@@ -74,7 +74,7 @@ log_score <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE, bw=NULL) {
         return(dplyr::select(df, time, val_obs, score))
     }
     
-    t <- get_specified_time(fcst, at, after)
+    t <- calc_specified_time(fcst, at, after)
 
     df <- df |> dplyr::filter(time==t)
 
@@ -133,7 +133,7 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
     ## compute density
 
     # get the time point
-    t <- get_specified_time(fcst, at, after)
+    t <- calc_specified_time(fcst, at, after)
 
     # get the data for this time point
     samp <- get_time_point(fcst$data, t)$val
@@ -199,9 +199,9 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
 }
 
 
-#' Get relative/absolute time specified by user
+#' Calcuate relative/absolute time specified by user
 #'
-#' Get the time according to the `at`/`after` params passed by the user.
+#' Calculate the time according to the `at`/`after` params passed by the user.
 #' Helper for `log_score()` and `plot_KDE()`.
 #'
 #' @template fcst
@@ -214,11 +214,11 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
 #' @examples
 #' fc <- create_forecast(data.frame(time=1:3, val=4:6), forecast_time=2)
 #' # 1
-#' casteval:::get_specified_time(fc, at=1)
+#' casteval:::calc_specified_time(fc, at=1)
 #' 
 #' # 2+1=3
-#' casteval:::get_specified_time(fc, after=1)
-get_specified_time <- function(fcst, at=NULL, after=NULL) {
+#' casteval:::calc_specified_time(fc, after=1)
+calc_specified_time <- function(fcst, at=NULL, after=NULL) {
     if(!is.null(at) && !is.null(after)) { # mutually exclusive
         stop("`at` and `after` parameters cannot both be provided")
     }
