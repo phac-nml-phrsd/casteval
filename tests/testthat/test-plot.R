@@ -125,3 +125,19 @@ test_that("labels work", {
   vdiffr::expect_doppelganger("lab1", plot_forecast(fc1, obs1))
   vdiffr::expect_doppelganger("lab2", plot_forecast(fc2, obs2))
 })
+
+test_that("plot_forecast() invert_score works", {
+  fc1 <- create_forecast(list(
+    time=1:3,
+    vals=list(c(4,7,8), c(5,6,7), c(4,6,6))
+  ))
+  obs1 <- data.frame(time=1:3, val_obs=5:7)
+
+  vdiffr::expect_doppelganger("inv1",
+    plot_forecast(fc1, obs1, score=crps, invert_score=FALSE)
+  )
+
+  vdiffr::expect_doppelganger("inv2",
+    plot_forecast(fc1, obs1, score=crps, invert_score=TRUE)
+  )
+})
