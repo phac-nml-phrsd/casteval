@@ -41,5 +41,12 @@ of \code{F(x) - H(x - y)}, where \code{H} is the Heaviside function.
 The CDF is obtained using an emperical distribution function on the forecast data.
 }
 \examples{
-#TODO
+fc <- create_forecast(list(
+  time=c(1,2,3),
+  vals=list(c(1,1,1), c(2,2,2), c(3,3,3), c(4,4,4), c(5,5,5)), forecast_time=1)
+)
+
+crps(fc2, data.frame(time=1:3, val_obs=c(3,4,5)), summarize=FALSE)
+
+crps(fc2, data.frame(time=1:3, val_obs=c(3,4,5)), at=2)
 }
