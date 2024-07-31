@@ -26,6 +26,10 @@
 #'  A scoring function should accept a forecast object, an observations data frame, as well as a `summarize` argument.
 #'  See `?accuracy`, `?log_score` for examples.
 #'  See `vignette(topic='casteval', package='casteval')` for details.
+#' 
+#' @param invert_score (Optional) A boolean, defaults to `FALSE`.
+#'   If `TRUE`, the color scale for scoring observations will be inverted.
+#'   This is useful for scores where smaller values are better, e.x. CRPS.
 #'
 #' @returns A ggplot object
 #' @export
@@ -52,7 +56,7 @@
 #' 
 #' # show the log score of each observation
 #' plot_forecast(fc, obs, score=log_score)
-plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL) {
+plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL, invert_score=FALSE) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
@@ -91,6 +95,11 @@ plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL) {
     # plot observatinos if present
     if(!is.null(obs)) {
         plt <- plt |> plot_observations(obs)
+
+        # if observations were scored and invert flag set, reverse the color scale
+        if("score" %in% colnames(obs) && isTRUE(invert_score)) {
+            plt <- plt + ggplot2::scale_color_continuous(trans="reverse")
+        }
     }
 
     # error if we didn't end up plotting anything
