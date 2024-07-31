@@ -45,5 +45,33 @@ test_that("crps() works", {
     dplyr::tibble(time=1:3, val_obs=3:5, score=c(.4, .6, 1.2))
   )
 
-  
+  expect_equal(
+    crps(fc3, data.frame(time=1, val_obs=10), at=1),
+    0.1663969,
+    tolerance=0.001
+  )
+
+  expect_equal(
+    crps(fc3, data.frame(time=1, val_obs=9), at=1),
+    0.7040769,
+    tolerance=0.001
+  )
+
+  expect_equal(
+    crps(fc3, data.frame(time=1, val_obs=11), at=1),
+    0.5941559,
+    tolerance=0.001
+  )
+
+  expect_equal(
+    crps(fc3, data.frame(time=1, val_obs=15), at=1),
+    4.500626,
+    tolerance=0.001
+  )
+
+  expect_equal(
+    crps(fc3, data.frame(time=1, val_obs=100), at=1),
+    89.50063,
+    tolerance=0.001
+  )
 })
