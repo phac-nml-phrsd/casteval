@@ -21,11 +21,7 @@
 #' 
 #' `quant_pairs` can be set to `list()` in order to display no quantile intervals.
 #' 
-#' @param score (Optional) A scoring function.
-#'  The function will be used to score `obs` against the forecast.
-#'  A scoring function should accept a forecast object, an observations data frame, as well as a `summarize` argument.
-#'  See `?accuracy`, `?log_score` for examples.
-#'  See `vignette(topic='casteval', package='casteval')` for details.
+#' @template score
 #' 
 #' @param invert_score (Optional) A boolean, defaults to `FALSE`.
 #'   If `TRUE`, the color scale for scoring observations will be inverted.

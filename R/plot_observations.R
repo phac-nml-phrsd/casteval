@@ -1,4 +1,4 @@
-#' Intelligently plot observations
+#' Plot observations
 #'
 #' Plot observation points. If scores are provided alongside the observations,
 #'  the plot can be colour-coded to convey information about score, accuracy, etc.
@@ -33,6 +33,7 @@
 #'   log_score(fc, obs, summarize=FALSE)
 #' )
 plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
+    validate_obs(obs)
     if(is.null(plt)) {
         plt <- ggplot2::ggplot()
     }
@@ -50,3 +51,33 @@ plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
     }
 }
 # TODO make TRUE consistently one color and FALSE consistently another
+
+
+#' Plot and score observations
+#'
+#' Wrapper for `plot_observations()`.
+#' Plots scores the given forecast against the given observations,
+#' then plots the observations with a colour scale corresponding to score.
+#'
+#' @template plt
+#' @template fcst
+#' @param obs An observations data frame
+#' @template score
+#' @param ... Additional parameters to be passed to `score`.
+#' Note that `summarize` should not be one of them,
+#' since `plot_obs_score()` already passes that to `score`.
+#' @template alpha
+#' @template colour
+#'
+#' @returns A ggplot object
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+plot_obs_score <- function(plt=NULL, fcst, obs, score, ..., alpha=0.4, colour="black") {
+    validate_fcst_obs_pair(fcst, obs)
+
+    obs <- score(fcst, obs, summarize=FALSE, ...)
+    plt |> plot_observations(obs, alpha=alpha, colour=colour)
+}
