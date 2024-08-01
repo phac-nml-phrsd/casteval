@@ -58,13 +58,13 @@
 # }
 
 
-#' Plot a forecast quantile
+#' Plot forecast quantiles
 #'
-#' Given forecast data, plot one of its quantiles as a line
+#' Given forecast data, plot the requested quantiles as lines
 #'
 #' @template plt
 #' @template fcst
-#' @param quant A number between 0 and 100, the quantile to be graphed
+#' @param quants A vector of numbers between 0 and 100, the quantiles to be graphed
 #' @template alpha
 #' @template colour
 #'
@@ -74,8 +74,17 @@
 #'
 #' @examples
 #' #TODO
-plot_quantile <- function(plt=NULL, fcst, quant, alpha=0.5, colour="orange") {
+plot_quantiles <- function(plt=NULL, fcst, quants, alpha=0.5, colour="orange") {
+    # validate
+    validate_forecast(fcst)
+    quants |> purrr::walk(\(quant) validate_quant(quant))
 
+    if(is.null(plt)) {
+        plt <- ggplot2::ggplot()
+    }
+
+    # graph quantile
+    
 }
 
 
