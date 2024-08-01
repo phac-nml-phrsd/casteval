@@ -15,9 +15,9 @@ Defaults to NULL, in which case a blank ggplot object will be created.}
 the observation points will be colour-coded according to the scores.
 Otherwise, the \code{alpha} and \code{colour} parameters will determine the opacity and colour of the points.}
 
-\item{alpha}{(Optional) The alpha value to be passed to \code{ggplot2}.}
+\item{alpha}{(Optional) The alpha parameter to be passed to \code{ggplot2}}
 
-\item{colour}{(Optional) The colour to be passed to \code{ggplot2}.}
+\item{colour}{(Optional) The colour to be passed to \code{ggplot2}}
 }
 \value{
 A ggplot object.

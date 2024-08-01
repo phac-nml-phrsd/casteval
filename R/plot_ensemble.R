@@ -6,7 +6,8 @@
 #'
 #' @template plt
 #' @template fcst
-#' @template ggplot2params
+#' @template alpha
+#' @template colour
 #'
 #' @returns A ggplot object.
 #' @autoglobal

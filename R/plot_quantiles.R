@@ -64,14 +64,16 @@
 #'
 #' @template plt
 #' @template fcst
-#' @quant 
+#' @param quant A number between 0 and 100, the quantile to be graphed
+#' @template alpha
+#' @template colour
 #'
 #' @returns desc
 #' @export
 #' @autoglobal
 #'
 #' @examples
-#' 
+#' #TODO
 plot_quantile <- function(plt=NULL, fcst, quant, alpha=0.5, colour="orange") {
 
 }
@@ -86,7 +88,7 @@ plot_quantile <- function(plt=NULL, fcst, quant, alpha=0.5, colour="orange") {
 #' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100.
 #'  If not provided, the quantile intervals will be inferred from the forecast.
 #'  Otherwise, each pair will be used as a quantile intervals.
-#' @param alpha (Optional) The alpha parameter to be passed to `ggplot2`
+#' @template alpha
 #' @param palette (Optional) The colour palette to use (see `?ggplot2::scale_fill_brewer`)
 #'
 #' @returns A ggplot object.

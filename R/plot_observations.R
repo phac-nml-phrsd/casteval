@@ -7,7 +7,8 @@
 #' @param obs An observations data frame. If it contains a `score` column,
 #'  the observation points will be colour-coded according to the scores.
 #'  Otherwise, the `alpha` and `colour` parameters will determine the opacity and colour of the points.
-#' @template ggplot2params
+#' @template alpha
+#' @template colour
 #'
 #' @returns A ggplot object.
 #' @autoglobal

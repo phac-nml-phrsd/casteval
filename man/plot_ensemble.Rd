@@ -13,9 +13,9 @@ Defaults to NULL, in which case a blank ggplot object will be created.}
 
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
-\item{alpha}{(Optional) The alpha value to be passed to \code{ggplot2}.}
+\item{alpha}{(Optional) The alpha parameter to be passed to \code{ggplot2}}
 
-\item{colour}{(Optional) The colour to be passed to \code{ggplot2}.}
+\item{colour}{(Optional) The colour to be passed to \code{ggplot2}}
 }
 \value{
 A ggplot object.
