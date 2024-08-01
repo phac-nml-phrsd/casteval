@@ -69,7 +69,7 @@
 #' @template alpha
 #' @template colour
 #'
-#' @returns desc
+#' @returns A ggplot object
 #' @export
 #' @autoglobal
 #'

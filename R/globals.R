@@ -27,6 +27,9 @@ utils::globalVariables(c(
   "time", # <plot_ensemble>
   "val", # <plot_ensemble>
   "sim", # <plot_ensemble>
+  "time", # <plot_mean>
+  "val", # <plot_mean>
+  "val_mean", # <plot_mean>
   "time", # <plot_observations>
   "val_obs", # <plot_observations>
   "score", # <plot_observations>

@@ -21,7 +21,7 @@ If not provided, the quantile columns in \code{fcst$data} will be used.}
 \item{colour}{(Optional) The colour to be passed to \code{ggplot2}}
 }
 \value{
-desc
+A ggplot object
 }
 \description{
 Given forecast data, plot the requested quantiles as lines
