@@ -67,7 +67,7 @@ plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
 #' @template score
 #' @param ... Additional parameters to be passed to `score`.
 #' Note that `summarize` should not be one of them,
-#' since `plot_obs_score()` already passes that to `score`.
+#' since `casteval` already passes that to `score`.
 #'
 #' @returns A ggplot object
 #' @export

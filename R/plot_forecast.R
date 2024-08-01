@@ -21,11 +21,13 @@
 #' 
 #' `quant_pairs` can be set to `list()` in order to display no quantile intervals.
 #' 
+#' @param invert_scale (Optional) (Optional) a boolean.
+#' If `TRUE`, the color scale for scoring will be inverted.
+#' This is useful for scores where smaller values are better, e.x. CRPS.
 #' @template score
-#' 
-#' @param invert_score (Optional) A boolean, defaults to `FALSE`.
-#'   If `TRUE`, the color scale for scoring observations will be inverted.
-#'   This is useful for scores where smaller values are better, e.x. CRPS.
+#' @param ... Additional parameters to be passed to `score`.
+#' Note that `summarize` should not be one of them,
+#' since `casteval` already passes that to `score`.
 #'
 #' @returns A ggplot object
 #' @export
@@ -52,7 +54,7 @@
 #' 
 #' # show the log score of each observation
 #' plot_forecast(fc, obs, score=log_score)
-plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL, invert_score=FALSE) {
+plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, score=NULL, ...) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
@@ -90,7 +92,9 @@ plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL, invert_s
 
     # plot observatinos if present
     if(!is.null(obs)) {
-        plt <- plt |> plot_observations(obs)
+        if(!is.null(score)) {
+            plt <- plt |> plot_observations(obs)
+        }
 
         # if observations were scored and invert flag set, reverse the color scale
         if("score" %in% colnames(obs) && isTRUE(invert_score)) {
