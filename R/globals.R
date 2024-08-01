@@ -36,10 +36,10 @@ utils::globalVariables(c(
   "lo", # <plot_quant_intervals>
   "hi", # <plot_quant_intervals>
   "interval", # <plot_quant_intervals>
-  "name", # <plot_quantiles>
+  "quant", # <plot_quantiles>
+  "quantile", # <plot_quantiles>
   "time", # <plot_quantiles>
   "value", # <plot_quantiles>
-  "quantile", # <plot_quantiles>
   "time", # <get_quantile>
   "val", # <get_quantile>
   "time", # <filter_forecast_time>

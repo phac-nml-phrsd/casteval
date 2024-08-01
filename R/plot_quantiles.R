@@ -83,6 +83,20 @@
 #'     c(1,2,4,5,7,8,7,9,10,9)
 #'   )
 #' ))
+#' 
+#' NULL |> plot_ensemble(fc) |> plot_quantiles(fc, quants=c(2.5, 50, 97.5))
+#' 
+#' fc2 <- create_forecast(data.frame(
+#'   time=1:10,
+#'   val_q2.5=1:10,
+#'   val_q25=2:11,
+#'   val_q50=3:12,
+#'   val_q75=4:13,
+#'   val_q97.5=5:14
+#' ))
+#' 
+#' NULL |> plot_quantiles(fc2)
+#' NULL |> plot_quantiles(fc2, quants=c(2.5,50,97.5))
 plot_quantiles <- function(plt=NULL, fcst, quants=NULL, alpha=1, colour="orange") {
     # validate
     validate_forecast(fcst)
