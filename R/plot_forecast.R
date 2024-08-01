@@ -102,11 +102,20 @@ plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, score=NULL, invert_s
         }
     }
 
-    # error if we didn't end up plotting anything
-    if(is.null(plt)) {
-        # could be turned into a warning
-        stop("nothing was plotted. Please specify raw data, quantiles, and/or observations to be plotted.")
+    # plot mean and median if present
+    if("val_mean" %in% colnames(fcst$data)) {
+        plt <- plt |> plot_mean(fcst)
     }
+
+    if("val_q50" %in% colnames(fcst$data)) {
+        plt <- plt |> plot_quantiles(fcst, quants=50)
+    }
+
+    # # error if we didn't end up plotting anything
+    # if(is.null(plt)) {
+    #     # could be turned into a warning
+    #     stop("nothing was plotted. Please specify raw data, quantiles, and/or observations to be plotted.")
+    # }
 
     ## set labels and secondary features
 

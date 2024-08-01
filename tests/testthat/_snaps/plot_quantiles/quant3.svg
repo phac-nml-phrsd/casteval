@@ -56,7 +56,7 @@
 <text x='331.36' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='20.78px' lengthAdjust='spacingAndGlyphs'>time</text>
 <text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='14.06px' lengthAdjust='spacingAndGlyphs'>val</text>
 <rect x='633.54' y='250.36' width='80.98' height='67.17' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<text x='633.54' y='259.07' style='font-size: 11.00px; font-family: sans;' textLength='38.53px' lengthAdjust='spacingAndGlyphs'>quantile</text>
+<text x='633.54' y='259.07' style='font-size: 11.00px; font-family: sans;' textLength='37.92px' lengthAdjust='spacingAndGlyphs'>linetype</text>
 <rect x='633.54' y='265.69' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='635.27' y1='274.33' x2='649.09' y2='274.33' style='stroke-width: 1.07; stroke: #00FF00; stroke-opacity: 0.50; stroke-linecap: butt;' />
 <rect x='633.54' y='282.97' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />

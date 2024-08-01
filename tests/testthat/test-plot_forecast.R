@@ -34,12 +34,12 @@ test_that("plot_forecast() works", {
     "scoring function provided without observations"
   )
 
-  expect_error(
-    plot_forecast(
-      create_forecast(data.frame(time=1:3, val_mean=4:6))
-    ),
-    "nothing was plotted. Please specify raw data, quantiles, and/or observations to be plotted."
-  )
+  # expect_error(
+  #   plot_forecast(
+  #     create_forecast(data.frame(time=1:3, val_mean=4:6))
+  #   ),
+  #   "nothing was plotted. Please specify raw data, quantiles, and/or observations to be plotted."
+  # )
 
   fc1 <- create_forecast(list(
     time=1:3,
@@ -70,6 +70,20 @@ test_that("plot_forecast() works", {
   vdiffr::expect_doppelganger("plot7", plot_forecast(fc2, obs2, quant_pairs=c(25,75), score=make_accuracy(c(25,75))))
   vdiffr::expect_doppelganger("plot8", plot_forecast(fc2, obs2, quant_pairs=c(5,95), score=make_accuracy(c(5,95))))
   expect_error(plot_forecast(fc2, obs2, score=log_score), "log_score\\(\\) requires raw forecast data")
+})
+
+test_that("plot_forecast() mean and median work", {
+  fc <- create_forecast(data.frame(
+    time=1:5,
+    val_mean=6:10,
+    val_q50=c(6.5,7,7.5,9,10),
+    val_q25=1:5,
+    val_q75=11:15
+  ))
+
+  vdiffr::expect_doppelganger("mean-median",
+    plot_forecast(fc)
+  )
 })
 
 test_that("forecast_time vline works", {

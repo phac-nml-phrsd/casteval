@@ -122,12 +122,12 @@ plot_quantiles <- function(plt=NULL, fcst, quants=NULL, alpha=1, colour="orange"
     # get the quantiles in long form in a data frame
     # with `time`, `quantile`, and `value` columns
     quant_data <- quants |>
-        purrr::imap(\(q, i) get_quantile(fcst$data, q) |> dplyr::mutate(value=quant, quant=NULL, quantile=glue::glue("{q}% quantile"))) |>
+        purrr::imap(\(q, i) get_quantile(fcst$data, q) |> dplyr::mutate(value=quant, quant=NULL, linetype=glue::glue("{q}% quantile"))) |>
         dplyr::bind_rows() |>
-        dplyr::mutate(quantile=as.factor(quantile))
+        dplyr::mutate(quantile=as.factor(linetype))
 
     # plot
-    plt + ggplot2::geom_line(ggplot2::aes(x=time, y=value, linetype=quantile), data=quant_data, alpha=alpha, colour=colour)
+    plt + ggplot2::geom_line(ggplot2::aes(x=time, y=value, linetype=linetype), data=quant_data, alpha=alpha, colour=colour)
 
     # using `{ggnewscale}` to make a second color scale is probably a bad idea because it impedes
     # customization by the user, and can be visually confusing
