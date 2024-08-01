@@ -74,34 +74,31 @@
 #'
 #' @examples
 #' #TODO
-plot_quantiles <- function(plt=NULL, fcst, quants, alpha=0.5, colour=NULL) {
+plot_quantiles <- function(plt=NULL, fcst, quants, alpha=1, colour="orange") {
     # validate
     validate_forecast(fcst)
     quants |> purrr::walk(\(quant) validate_quant(quant))
+    if(any(duplicated(quants))) {
+        stop("`quants` contains duplicate quantiles")
+    }
 
     if(is.null(plt)) {
         plt <- ggplot2::ggplot()
     }
 
     # get the quantiles in long form in a data frame
+    # with `time`, `quantile`, and `value` columns
     quant_data <- quants |>
-        purrr::map(\(quant) get_quantile(fcst$data, quant)$quant) |>
-        stats::setNames(quants) |>
-        dplyr::as_tibble() |>
-        dplyr::mutate(time=fcst$data$time) |>
-        tidyr::pivot_longer(cols=as.character(quants)) |>
-        dplyr::mutate(quantile=name)
-    # a data frame with `time`, `quantile`, and `val`
+        purrr::imap(\(q, i) get_quantile(fcst$data, q) |> dplyr::mutate(value=quant, quant=NULL, quantile=q)) |>
+        dplyr::bind_rows() |>
+        dplyr::mutate(quantile=as.factor(quantile))
 
-    # graph quantile
+    # plot
+    plt + ggplot2::geom_line(ggplot2::aes(x=time, y=value, linetype=quantile), data=quant_data, alpha=alpha, colour=colour)
 
-    # if given a color, override
-    if(is.null(colour)) {
-        ggplot2::geom_line(ggplot2::aes(x=time, y=value), colour=colour)
-    }
-    # otherwise make a new color scale for the quantiles 
-    else {
-        plt + ggnewscale::new_scale_color() +
-            ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=quantile), data=quant_data, alpha=alpha)
-    }
+    # using `{ggnewscale}` to make a second color scale is probably a bad idea because it impedes
+    # customization by the user, and can be visually confusing
+    # so instead we just use linetype above
+    # plt + ggnewscale::new_scale_color() +
+    #     ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=quantile), data=quant_data, alpha=alpha)
 }
