@@ -27,9 +27,9 @@
 #'   vals=list(c(1,1,1), c(2,2,2), c(3,3,3), c(4,4,4), c(5,5,5)), forecast_time=1)
 #' )
 #' 
-#' crps(fc2, data.frame(time=1:3, val_obs=c(3,4,5)), summarize=FALSE)
+#' crps(fc, data.frame(time=1:3, val_obs=c(3,4,5)), summarize=FALSE)
 #' 
-#' crps(fc2, data.frame(time=1:3, val_obs=c(3,4,5)), at=2)
+#' crps(fc, data.frame(time=1:3, val_obs=c(3,4,5)), at=2)
 crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     # validate
     validate_fcst_obs_pair(fcst, obs)

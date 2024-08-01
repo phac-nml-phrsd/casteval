@@ -109,12 +109,14 @@ log_score <- function(fcst, obs, summarize=TRUE, at=NULL, after=NULL, bw=NULL) {
 #' @autoglobal
 #'
 #' @examples
-#' withr::with_seed(42,
+#' withr::with_seed(42, {
 #'   dat <- rnorm(100)
 #'   fc <- create_forecast(dplyr::tibble(time=rep(1,100), val=dat), forecast_time=1)
 #'   obs <- data.frame(time=1, val_obs=1)
-#'   plot_KDE(fc, at=1)
-#' )
+#'   plot_KDE(fc, obs, at=1)
+#'   plot_KDE(fc, obs, at=1, bw=0.1)
+#'   plot_KDE(fc, obs, at=1, bw=1)
+#' })
 plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to=NULL, n=101, binwidth=NULL) {
     # this function is structured very similarly to `log_score()`
     # it just has a different goal and some different parameters
