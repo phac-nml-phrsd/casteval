@@ -22,9 +22,6 @@ depending on what is present.
 df1 <- data.frame(time=rep(1:3,each=3), sim=rep(1:3, 3), val=c(4:6, 7:9, 10:12))
 df2 <- data.frame(time=1:3, val_q50=c(1000, 2000, 3000))
 
-# c(5, 8, 11)
 casteval:::get_quantile(df1, 50)
-
-# c(1000, 2000, 3000)
 casteval:::get_quantile(df2, 50)
 }

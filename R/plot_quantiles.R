@@ -74,7 +74,7 @@
 #'
 #' @examples
 #' #TODO
-plot_quantiles <- function(plt=NULL, fcst, quants, alpha=0.5, colour="orange") {
+plot_quantiles <- function(plt=NULL, fcst, quants, alpha=0.5, colour=NULL) {
     # validate
     validate_forecast(fcst)
     quants |> purrr::walk(\(quant) validate_quant(quant))
@@ -83,8 +83,27 @@ plot_quantiles <- function(plt=NULL, fcst, quants, alpha=0.5, colour="orange") {
         plt <- ggplot2::ggplot()
     }
 
+    # get the quantiles in long form in a data frame
+    quant_data <- quants |>
+        purrr::map(\(quant) get_quantile(fcst$data, quant)$quant) |>
+        stats::setNames(quants) |>
+        dplyr::as_tibble() |>
+        dplyr::mutate(time=fcst$data$time) |>
+        tidyr::pivot_longer(cols=as.character(quants)) |>
+        dplyr::mutate(quantile=name)
+    # a data frame with `time`, `quantile`, and `val`
+
     # graph quantile
-    
+
+    # if given a color, override
+    if(is.null(colour)) {
+        ggplot2::geom_line(ggplot2::aes(x=time, y=value), colour=colour)
+    }
+    # otherwise make a new color scale for the quantiles 
+    else {
+        plt + ggnewscale::new_scale_color() +
+            ggplot2::geom_line(ggplot2::aes(x=time, y=value, color=quantile), data=quant_data, alpha=alpha)
+    }
 }
 
 
