@@ -343,3 +343,15 @@ test_that("validate_quant_pair() works", {
     NULL
   )
 })
+
+test_that("validate_quant() works", {
+  expect_equal(validate_quant(50), NULL)
+  expect_equal(validate_quant(0), NULL)
+  expect_equal(validate_quant(100), NULL)
+  expect_equal(validate_quant(2.5), NULL)
+
+  expect_error(validate_quant("a"), "`quant` must be numeric")
+  expect_error(validate_quant(-1), "`quant` must be between 0 and 100")
+  expect_error(validate_quant(numeric(0)), "`quant` must be exactly 1 number, received numeric vector of length 0")
+  expect_error(validate_quant(c(1,2)), "`quant` must be exactly 1 number, received numeric vector of length 2")
+})
