@@ -34,14 +34,14 @@ fc <- create_forecast(list(
 obs <- data.frame(time=1:3, val_obs=c(5,9,13))
 
 # plot observations on their own
-casteval:::plot_observations(NULL, obs)
+plot_observations(NULL, obs)
 
 # plot observations alongside forecast data
-casteval:::plot_observations(casteval:::plot_ensemble(NULL, fc), obs)
+plot_observations(plot_ensemble(NULL, fc), obs)
 
 # plot observations alongside forecast data, and colour-code by score
-casteval:::plot_observations(
-  casteval:::plot_ensemble(NULL, fc),
+plot_observations(
+  plot_ensemble(NULL, fc),
   log_score(fc, obs, summarize=FALSE)
 )
 }

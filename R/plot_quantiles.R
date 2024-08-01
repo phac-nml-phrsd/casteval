@@ -72,6 +72,7 @@
 #'
 #' @returns A ggplot object.
 #' @autoglobal
+#' @export
 #'
 #' @examples
 #' # forecast with quantile data
@@ -90,13 +91,13 @@
 #' ))
 #' 
 #' # infer quantile pairs
-#' casteval:::plot_quant_intervals(NULL, fc1)
+#' plot_quant_intervals(NULL, fc1)
 #' 
 #' # manually specify quantile pairs
-#' casteval:::plot_quant_intervals(NULL, fc1, list(c(5,95), c(10,90)))
+#' plot_quant_intervals(NULL, fc1, list(c(5,95), c(10,90)))
 #' 
 #' # quantile pairs must be specified for raw data
-#' casteval:::plot_quant_intervals(NULL, fc2, list(c(5, 95), c(25,75)))
+#' plot_quant_intervals(NULL, fc2, list(c(5, 95), c(25,75)))
 plot_quant_intervals <- function(plt=NULL, fcst, quant_pairs=NULL, alpha=NULL, palette=1) {
     ## validate/process parameters
 

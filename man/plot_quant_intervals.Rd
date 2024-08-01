@@ -50,11 +50,11 @@ fc2 <- create_forecast(dplyr::tibble(
 ))
 
 # infer quantile pairs
-casteval:::plot_quant_intervals(NULL, fc1)
+plot_quant_intervals(NULL, fc1)
 
 # manually specify quantile pairs
-casteval:::plot_quant_intervals(NULL, fc1, list(c(5,95), c(10,90)))
+plot_quant_intervals(NULL, fc1, list(c(5,95), c(10,90)))
 
 # quantile pairs must be specified for raw data
-casteval:::plot_quant_intervals(NULL, fc2, list(c(5, 95), c(25,75)))
+plot_quant_intervals(NULL, fc2, list(c(5, 95), c(25,75)))
 }
