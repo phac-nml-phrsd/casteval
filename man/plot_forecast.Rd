@@ -4,7 +4,13 @@
 \alias{plot_forecast}
 \title{Plot a forecast}
 \usage{
-plot_forecast(fcst, obs = NULL, quant_pairs = NULL, score = NULL)
+plot_forecast(
+  fcst,
+  obs = NULL,
+  quant_pairs = NULL,
+  score = NULL,
+  invert_score = FALSE
+)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
@@ -27,6 +33,10 @@ The function will be used to score \code{obs} against the forecast.
 A scoring function should accept a forecast object, an observations data frame, as well as a \code{summarize} argument.
 See \code{?accuracy}, \code{?log_score} for examples.
 See \code{vignette(topic='casteval', package='casteval')} for details.}
+
+\item{invert_score}{(Optional) A boolean, defaults to \code{FALSE}.
+If \code{TRUE}, the color scale for scoring observations will be inverted.
+This is useful for scores where smaller values are better, e.x. CRPS.}
 }
 \value{
 A ggplot object

@@ -50,5 +50,10 @@ Creates a plot containing:
 }
 }
 \examples{
-#TODO
+withr::with_seed(42,
+  dat <- rnorm(100)
+  fc <- create_forecast(dplyr::tibble(time=rep(1,100), val=dat), forecast_time=1)
+  obs <- data.frame(time=1, val_obs=1)
+  plot_KDE(fc, at=1)
+)
 }
