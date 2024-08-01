@@ -65,3 +65,42 @@ test_that("plot_observations() works", {
     NULL |> plot_ensemble(fc4) |> plot_observations(log_score(fc4, obs4, summarize=FALSE))
   )
 })
+
+test_that("plot_obs_score() works", {
+  fc <- create_forecast(list(
+    time=1:10,
+    vals=list(
+      c(1,2,3,5,4,5,4,6,6,5),
+      c(1,3,5,4,6,5,7,9,8,8),
+      c(1,4,3,4,5,6,5,3,2,2),
+      c(1,2,4,5,7,8,7,9,10,9)
+    )
+  ))
+
+  obs <- data.frame(time=1:10, val_obs=c(1,4,8,10,11,8,5,3,3,2))
+
+  expect_error(
+    NULL |> plot_obs_score(fc, obs, score=accuracy),
+    "could not infer quantile pairs from forecast data"
+  )
+
+  vdiffr::expect_doppelganger("obs-score1",
+    NULL |> plot_obs_score(fc, obs, score=accuracy, quant_pairs=c(5,95))
+  )
+
+  vdiffr::expect_doppelganger("obs-score2",
+    NULL |> plot_obs_score(fc, obs, score=log_score)
+  )
+
+  vdiffr::expect_doppelganger("obs-score3",
+    NULL |> plot_obs_score(fc, obs, score=log_score, bw=2)
+  )
+
+  vdiffr::expect_doppelganger("obs-score4",
+    NULL |> plot_obs_score(fc, obs, score=crps)
+  )
+
+  vdiffr::expect_doppelganger("obs-score5",
+    NULL |> plot_obs_score(fc, obs, score=crps, invert_scale=TRUE)
+  )
+})

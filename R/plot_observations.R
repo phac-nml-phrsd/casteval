@@ -62,12 +62,12 @@ plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
 #' @template plt
 #' @template fcst
 #' @param obs An observations data frame
+#' @param invert_scale (Optional) a boolean. If `TRUE`, the color scale will be inverted.
+#' This is useful for scores where smaller values are better, e.x. CRPS.
 #' @template score
 #' @param ... Additional parameters to be passed to `score`.
 #' Note that `summarize` should not be one of them,
 #' since `plot_obs_score()` already passes that to `score`.
-#' @template alpha
-#' @template colour
 #'
 #' @returns A ggplot object
 #' @export
@@ -75,9 +75,15 @@ plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
 #'
 #' @examples
 #' #TODO
-plot_obs_score <- function(plt=NULL, fcst, obs, score, ..., alpha=0.4, colour="black") {
+plot_obs_score <- function(plt=NULL, fcst, obs, invert_scale=FALSE, score, ...) {
     validate_fcst_obs_pair(fcst, obs)
 
     obs <- score(fcst, obs, summarize=FALSE, ...)
-    plt |> plot_observations(obs, alpha=alpha, colour=colour)
+    plt <- plt |> plot_observations(obs, alpha=alpha, colour=colour)
+
+    if(invert_scale) {
+        plt <- plt + ggplot2::scale_color_continuous(trans="reverse")
+    }
+
+    plt
 }
