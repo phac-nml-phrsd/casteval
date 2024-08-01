@@ -30,16 +30,16 @@ utils::globalVariables(c(
   "time", # <plot_observations>
   "val_obs", # <plot_observations>
   "score", # <plot_observations>
-  "name", # <plot_quantiles>
-  "time", # <plot_quantiles>
-  "value", # <plot_quantiles>
-  "quantile", # <plot_quantiles>
   ".", # <plot_quant_intervals>
   "quant", # <plot_quant_intervals>
   "time", # <plot_quant_intervals>
   "lo", # <plot_quant_intervals>
   "hi", # <plot_quant_intervals>
   "interval", # <plot_quant_intervals>
+  "name", # <plot_quantiles>
+  "time", # <plot_quantiles>
+  "value", # <plot_quantiles>
+  "quantile", # <plot_quantiles>
   "time", # <get_quantile>
   "val", # <get_quantile>
   "time", # <filter_forecast_time>
