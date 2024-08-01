@@ -1,6 +1,6 @@
 test_that("plot_mean() works", {
   expect_error(
-    plot_mean(create_forecast(time=1,val_q5=2)),
+    plot_mean(NULL, create_forecast(data.frame(time=1,val_q5=2))),
     "mean or raw data required to plot mean"
   )
 

@@ -122,7 +122,7 @@ plot_quantiles <- function(plt=NULL, fcst, quants=NULL, alpha=1, colour="orange"
     # get the quantiles in long form in a data frame
     # with `time`, `quantile`, and `value` columns
     quant_data <- quants |>
-        purrr::imap(\(q, i) get_quantile(fcst$data, q) |> dplyr::mutate(value=quant, quant=NULL, quantile=q)) |>
+        purrr::imap(\(q, i) get_quantile(fcst$data, q) |> dplyr::mutate(value=quant, quant=NULL, quantile=glue::glue("{q}% quantile"))) |>
         dplyr::bind_rows() |>
         dplyr::mutate(quantile=as.factor(quantile))
 

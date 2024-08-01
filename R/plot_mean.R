@@ -6,6 +6,7 @@
 #' @template fcst
 #' @template alpha
 #' @template colour
+#' @param linewidth The linewidth parameter to be passed to `ggplot2::geom_line()`
 #'
 #' @returns A ggplot object
 #' @export
@@ -23,7 +24,7 @@
 #' )
 #' 
 #' NULL |> plot_mean(fc2)
-plot_mean <- function(plt=NULL, fcst, alpha=1, colour="green") {
+plot_mean <- function(plt=NULL, fcst, alpha=0.5, colour="green", linewidth=2) {
     validate_forecast(fcst)
     if(is.null(plt)) {
         plt <- ggplot2::ggplot()
@@ -38,5 +39,5 @@ plot_mean <- function(plt=NULL, fcst, alpha=1, colour="green") {
     else {
         dat <- fcst$data
     }
-    plt + ggplot2::geom_line(ggplot2::aes(x=time, y=val_mean), data=dat, alpha=alpha, colour=colour)
+    plt + ggplot2::geom_line(ggplot2::aes(x=time, y=val_mean, linetype="mean"), data=dat, alpha=alpha, colour=colour, linewidth=linewidth)
 }
