@@ -58,6 +58,25 @@
 # }
 
 
+#' Plot a forecast quantile
+#'
+#' Given forecast data, plot one of its quantiles as a line
+#'
+#' @template plt
+#' @template fcst
+#' @quant 
+#'
+#' @returns desc
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' 
+plot_quantile <- function(plt=NULL, fcst, quant, alpha=0.5, colour="orange") {
+
+}
+
+
 #' Plot quantile intervals
 #'
 #' Given forecast data, highlight the specified quantile intervals.
