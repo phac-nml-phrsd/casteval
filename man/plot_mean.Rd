@@ -4,7 +4,7 @@
 \alias{plot_mean}
 \title{Plot forecast mean}
 \usage{
-plot_mean(plt = NULL, fcst, alpha = 1, colour = "green")
+plot_mean(plt = NULL, fcst, alpha = 0.5, colour = "green", linewidth = 2)
 }
 \arguments{
 \item{plt}{(Optional) A ggplot object.
@@ -16,6 +16,8 @@ Defaults to NULL, in which case a blank ggplot object will be created.}
 \item{alpha}{(Optional) The alpha parameter to be passed to \code{ggplot2}}
 
 \item{colour}{(Optional) The colour to be passed to \code{ggplot2}}
+
+\item{linewidth}{The linewidth parameter to be passed to \code{ggplot2::geom_line()}}
 }
 \value{
 A ggplot object

@@ -8,8 +8,9 @@ plot_forecast(
   fcst,
   obs = NULL,
   quant_pairs = NULL,
+  invert_scale = FALSE,
   score = NULL,
-  invert_score = FALSE
+  ...
 )
 }
 \arguments{
@@ -28,15 +29,19 @@ The corresponding quantile intervals, if present, will be displayed in the resul
 
 \code{quant_pairs} can be set to \code{list()} in order to display no quantile intervals.}
 
+\item{invert_scale}{(Optional) (Optional) a boolean.
+If \code{TRUE}, the color scale for scoring will be inverted.
+This is useful for scores where smaller values are better, e.x. CRPS.}
+
 \item{score}{(Optional) A scoring function.
-The function will be used to score \code{obs} against the forecast.
+The function will be used to score \code{fcst} against \code{obs}.
 A scoring function should accept a forecast object, an observations data frame, as well as a \code{summarize} argument.
 See \code{?accuracy}, \code{?log_score} for examples.
 See \code{vignette(topic='casteval', package='casteval')} for details.}
 
-\item{invert_score}{(Optional) A boolean, defaults to \code{FALSE}.
-If \code{TRUE}, the color scale for scoring observations will be inverted.
-This is useful for scores where smaller values are better, e.x. CRPS.}
+\item{...}{Additional parameters to be passed to \code{score}.
+Note that \code{summarize} should not be one of them,
+since \code{casteval} already passes that to \code{score}.}
 }
 \value{
 A ggplot object

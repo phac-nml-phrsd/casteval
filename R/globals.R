@@ -33,6 +33,8 @@ utils::globalVariables(c(
   "time", # <plot_observations>
   "val_obs", # <plot_observations>
   "score", # <plot_observations>
+  "alpha", # <plot_obs_score>
+  "colour", # <plot_obs_score>
   ".", # <plot_quant_intervals>
   "quant", # <plot_quant_intervals>
   "time", # <plot_quant_intervals>
@@ -40,7 +42,7 @@ utils::globalVariables(c(
   "hi", # <plot_quant_intervals>
   "interval", # <plot_quant_intervals>
   "quant", # <plot_quantiles>
-  "quantile", # <plot_quantiles>
+  "linetype", # <plot_quantiles>
   "time", # <plot_quantiles>
   "value", # <plot_quantiles>
   "time", # <get_quantile>

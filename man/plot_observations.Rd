@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_observations.R
 \name{plot_observations}
 \alias{plot_observations}
-\title{Intelligently plot observations}
+\title{Plot observations}
 \usage{
 plot_observations(plt = NULL, obs, alpha = 0.4, colour = "black")
 }
