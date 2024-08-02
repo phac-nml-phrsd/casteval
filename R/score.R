@@ -38,8 +38,6 @@ score <- function(fcsts, obs, fun, ...) {
         }
 
         # score
-        fcsts |>
-            purrr::map(\(fc) fun(fc, obs, ...)) |>
-            return()
+        return(fcsts |> purrr::map(\(fc) fun(fc, obs, ...)))
     }
 }
