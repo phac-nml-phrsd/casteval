@@ -37,6 +37,29 @@ is_forecast <- function(fcst) {
 }
 
 
+#' Is it a valid forecast?
+#'
+#' A stricter version of `is_forecast()` which validates
+#' its input using `validate_forecast()`.
+#'
+#' @param fcst An R object
+#'
+#' @returns `TRUE` if `fcst` passes `validate_forecast()` without any errors,
+#' `FALSE` otherwise
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+is_valid_forecast <- function(fcst) {
+    tryCatch(
+        {
+            validate_forecast(fcst)
+            TRUE    
+        },
+        error=\(cnd) FALSE
+    )
+}
+
 #' Isolate projected values from fit values
 #'
 #' Removes rows from forecast data frame which should not be scored,
