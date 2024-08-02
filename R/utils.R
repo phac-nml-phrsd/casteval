@@ -1,5 +1,42 @@
 # miscellaneous utilities and helper functions
 
+
+#' Is it a forecast?
+#'
+#' Determines whether a given R object is a forecast object or not.
+#' An R object is a forecast object if:
+#' 
+#' - It is a list
+#' - It has a `name` field (may be `NULL`)
+#' - It has a `forecast_time` field (may be `NULL`)
+#' - It has a `data` field which is a data frame
+#' 
+#' `is_forecast()` does NO further input validation beyond this,
+#' so if it returns true it is not guaranteed to pass `validate_forecast()`,
+#' for example.
+#'
+#' @param fcst An R object
+#'
+#' @returns `TRUE` if `fcst` is a forecast object, `FALSE` otherwise
+#' @autoglobal
+#'
+#' @examples
+#' 
+is_forecast <- function(fcst) {
+    if(
+        is.list(fcst) &&
+        "name" %in% names(fcst) &&
+        "forecast_time" %in% names(fcst) &&
+        "data" %in% names(fcst) &&
+        is.data.frame(fcst$data)
+    ) {
+        TRUE
+    } else {
+        FALSE
+    }
+}
+
+
 #' Isolate projected values from fit values
 #'
 #' Removes rows from forecast data frame which should not be scored,
