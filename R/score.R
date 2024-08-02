@@ -2,22 +2,44 @@
 # the actual scoring functions can be found in `accuracy.R`, `log_score.R`, `bias.R`, etc.
 
 
-# #' Score a forecast
-# #'
-# #' Score a forecast against some observations using a given scoring function.
-# #' Additional parameters can be passed along to the scoring function.
-# #'
-# #' @template fcst
-# #' @param obs An observations data frame
-# #' @param fun A scoring function. `fcst` and `obs` will be passed to it
-# #' @param ... Additional parameters which will be passed along to `fun`
-# #'
-# #' @returns The output of `fun(fcst, obs, ...)`
-# #' @export
-# #' @autoglobal
-# #'
-# #' @examples
-# #' 
-# score_forecasts <- function(fcst, obs, fun, ...) {
+#' Score forecasts
+#'
+#' Score a forecast against some observations using a given scoring function.
+#' Additional parameters can be passed along to the scoring function.
+#'
+#' @param fcsts A single forecast object, or a list of forecast objects
+#' @param obs An observations data frame
+#' @param fun A scoring function. `fcst` and `obs` will be passed to it
+#' @param ... Additional parameters which will be passed along to `fun`
+#'
+#' @returns If `fcsts` is a forecast object, a single score will be returned.
+#' If `fcsts` is a list of forecast objects, then a list of scores will be returned.
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+score <- function(fcsts, obs, fun, ...) {
+    if(is_forecast(fcsts)) {
+        return(fun(fcsts, obs, ...))
+    }
+    else {
+        # check `fcsts` is a list
+        if(!is.list(fcsts)) {
+            stop("`fcsts` must be a single forecast object or list of forecast objects")
+        }
 
-# }
+        # validate every element of `fcsts`
+        valid <- fcsts |> purrr::map(is_valid_forecast)
+        if(!all(valid)) {
+            i <- which(!valid)[[1]]
+            message(glue::glue("forecast number {i} is not valid"))
+            validate_forecast(fcsts[[i]])
+        }
+
+        # score
+        fcsts |>
+            purrr::map(\(fc) fun(fc, obs, ...)) |>
+            return()
+    }
+}
