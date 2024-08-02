@@ -63,14 +63,9 @@ plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, 
     }
 
     # score if necessary
-    if(!is.null(score)) {
-        if(is.null(obs)) {
-            # could be converted to warning
-            stop("scoring function provided without observations")
-        }
-
-        # TODO: wrap in error handler. scoring functions which don't support the summarize flag should error when passed it (or maybe return NULL)
-        obs <- score(fcst, obs, summarize=FALSE)
+    if(!is.null(score) && is.null(obs)) {
+        # could be converted to warning
+        stop("scoring function provided without observations")
     }
 
     # plot everything according to the parameters
@@ -92,13 +87,10 @@ plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, 
 
     # plot observatinos if present
     if(!is.null(obs)) {
-        if(!is.null(score)) {
+        if(is.null(score)) {
             plt <- plt |> plot_observations(obs)
-        }
-
-        # if observations were scored and invert flag set, reverse the color scale
-        if("score" %in% colnames(obs) && isTRUE(invert_score)) {
-            plt <- plt + ggplot2::scale_color_continuous(trans="reverse")
+        } else {
+            plt <- plt |> plot_obs_score(fcst, obs, invert_scale=invert_scale, score=score, ...)
         }
     }
 
