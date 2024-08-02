@@ -1,3 +1,23 @@
+test_that("is_forecast() works", {
+  expect_equal(is_forecast(5), FALSE)
+  expect_equal(is_forecast(list()), FALSE)
+
+  expect_equal(
+    is_forecast(c(name=5,forecast_time=5,data=7)),
+    FALSE
+  )
+
+  expect_equal(
+    is_forecast(data.frame(name=1,forecast_time=2,data=3)),
+    FALSE
+  )
+
+  expect_equal(
+    is_forecast(list(name=NULL,forecast_time=NULL,data=3)),
+    TRUE
+  )
+})
+
 test_that("filter_forecast_time() works", {
   expect_equal(
     filter_forecast_time(

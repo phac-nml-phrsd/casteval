@@ -6,10 +6,10 @@
 #' Determines whether a given R object is a forecast object or not.
 #' An R object is a forecast object if:
 #' 
-#' - It is a list
+#' - It is a list (and also not a data frame)
 #' - It has a `name` field (may be `NULL`)
 #' - It has a `forecast_time` field (may be `NULL`)
-#' - It has a `data` field which is a data frame
+#' - It has a `data` field
 #' 
 #' `is_forecast()` does NO further input validation beyond this,
 #' so if it returns true it is not guaranteed to pass `validate_forecast()`,
@@ -21,14 +21,14 @@
 #' @autoglobal
 #'
 #' @examples
-#' 
+#' #TODO
 is_forecast <- function(fcst) {
     if(
         is.list(fcst) &&
+        !is.data.frame(fcst) &&
         "name" %in% names(fcst) &&
         "forecast_time" %in% names(fcst) &&
-        "data" %in% names(fcst) &&
-        is.data.frame(fcst$data)
+        "data" %in% names(fcst)
     ) {
         TRUE
     } else {
