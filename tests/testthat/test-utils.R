@@ -16,6 +16,46 @@ test_that("is_forecast() works", {
     is_forecast(list(name=NULL,forecast_time=NULL,data=3)),
     TRUE
   )
+
+  expect_equal(
+    is_forecast(list(create_forecast(data.frame(time=1,val=1)))),
+    FALSE
+  )
+})
+
+test_that("is_valid_forecast() works", {
+  expect_equal(is_valid_forecast(5), FALSE)
+  expect_equal(is_valid_forecast(list()), FALSE)
+
+  expect_equal(
+    is_valid_forecast(c(name=5,forecast_time=5,data=7)),
+    FALSE
+  )
+
+  expect_equal(
+    is_valid_forecast(data.frame(name=1,forecast_time=2,data=3)),
+    FALSE
+  )
+
+  expect_equal(
+    is_valid_forecast(list(name=NULL,forecast_time=NULL,data=3)),
+    FALSE
+  )
+
+  expect_equal(
+    is_valid_forecast(list(create_forecast(data.frame(time=1,val=1)))),
+    FALSE
+  )
+
+  expect_equal(
+    is_valid_forecast(data.frame(time=1,val=2)),
+    FALSE
+  )
+
+  expect_equal(
+    is_valid_forecast(create_forecast(data.frame(time=1,val=2))),
+    TRUE
+  )
 })
 
 test_that("filter_forecast_time() works", {

@@ -11,9 +11,8 @@
 #' - It has a `forecast_time` field (may be `NULL`)
 #' - It has a `data` field
 #' 
-#' `is_forecast()` does NO further input validation beyond this,
-#' so if it returns true it is not guaranteed to pass `validate_forecast()`,
-#' for example.
+#' `is_forecast()` does NO further input validation beyond this.
+#' For a version of the function that does input validation, see `is_valid_forecast()`.
 #'
 #' @param fcst An R object
 #'
