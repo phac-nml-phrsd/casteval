@@ -27,8 +27,8 @@ It provides functionality for formatting, processing, scoring, and visualizing f
 A typical workflow using `{casteval}` is:
 
 1. [**Create a forecast object**](#create-a-forecast-object) by inputting a forecast and its metadata into `create_forecast()`
-2. [**Score the forecast**](#score-a-forecast) using a forecast object, corresponding observations against which to score, and a scoring function
-3. [**Visualize the forecast**](#visualize-forecast-evaluation) using `plot_forecast()` with a scorred forecast and observations
+2. [**Score the forecast**](#score-a-forecast) using `score()`, which accepts forecast object(s), corresponding observations, and a particular scoring function
+3. [**Visualize the forecast**](#visualize-forecast-evaluation) using `plot_forecast()` with a scored forecast and observations
 
 This vignette guides you through this process. 
 <!-- In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples.
@@ -38,7 +38,7 @@ For a more realistic start-to-finish demonstration of the package's usage with r
 
 In order to create a forecast object, a forecast must first be cast in one of the accepted formats, namely as a [data frame](#forecast-data-frame) or as a [list](#forecast-list).
 
-## Forecasts input as data frames {#forecast-data-frame}
+## Forecast input as data frames {#forecast-data-frame}
 
 **Forecast data frames** must contain:
 
@@ -95,7 +95,7 @@ data.frame(
 
 All forecast data columns (`val`, `val_*`) as well as the `sim` column must be numeric.
 
-## Forecasts input as lists {#forecast-list}
+## Forecast input as lists {#forecast-list}
 
 Forecast data frames are straightforward representations forecasts, though they are innefficient for raw forecast data as the `time` column gets repeated for each realization. If you have particularly long forecasts and/or many realizations, forecast data frames can quickly grow large, which can be slow to work with. Instead, you may wish to represent your forecast as a list.
 
@@ -199,7 +199,7 @@ For example, it checks that:
 
 Forecasts are scored against observations, which must be passed to `{casteval}` in a specific format.
 
-## Observations data frame {#observations-data-frame}
+## Observations data frames {#observations-data-frame}
 
 Observations are passed to `{casteval}` in a data frame with a `time` column and a `val_obs` column.
 Similar to [forecast data frames]{#forecast-data-frame}, `time` may be either numeric, dates, or date-times.
@@ -214,6 +214,17 @@ data.frame(
 ```
 
 ## Scoring functions
+
+We score a forecast using `score(fcsts, obs, fun, ...)`.
+`fcsts` is either a forecast object or a list of forecast objects.
+`obs` is an observations data frame.
+`fun` is a scoring function such as `accuracy()`, `crps()`, etc.
+`...` are additional parameters which will be passed to `fun`.
+
+`score()` scores every forecast passed to it against `obs`, and returns a score for each one.^[If `fcsts` is a list of forecast objects, a list of scores will be returned. If `fcsts` is a single forecast object, a single score will be returned]
+
+Below are examples of scoring.
+For a detailed explanation of how scoring works, see the [scoring vignette](scoring.html)
 
 `{casteval}` includes several scoring funcions, such as `accuracy()`, `log_score()`, and `bias()`, which are explained in more detailed in the following sections. In general, scoring functions accept the following arguments:
 
