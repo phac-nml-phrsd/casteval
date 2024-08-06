@@ -236,7 +236,7 @@ Scoring functions which can be passed to `score()` include:
 
 
 Below are examples of scoring.
-For a detailed explanation of how scoring works, see `?score()` and the [scoring vignette](scoring.html)
+For a detailed explanation of how scoring works, see the documentation for `score()` and the [scoring vignette](scoring.html)
 
 `{casteval}` includes several scoring funcions, such as `accuracy()`, `log_score()`, and `bias()`, which are explained in more detailed in the following sections. In general, scoring functions accept the following arguments:
 
