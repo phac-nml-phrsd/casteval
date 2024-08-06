@@ -216,15 +216,27 @@ data.frame(
 ## Scoring functions
 
 We score a forecast using `score(fcsts, obs, fun, ...)`.
-`fcsts` is either a forecast object or a list of forecast objects.
-`obs` is an observations data frame.
-`fun` is a scoring function such as `accuracy()`, `crps()`, etc.
-`...` are additional parameters which will be passed to `fun`.
+
+- `fcsts` is either a forecast object or a list of forecast objects
+- `obs` is an observations data frame
+- `fun` is a scoring function
+- `...` are additional parameters which will be passed to `fun`
+
+Scoring functions which can be passed to `score()` include:
+
+- `accuracy()`, which calculates the success rate of a forecast's quantile range predictions
+- `crps()`, which calculates the Continuous Ranked Probability Score (CRPS) of a forecast
+- `log_score()`, which calculates the (positive) logarithmic score of a forecast
+- `bias()`, which calculates how much a forecast overpredicts/underpredicts values
+
+
 
 `score()` scores every forecast passed to it against `obs`, and returns a score for each one.^[If `fcsts` is a list of forecast objects, a list of scores will be returned. If `fcsts` is a single forecast object, a single score will be returned]
 
+
+
 Below are examples of scoring.
-For a detailed explanation of how scoring works, see the [scoring vignette](scoring.html)
+For a detailed explanation of how scoring works, see `?score()` and the [scoring vignette](scoring.html)
 
 `{casteval}` includes several scoring funcions, such as `accuracy()`, `log_score()`, and `bias()`, which are explained in more detailed in the following sections. In general, scoring functions accept the following arguments:
 

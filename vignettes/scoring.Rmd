@@ -1,0 +1,21 @@
+---
+title: "Score forecasts"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{scoring}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  strip.white=TRUE
+)
+
+library(casteval)
+
+ggplot2::theme_set(ggplot2::theme_light())
+```
+
