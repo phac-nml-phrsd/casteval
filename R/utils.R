@@ -20,7 +20,12 @@
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # FALSE
+#' casteval:::is_forecast(5)
+#' casteval:::is_forecast(data.frame(time=1, val=2))
+#' 
+#' # TRUE
+#' casteval:::is_forecast(list(name=NULL, forecast_time=NULL, data=NULL))
 is_forecast <- function(fcst) {
     if(
         is.list(fcst) &&
@@ -48,7 +53,12 @@ is_forecast <- function(fcst) {
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # FALSE
+#' casteval:::is_valid_forecast(5)
+#' casteval:::is_valid_forecast(list(name=NULL, forecast_time=NULL, data=data.frame(a=1,b=2)))
+#' 
+#' # TRUE
+#' casteval:::is_valid_forecast(list(name=NULL, forecast_time=NULL, data=data.frame(time=1, val=2)))
 is_valid_forecast <- function(fcst) {
     tryCatch(
         {

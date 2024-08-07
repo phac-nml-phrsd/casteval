@@ -18,5 +18,10 @@ A stricter version of \code{is_forecast()} which validates
 its input using \code{validate_forecast()}.
 }
 \examples{
-#TODO
+# FALSE
+casteval:::is_valid_forecast(5)
+casteval:::is_valid_forecast(list(name=NULL, forecast_time=NULL, data=data.frame(a=1,b=2)))
+
+# TRUE
+casteval:::is_valid_forecast(list(name=NULL, forecast_time=NULL, data=data.frame(time=1, val=2)))
 }

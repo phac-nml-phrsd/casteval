@@ -37,5 +37,17 @@ Plots scores the given forecast against the given observations,
 then plots the observations with a colour scale corresponding to score.
 }
 \examples{
-#TODO
+fc <- create_forecast(list(
+  time=1:10,
+  vals=list(
+    c(1,2,3,5,4,5,4,6,6,5),
+    c(1,3,5,4,6,5,7,9,8,8),
+    c(1,4,3,4,5,6,5,3,2,2),
+    c(1,2,4,5,7,8,7,9,10,9)
+  )
+))
+
+obs <- data.frame(time=1:10, val_obs=c(1,4,8,10,11,8,5,3,3,2))
+
+NULL |> plot_obs_score(fc, obs, score=log_score, bw=2)
 }

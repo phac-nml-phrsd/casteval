@@ -9,8 +9,7 @@ plot_forecast(
   obs = NULL,
   quant_pairs = NULL,
   invert_scale = FALSE,
-  score = NULL,
-  ...
+  score = NULL
 )
 }
 \arguments{
@@ -38,10 +37,6 @@ The function will be used to score \code{fcst} against \code{obs}.
 A scoring function should accept a forecast object, an observations data frame, as well as a \code{summarize} argument.
 See \code{?accuracy}, \code{?log_score} for examples.
 See \code{vignette(topic='casteval', package='casteval')} for details.}
-
-\item{...}{Additional parameters to be passed to \code{score}.
-Note that \code{summarize} should not be one of them,
-since \code{casteval} already passes that to \code{score}.}
 }
 \value{
 A ggplot object

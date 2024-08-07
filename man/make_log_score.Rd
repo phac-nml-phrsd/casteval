@@ -20,5 +20,13 @@ A function wrapping \code{log_score()} with the given parameters
 Create a function wrapping \code{log_score()} with specified parameters.
 }
 \examples{
-#TODO
+dat <- c(1.65333590, -0.45354373, -0.72833227, -0.57932896,  0.22393422)
+fc <- create_forecast(dplyr::tibble(time=rep(1,5), val=dat), forecast_time=1)
+obs <- data.frame(time=1, val_obs=0)
+
+logs <- make_log_score(at=1)
+logs(fc, obs)
+
+logs2 <- make_log_score(after=0, bw=0.3)
+logs2(fc, obs)
 }

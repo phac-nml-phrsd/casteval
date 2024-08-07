@@ -28,5 +28,10 @@ An R object is a forecast object if:
 For a version of the function that does input validation, see \code{is_valid_forecast()}.
 }
 \examples{
-#TODO
+# FALSE
+casteval:::is_forecast(5)
+casteval:::is_forecast(data.frame(time=1, val=2))
+
+# TRUE
+casteval:::is_forecast(list(name=NULL, forecast_time=NULL, data=NULL))
 }

@@ -18,7 +18,14 @@
 #' @autoglobal
 #'
 #' @examples
+#' fc1 <- create_forecast(data.frame(time=1:5, val=6:10))
+#' fc2 <- create_forecast(data.frame(time=1:5, val=7:11))
 #' 
+#' obs <- data.frame(time=1:5, val_obs=c(8,8,8,8,8))
+#' 
+#' score(fc1, obs, bias)
+#' score(fc2, obs, bias)
+#' score(list(fc1, fc2), obs, bias)
 score <- function(fcsts, obs, fun, ...) {
     if(is_forecast(fcsts)) {
         return(fun(fcsts, obs, ...))
