@@ -25,10 +25,7 @@
 #' If `TRUE`, the color scale for scoring will be inverted.
 #' This is useful for scores where smaller values are better, e.x. CRPS.
 #' @template score
-#' @param ... Additional parameters to be passed to `score`.
-#' Note that `summarize` should not be one of them,
-#' since `casteval` already passes that to `score`.
-#'
+#' 
 #' @returns A ggplot object
 #' @export
 #' @autoglobal
@@ -54,7 +51,7 @@
 #' 
 #' # show the log score of each observation
 #' plot_forecast(fc, obs, score=log_score)
-plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, score=NULL, ...) {
+plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, score=NULL) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
@@ -90,7 +87,7 @@ plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, 
         if(is.null(score)) {
             plt <- plt |> plot_observations(obs)
         } else {
-            plt <- plt |> plot_obs_score(fcst, obs, invert_scale=invert_scale, score=score, ...)
+            plt <- plt |> plot_obs_score(fcst, obs, invert_scale=invert_scale, score=score)
         }
     }
 
