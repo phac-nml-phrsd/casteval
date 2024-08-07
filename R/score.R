@@ -18,7 +18,7 @@
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' 
 score <- function(fcsts, obs, fun, ...) {
     if(is_forecast(fcsts)) {
         return(fun(fcsts, obs, ...))
@@ -30,11 +30,10 @@ score <- function(fcsts, obs, fun, ...) {
         }
 
         # validate every element of `fcsts`
-        valid <- fcsts |> purrr::map(is_valid_forecast)
+        valid <- fcsts |> purrr::map(is_valid_forecast) |> as.logical()
         if(!all(valid)) {
             i <- which(!valid)[[1]]
-            message(glue::glue("forecast number {i} is not valid"))
-            validate_forecast(fcsts[[i]])
+            stop(glue::glue("forecast number {i} is not valid"))
         }
 
         # score
