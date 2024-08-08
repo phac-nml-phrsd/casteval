@@ -6,7 +6,10 @@
 #'
 #' Score a forecast against some observations using a given scoring function.
 #' Additional parameters can be passed along to the scoring function.
-#'
+#' 
+#' @details
+#' See `vignette("scoring")` for a complete list of scoring functions available, along with the details of their use.
+#'s
 #' @param fcsts A single forecast object, or a list of forecast objects
 #' @param obs An observations data frame
 #' @param fun A scoring function. `fcst` and `obs` will be passed to it
