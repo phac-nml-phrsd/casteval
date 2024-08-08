@@ -5,8 +5,8 @@ Authors@R: c(
     person("Daniel", "Yu", , "daniel.yu@phac-aspc.gc.ca", role = c("aut", "cre")),
     person("Irena", "Papst", , "irena.papst@phac-aspc.gc.ca", role = c("aut"))
     )
-URL: https://phrsd.pages.cscscience.ca/risk/casteval
-Description: Provides a generalized, modular set of tools to facilitate/automate the scoring and comparing of infectious disease forecasts. 
+URL: http://phrsd.pages.cscscience.ca/risk/casteval
+Description: Provides a generalized, modular set of tools to facilitate the scoring and comparing of infectious disease forecasts. 
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
