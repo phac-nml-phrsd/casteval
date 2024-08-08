@@ -342,7 +342,7 @@ Since `plot_forecast()` returns a `ggplot2::ggplot` object, you can further cust
     colour = glue::glue("Observation predicted\nin {quant[1]}%-{quant[2]}% interval?"),
     fill = "Quantile interval"  
   )
-  + ggplot2::scale_colour_discrete(labels=c(`FALSE`="Yes", `TRUE`="No"))
+  + ggplot2::scale_colour_discrete(labels=c(`FALSE`="No", `TRUE`="Yes"))
   + ggplot2::theme_classic(base_size=14)
 )
 ```
@@ -351,21 +351,22 @@ Since `plot_forecast()` returns a `ggplot2::ggplot` object, you can further cust
 
 Behind the scenes, `plot_forecast()` weaves together the outputs of several helper functions to plot the different aspects of a forecast.
 If you want further control over the visualization process, you can use these functions directly.
-They are as follows:^[We have omitted some optional parameters below for brevity. See the function documentation for details.]
+They are as follows:
 
-- `plot_ensemble(plt=NULL, fcst)` plots an ensemble of forecast realizations^[If `fcst` contains a `sim` column, the realizations will be plotted as individual curves. Otherwise, the forecast data will be plotted as points.]
-- `plot_observations(plt=NULL, obs)` plots a set of observations. If those observations contain a `score` column, then the scores will be used to colour-code the observations
-- `plot_quantiles(plt=NULL, fcst, quants=NULL)` plots the specified quantiles of the forecast. If `quants` is `NULL`, the quantiles will be inferred from `fcst`'s columns
-- `plot_mean(plt=NULL, fcst)` plots the mean of the forecast data
-- `plot_quant_intervals(plt=NULL, fcst, quant_pairs=NULL)` uses `ggplot2::geom_ribbon()` to plot bands of quantile intervals. Its `quant_pairs` parameter behaves the same as the parameter with the same name in `plot_forecast()`
+- `plot_ensemble()`^[See function documentation for parameters] plots an ensemble of forecast realizations^[If the forecast contains a `sim` column, the realizations will be plotted as individual curves. Otherwise, the forecast data will be plotted as points.]
+- `plot_observations()` plots a set of observations. If those observations contain a `score` column, then the scores will be used to colour-code the observations
+- `plot_quantiles()` plots the specified quantiles of a forecast (quantiles can also be inferred from the forecast's data columns).
+- `plot_mean()` plots the mean of the forecast data
+- `plot_quant_intervals()` uses `ggplot2::geom_ribbon()` to plot bands of quantile intervals
+- `plot_obs_score()` is a wrapper for `plot_observations()` which allows you to pass a scoring function, scoring parameters, and a forecast to be scored
 
 All these functions consume a `ggplot2::ggplot` object as their first parameter, and return a `ggplot2::ggplot` object as well.
 This makes it possible to compose these functions in any order using a pipe to produce the plot you want.
 
 ```{r other_plot_examples}
-(plot_ensemble(fcst=fc) 
-  |> plot_mean(fc) 
+(plot_ensemble(fcst = fc) 
   |> plot_quant_intervals(fc, c(25,75)) 
-  |> plot_observations(accuracy(fc, obs, quant_pairs=c(25,75), summarize=FALSE))
+  |> plot_mean(fc) 
+  |> plot_obs_score(fc, obs, score=accuracy, quant_pairs=c(25,75))
 )
 ```

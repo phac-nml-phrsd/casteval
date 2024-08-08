@@ -31,6 +31,11 @@ See `vignette("casteval")` to get started.
 
 ## For developers
 
+### Source code
+
+The source code is located
+[here](https://gitlab.cscscience.ca/phrsd/risk/casteval)
+
 ### `renv`
 
 This project uses [`renv`](https://rstudio.github.io/renv/index.html) to
