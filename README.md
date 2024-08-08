@@ -81,6 +81,4 @@ situation, but this issue is still open as of this writing on
 ### Test coverage
 
 You can use `covr::report()` to periodically check test coverage locally
-in development. When a merge request is created, a GitLab CI pipeline
-will generate a test coverage report
-[here](http://phrsd.pages.cscscience.ca/risk/casteval/coverage.html).
+in development.
