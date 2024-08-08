@@ -185,7 +185,23 @@ plot_KDE(fcst, obs, at=4, bw=2)
 
 `crps()` is like `log_score()`, but without the `bw` parameter.
 Because it works using the CDF of a distribution and not the PDF, it does not rely on kernel density estimation.
-It also penalises inaccurate forecasts less harshly than `log_score()`.
+It also penalizes inaccurate forecasts less harshly than `log_score()`.
+
+### Examples
+```{r crps_examples}
+set.seed(42)
+dat <- rnorm(20) + 10
+
+fc <- create_forecast(data.frame(time=rep(1,20), val=dat))
+obs1 <- data.frame(time=1, val_obs=10)
+obs2 <- data.frame(time=1, val_obs=100)
+
+# the closer the score is to 0, the better
+crps(fc, obs1, at=1)
+
+# note how inaccuracies are not penalized as harshly as with `log_score()`
+crps(fc, obs2, at=1)
+```
 
 ## Bias {#bias}
 
