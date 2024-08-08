@@ -21,7 +21,9 @@ scoring performance
 
 ## Installation
 
-The simplest way to install `{casteval}` is to use `install.packages("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")`
+The simplest way to install `{casteval}` is to use
+
+    install.packages("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")
 
 ## Usage
 

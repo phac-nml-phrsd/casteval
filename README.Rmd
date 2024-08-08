@@ -30,12 +30,11 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-The simplest way to install `{casteval}` is to:
+The simplest way to install `{casteval}` is to use 
 
-1. Install the `devtools` package
-1. Clone the `{casteval}` repository locally
-1. Open an R session at the top level of the `casteval` repo
-1. Execute `devtools::install()`
+```
+install.packages("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")
+```
 
 ## Usage
 
