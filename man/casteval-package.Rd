@@ -6,12 +6,12 @@
 \alias{casteval-package}
 \title{casteval: Modular tools for scoring and comparing infectious disease forecasts}
 \description{
-Provides a generalized, modular set of tools to facilitate/automate the scoring and comparing of infectious disease forecasts.
+Provides a generalized, modular set of tools to facilitate the scoring and comparing of infectious disease forecasts.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://phrsd.pages.cscscience.ca/risk/casteval}
+  \item \url{http://phrsd.pages.cscscience.ca/risk/casteval}
 }
 
 }

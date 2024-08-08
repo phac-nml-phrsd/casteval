@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_KDE.R
 \name{plot_KDE}
 \alias{plot_KDE}
-\title{Plot the KDE used in \code{log_score}}
+\title{Plot the KDE used in \code{log_score()}}
 \usage{
 plot_KDE(
   fcst,
