@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_observations.R
 \name{plot_obs_score}
 \alias{plot_obs_score}
-\title{Plot and score observations}
+\title{Plot and score against observations}
 \usage{
 plot_obs_score(plt = NULL, fcst, obs, invert_scale = FALSE, score, ...)
 }
@@ -33,7 +33,7 @@ A ggplot object
 }
 \description{
 Wrapper for \code{plot_observations()}.
-Plots scores the given forecast against the given observations,
+Scores the given forecast against the given observations,
 then plots the observations with a colour scale corresponding to score.
 }
 \examples{

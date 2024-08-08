@@ -53,10 +53,10 @@ plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
 # TODO make TRUE consistently one color and FALSE consistently another
 
 
-#' Plot and score observations
+#' Plot and score against observations
 #'
 #' Wrapper for `plot_observations()`.
-#' Plots scores the given forecast against the given observations,
+#' Scores the given forecast against the given observations,
 #' then plots the observations with a colour scale corresponding to score.
 #'
 #' @template plt
