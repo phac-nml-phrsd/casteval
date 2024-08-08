@@ -245,7 +245,7 @@ We describe these functions below.
 
 `plot_forecast()` plots a forecast and optionally overlays observations, quantile intervals, and color-codes the observations based on score. 
 
-Its `quant_pairs` parameter is like the parameter with the same name in `accuracy()`, though here it is only used to draw quantile bands on the plot.
+Its `quant_intervals` parameter is like the `quant_pairs` parameter `accuracy()`, and it is used to draw quantile intervals on the plot.^[It is named `quant_intervals` and not `quant_pairs` so that it does not conflict when passing `quant_pairs` through the `...` parameter to a scoring function]
 
 If `val_q50` is present in the forecast data, then the median will be plotted.
 Similarly, if `val_mean` is present, the mean will be plotted.
@@ -268,7 +268,7 @@ fc <- create_forecast(list(
 plot_forecast(fc)
 
 # Plot it and display 3 quantile intervals
-plot_forecast(fc, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)))
+plot_forecast(fc, quant_intervals=list(c(25,75), c(2.5,97.5), c(5,95)))
 
 # Create a forecast with mean and median data
 fc2 <- create_forecast(data.frame(
@@ -290,23 +290,22 @@ plot_forecast(fc2)
 obs <- data.frame(time=1:10, val_obs=c(1,4,8,10,11,8,5,3,3,2))
 
 # Plot them over the forecast and its quantile intervals
-plot_forecast(fc, obs=obs, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)))
+plot_forecast(fc, obs=obs, quant_intervals=list(c(25,75), c(2.5,97.5), c(5,95)))
 
 # Colour code points using `log_score()`
 # `plot_forecast()` automatically passes `summarize=FALSE` to
 # scoring functions in order to obtain the score for each day
-plot_forecast(fc, obs=obs, score=log_score, quant_pairs = c(2.5, 97.5))
+plot_forecast(fc, obs=obs, score=log_score, quant_intervals = c(2.5, 97.5))
 ```
 
-If you need to pass additional arguments to a scoring function, it needs to be wrapped so that it only accepts `fcts`, `obs`, and `summarize`. `{casteval}` contains the utilities `make_accuracy()` and `make_log_score()` to easily make wrapped scoring functions. For example, `accuracy()` needs a quantile pair specified, so we can do:
+You can pass additional arguments to `score` through the ellipsis parameter in `plot_forecast()`.
+For example, you can specify quantile pairs to `accuracy()` using this method.
 
 ```{r plot_forecast_examples3}
-# We use a function factory to wrap accuracy() (see `?make_accuracy`)
-quant <- c(5,95)
-acc90 <- make_accuracy(quant)
 
 # Identify the observations inside the 5%-95% quantile interval
-pp <- plot_forecast(fc, obs=obs, quant_pairs=list(c(25,75), c(2.5,97.5), c(5,95)), score=acc90)
+quant <- c(5,95)
+pp <- plot_forecast(fc, obs=obs, quant_intervals=list(c(25,75), c(2.5,97.5), c(5,95)), score=accuracy, quant_pairs=quant)
 pp
 ```
 
