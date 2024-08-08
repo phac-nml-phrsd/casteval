@@ -7,9 +7,10 @@
 plot_forecast(
   fcst,
   obs = NULL,
-  quant_pairs = NULL,
+  quant_intervals = NULL,
   invert_scale = FALSE,
-  score = NULL
+  score = NULL,
+  ...
 )
 }
 \arguments{
@@ -18,7 +19,7 @@ plot_forecast(
 \item{obs}{(Optional) An observations data frame.
 If provided, they will be overlaid over the forecast as points.}
 
-\item{quant_pairs}{(Optional) A list of pairs of numbers between 0 and 100,
+\item{quant_intervals}{(Optional) A list of pairs of numbers between 0 and 100,
 or a single pair of numbers between 0 and 100.
 If provided, the score for each corresponding pairs of quantiles will be calculated.
 If not provided, it will default to every symmetrical pair of quantiles that can be found in \code{fcst},
@@ -26,7 +27,7 @@ ordered from widest to narrowest (e.x. the 25\% and 75\% quantiles are symmetric
 
 The corresponding quantile intervals, if present, will be displayed in the resulting plot.
 
-\code{quant_pairs} can be set to \code{list()} in order to display no quantile intervals.}
+\code{quant_intervals} can be set to \code{list()} in order to display no quantile intervals.}
 
 \item{invert_scale}{(Optional) (Optional) a boolean.
 If \code{TRUE}, the color scale for scoring will be inverted.
@@ -37,6 +38,10 @@ The function will be used to score \code{fcst} against \code{obs}.
 A scoring function should accept a forecast object, an observations data frame, as well as a \code{summarize} argument.
 See \code{?accuracy}, \code{?log_score} for examples.
 See \code{vignette(topic='casteval', package='casteval')} for details.}
+
+\item{...}{Additional parameters to be passed to \code{score}.
+Note that \code{summarize} should not be one of them,
+since \code{casteval} already passes that to \code{score}.}
 }
 \value{
 A ggplot object
@@ -58,10 +63,10 @@ plot_forecast(fc)
 plot_forecast(fc, obs)
 
 # plot forecast and quantile interval(s)
-plot_forecast(fc, quant_pairs=list(c(25,75), c(2.5,97.5)))
+plot_forecast(fc, quant_intervals=list(c(25,75), c(2.5,97.5)))
 
 # highlight the observations inside the quantile interval
-plot_forecast(fc, obs, quant_pairs=c(2.5,97.5), score=make_accuracy(c(2.5,97.5)))
+plot_forecast(fc, obs, quant_intervals=c(2.5,97.5), score=make_accuracy(c(2.5,97.5)))
 
 # show the log score of each observation
 plot_forecast(fc, obs, score=log_score)

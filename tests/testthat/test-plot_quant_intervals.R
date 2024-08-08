@@ -13,11 +13,11 @@ test_that("plot_quant_intervals() works", {
   ))
 
   vdiffr::expect_doppelganger("interval1",
-    plot_quant_intervals(NULL, fc1, list(c(25,75), c(5,95), c(10,90)))
+    plot_quant_intervals(NULL, fc1, quant_intervals=list(c(25,75), c(5,95), c(10,90)))
   )
 
   expect_error(
-    plot_quant_intervals(NULL, fc1, list(c(2.5, 97.5))),
+    plot_quant_intervals(NULL, fc1, quant_intervals=list(c(2.5, 97.5))),
     "could not compute/obtain 2.5% quantile from data frame"
   )
 

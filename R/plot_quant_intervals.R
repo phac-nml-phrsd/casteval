@@ -4,7 +4,8 @@
 #'
 #' @template plt
 #' @template fcst
-#' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100.
+#' @param quant_intervals (Optional) A list of pairs of numbers between 0 and 100,
+#' or a single pair of such numbers.
 #'  If not provided, the quantile intervals will be inferred from the forecast.
 #'  Otherwise, each pair will be used as a quantile intervals.
 #' @template alpha
@@ -38,7 +39,7 @@
 #' 
 #' # quantile pairs must be specified for raw data
 #' plot_quant_intervals(NULL, fc2, list(c(5, 95), c(25,75)))
-plot_quant_intervals <- function(plt=NULL, fcst, quant_pairs=NULL, alpha=NULL, palette=1) {
+plot_quant_intervals <- function(plt=NULL, fcst, quant_intervals=NULL, alpha=NULL, palette=1) {
     ## validate/process parameters
 
     validate_forecast(fcst)
@@ -47,27 +48,27 @@ plot_quant_intervals <- function(plt=NULL, fcst, quant_pairs=NULL, alpha=NULL, p
     }
 
     # get quantile pairs
-    quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data)
+    quant_intervals <- parse_quant_pairs(quant_intervals, fcst$data)
     # sort quantile pairs
-    quant_pairs <- quant_pairs |>
+    quant_intervals <- quant_intervals |>
         purrr::map(\(pair) pair[[1]]) |>
         as.numeric() |>
         order() %>%
-        quant_pairs[.] 
+        quant_intervals[.] 
 
     if(is.null(alpha)) {
-        alpha <- 0.5 / length(quant_pairs)
+        alpha <- 0.5 / length(quant_intervals)
     }
 
     ## calculate the high and low quantiles for each interval
 
     # make a factor containing names of the intervals
-    names <- quant_pairs |>
+    names <- quant_intervals |>
         purrr::map(\(pair) glue::glue("{pair[[1]]}%-{pair[[2]]}%")) |>
         as.character() %>%
         factor(., levels=.)
 
-    intervals <- quant_pairs |>
+    intervals <- quant_intervals |>
         # for every pair,
         purrr::imap(\(pair, i)
             # get the low quantile in a data frame

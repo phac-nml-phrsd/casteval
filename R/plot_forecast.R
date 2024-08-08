@@ -11,7 +11,7 @@
 #' @template fcst
 #' @param obs (Optional) An observations data frame.
 #'  If provided, they will be overlaid over the forecast as points.
-#' @param quant_pairs (Optional) A list of pairs of numbers between 0 and 100,
+#' @param quant_intervals (Optional) A list of pairs of numbers between 0 and 100,
 #' or a single pair of numbers between 0 and 100.
 #' If provided, the score for each corresponding pairs of quantiles will be calculated.
 #' If not provided, it will default to every symmetrical pair of quantiles that can be found in `fcst`,
@@ -19,12 +19,15 @@
 #' 
 #' The corresponding quantile intervals, if present, will be displayed in the resulting plot.
 #' 
-#' `quant_pairs` can be set to `list()` in order to display no quantile intervals.
+#' `quant_intervals` can be set to `list()` in order to display no quantile intervals.
 #' 
 #' @param invert_scale (Optional) (Optional) a boolean.
 #' If `TRUE`, the color scale for scoring will be inverted.
 #' This is useful for scores where smaller values are better, e.x. CRPS.
 #' @template score
+#' @param ... Additional parameters to be passed to `score`.
+#' Note that `summarize` should not be one of them,
+#' since `casteval` already passes that to `score`.
 #' 
 #' @returns A ggplot object
 #' @export
@@ -44,14 +47,14 @@
 #' plot_forecast(fc, obs)
 #' 
 #' # plot forecast and quantile interval(s)
-#' plot_forecast(fc, quant_pairs=list(c(25,75), c(2.5,97.5)))
+#' plot_forecast(fc, quant_intervals=list(c(25,75), c(2.5,97.5)))
 #' 
 #' # highlight the observations inside the quantile interval
-#' plot_forecast(fc, obs, quant_pairs=c(2.5,97.5), score=make_accuracy(c(2.5,97.5)))
+#' plot_forecast(fc, obs, quant_intervals=c(2.5,97.5), score=make_accuracy(c(2.5,97.5)))
 #' 
 #' # show the log score of each observation
 #' plot_forecast(fc, obs, score=log_score)
-plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, score=NULL) {
+plot_forecast <- function(fcst, obs=NULL, quant_intervals=NULL, invert_scale=FALSE, score=NULL, ...) {
     # validate forecast and/or observations
     if(is.null(obs)) {
         validate_forecast(fcst)
@@ -75,11 +78,12 @@ plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, 
     # TODO parameters/flags for keeping/discarding fit data, observations data that doesn't correpsond to forecast data, etc.
 
     # pass allow_empty=TRUE so that missing quantile intervals is allowed
-    quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data, allow_empty=TRUE)
+    # the param is named "quant_intervals" to avoid conflicting with the ... params
+    quant_intervals <- parse_quant_pairs(quant_intervals, fcst$data, allow_empty=TRUE)
 
     # plot quant intervals if present
-    if(length(quant_pairs) > 0) {
-        plt <- plt |> plot_quant_intervals(fcst, quant_pairs)
+    if(length(quant_intervals) > 0) {
+        plt <- plt |> plot_quant_intervals(fcst, quant_intervals)
     }
 
     # plot observatinos if present
@@ -87,7 +91,7 @@ plot_forecast <- function(fcst, obs=NULL, quant_pairs=NULL, invert_scale=FALSE, 
         if(is.null(score)) {
             plt <- plt |> plot_observations(obs)
         } else {
-            plt <- plt |> plot_obs_score(fcst, obs, invert_scale=invert_scale, score=score)
+            plt <- plt |> plot_obs_score(fcst, obs, invert_scale=invert_scale, score=score, ...)
         }
     }
 

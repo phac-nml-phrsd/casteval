@@ -7,7 +7,7 @@
 plot_quant_intervals(
   plt = NULL,
   fcst,
-  quant_pairs = NULL,
+  quant_intervals = NULL,
   alpha = NULL,
   palette = 1
 )
@@ -19,7 +19,8 @@ Defaults to NULL, in which case a blank ggplot object will be created.}
 
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
-\item{quant_pairs}{(Optional) A list of pairs of numbers between 0 and 100.
+\item{quant_intervals}{(Optional) A list of pairs of numbers between 0 and 100,
+or a single pair of such numbers.
 If not provided, the quantile intervals will be inferred from the forecast.
 Otherwise, each pair will be used as a quantile intervals.}
 
