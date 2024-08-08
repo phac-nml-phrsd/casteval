@@ -37,19 +37,22 @@ If the forecast object includes a forecast date, then all data prior to `fcst$fo
 Many scoring functions calculate intermediate scores for each time point, and then select/combine those scores in order to return a single value.
 These functions accept an optional `summarize` parameter, which is a boolean.
 
-If `summarize=TRUE` (the default), the scoring function will usually return the score as a single number^[One exception is `accuracy()`, which returns a vector of numbers if a list of quantile pairs is provided, as expained [below](#accuracy-score)]. 
+If `summarize` is `TRUE` (the default), the scoring function will usually return the score as a single number^[One exception is `accuracy()`, which returns a vector of numbers if a list of quantile pairs is provided, as expained [below](#accuracy-score)]. 
 
-If `summarize=FALSE`, the scoring function will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point that was scored.
+If `summarize` is `FALSE`, the scoring function will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point that was scored.
 The type of the `score` column is not necessarily numeric (for example, in `accuracy()`, it is logical).
 
 # Scoring functions
 
+Below we describe the behaviour of all the builtin scoring functions.
+See the function documentation for details.
+
 ## Accuracy score {#accuracy-score}
 
-`accuracy(fcst, obs, summarize=TRUE, quant_pairs=NULL)` calculates the proportion of observations that fall inside a quantile interval of the forecast data.
+`accuracy()` calculates the proportion of observations that fall inside a quantile interval of the forecast data.
 
-If `fcts` contains summarized forecast data, accuracy will be calculated using the quantiles provided. 
-If `fcst` contains raw forecast data, you can use the `quant_pairs` argument to specify a pair of quantiles (_e.g._, `c(2.5, 97.5)`) or a list of pairs of quantiles (_e.g._, `list(c(2.5, 97.5), c(10, 90))`) against which to calculate accuracy. 
+If the forecast contains summarized forecast data, accuracy will be calculated using the provided quantiles. 
+If the forecast contains raw forecast data, you can use the `quant_pairs` parameter to specify a pair of quantiles (_e.g._, `c(2.5, 97.5)`) or a list of pairs of quantiles (_e.g._, `list(c(2.5, 97.5), c(10, 90))`) against which to calculate accuracy. 
 If a list of pairs of quantiles is provided, a separate score will be calculated for each pair.
 
 If `summarize` is `TRUE`, then the score(s) will be returned as a vector of numbers from 0 to 1, one score per quantile pair. 
@@ -115,18 +118,18 @@ accuracy(fc2, obs, summarize=FALSE)
 
 ## Logarithmic score
 
-`log_score(fcst, obs, summarize=TRUE, at=NULL, after=NULL, bw=NULL)` calculates the (positive) log score of a forecast.
+`log_score()` calculates the (positive) log score of a forecast.
 It uses [Kernel Density Estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation) (KDE) to obtain a probability distribution of forecasted values at each point in time in the forecast.
-If `f(x)` is the estimated probability distribution and `x_0` is the corresponding observation, then the log score at that point in time is `log(f(x_0))` (`log()` is the natural logarithm).
+If `f(x)` is the estimated probability distribution and `x_0` is the corresponding observation, then the log score at that point in time is `log(f(x_0))` (where `log()` is the natural logarithm).
 
-`fcst` must contain raw forecast data with 2 or more values per time point.
+The forecast must contain raw data with 2 or more values per time point.
 
 If `summarize` is `TRUE`, one score will be returned and it will be based on either the score at time `at` or at `fcst$forecast_time + after`, depending on whether `at` or `after` is provided. (Only one is accepted at a time.)
 
 If `summarize` is `FALSE`, then `at` and `after` are ignored, and the output will be a data frame as described [above](#summarize-flag), with scores for each observation.
 
 The KDE requires a bandwidth in order to calculate the forecast distribution at each observation time.
-If `bw` is left `NULL`, then a reasonable bandwidth will be automatically determined.
+If `bw` is not provided, then a reasonable bandwidth will be automatically determined.
 Otherwise, the value of `bw` (which must be a number greater than 0) will be used. See `?log_score` for more details.
 
 ### Visualizing the KDE
@@ -180,15 +183,15 @@ plot_KDE(fcst, obs, at=4, bw=2)
 
 ## Continuous Ranked Probability Score (CRPS) {#crps}
 
-`crps(fcst, obs, at=NULL, after=NULL, summarize=TRUE)` is like `log_score()`, but without the `bw` parameter.
+`crps()` is like `log_score()`, but without the `bw` parameter.
 Because it works using the CDF of a distribution and not the PDF, it does not rely on kernel density estimation.
-It is also penalises inaccurate forecasts less harshly than `log_score()`.
+It also penalises inaccurate forecasts less harshly than `log_score()`.
 
 ## Bias {#bias}
 
-`bias(fcst, obs, summarize=TRUE)` calculates how much a forecast overpredicts and underpredicts each observed value, and returns the result as a number between -1 and 1, where -1 means all observations were  underpredicted and 1 means all observations were overpredicted.
+`bias()` calculates how much a forecast overpredicts and underpredicts each observed value, and returns the result as a number between -1 and 1, where -1 means all observations were  underpredicted and 1 means all observations were overpredicted.
 
-`bias()` looks in `fcst` for three kinds of forecast data:
+`bias()` looks for three kinds of forecast data:
 
 1. raw data (`val`)
 2. mean data (`val_mean`)
