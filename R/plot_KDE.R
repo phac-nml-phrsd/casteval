@@ -1,4 +1,4 @@
-#' Plot the KDE used in `log_score`
+#' Plot the KDE used in `log_score()`
 #'
 #' Create a plot displaying the density function calculated by the Kernel Density Estimation (KDE),
 #' for the specified time in the forecast.

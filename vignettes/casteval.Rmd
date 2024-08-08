@@ -332,7 +332,7 @@ Since `plot_forecast()` returns a `ggplot2::ggplot` object, you can further cust
     colour = glue::glue("Observation predicted\nin {quant[1]}%-{quant[2]}% interval?"),
     fill = "Quantile interval"  
   )
-  + ggplot2::scale_colour_discrete(labels=c(`FALSE`="Yes", `TRUE`="No"))
+  + ggplot2::scale_colour_discrete(labels=c(`FALSE`="No", `TRUE`="Yes"))
   + ggplot2::theme_classic(base_size=14)
 )
 ```
