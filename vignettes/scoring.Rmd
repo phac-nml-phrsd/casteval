@@ -11,7 +11,8 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  strip.white=TRUE
+  strip.white=TRUE,
+  fig.width = 7
 )
 
 library(casteval)
@@ -183,9 +184,9 @@ plot_KDE(fcst, obs, at=4, bw=2)
 
 ## Continuous Ranked Probability Score (CRPS) {#crps}
 
-`crps()` is like `log_score()`, but without the `bw` parameter.
-Because it works using the CDF of a distribution and not the PDF, it does not rely on kernel density estimation.
-It also penalizes inaccurate forecasts less harshly than `log_score()`.
+`crps()` is the [Continuous Ranked Probability Score](https://en.wikipedia.org/wiki/Scoring_rule#Continuous_ranked_probability_score). It is similar to the `log_score()` in that it can only be performed on raw forecast data, since it requires a distribution of predicted observations at each fixed time. 
+However, it works using the **cumulative distribution function** of the predicted observations at each time (and not the probability density function), so does not rely on kernel density estimation.
+It is also penalizes inaccurate forecasts less harshly than `log_score()`.
 
 ### Examples
 ```{r crps_examples}

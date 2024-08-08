@@ -23,6 +23,10 @@ If \code{fcsts} is a list of forecast objects, then a list of scores will be ret
 Score a forecast against some observations using a given scoring function.
 Additional parameters can be passed along to the scoring function.
 }
+\details{
+See \code{vignette("scoring")} for a complete list of scoring functions available, along with the details of their use.
+s
+}
 \examples{
 fc1 <- create_forecast(data.frame(time=1:5, val=6:10))
 fc2 <- create_forecast(data.frame(time=1:5, val=7:11))

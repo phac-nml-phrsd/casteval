@@ -55,14 +55,22 @@ Raw forecast data must be passed in a column named `val`. A `sim` column may be 
 # raw forecast over with numeric times, without simulation numbers
 data.frame(
   time=rep(1:5,each=3),
-  val=c(100,101,102,110,111,112,120,121,122,130,131,132,140,141,142)
+  val=c(
+    100, 110, 120, 130, 140,
+    101, 111, 121, 131, 141,
+    102, 112, 122, 132, 142
+  )
 )
 
 # raw forecast data with dates, with simulation numbers
 data.frame(
-  time=lubridate::as_date(rep(1:5,each=3)),
-  sim=rep(1:3,5),
-  val=c(100,101,102,110,111,112,120,121,122,130,131,132,140,141,142)
+  sim=rep(1:3,each=5),
+  time=lubridate::as_date(rep(1:5,3)),
+  val=c(
+    100, 110, 120, 130, 140,
+    101, 111, 121, 131, 141,
+    102, 112, 122, 132, 142
+  )
 )
 ```
 
@@ -191,7 +199,7 @@ list(
 This list could be created by hand, without the help of `create_forecast()`, but we recommend the latter approach as `create_forecast()` validates its inputs to avoid issues downstream.
 For example, it checks that:
 
-- `forecast_time`'s type is consistent with `dat`
+- `forecast_time`'s type is consistent with `data`
 - quantile values are logically possible (_e.g._, median values can't be smaller than the 25th quantiles)
 - there are no conflicting rows (_e.g._, there can't be two rows with the same time reporting different means)
 
@@ -243,9 +251,9 @@ We describe these functions below.
 
 ## Plot a forecast
 
-`plot_forecast()` plots a forecast and optionally overlays observations, quantile intervals, and color-codes the observations based on score. 
+`plot_forecast()` plots a forecast and optionally overlays observations and quantile intervals, scores the forecast, and color-codes the observations based on score. 
 
-Its `quant_intervals` parameter is like the `quant_pairs` parameter `accuracy()`, and it is used to draw quantile intervals on the plot.^[It is named `quant_intervals` and not `quant_pairs` so that it does not conflict when passing `quant_pairs` through the `...` parameter to a scoring function]
+For raw forecast data, the `quant_intervals` parameter is like the `quant_pairs` parameter in `accuracy()`, and it is used to draw quantile intervals on the plot.^[It is named `quant_intervals` and not `quant_pairs` so that it does not conflict when passing `quant_pairs` through the `...` parameter to a scoring function]
 
 If `val_q50` is present in the forecast data, then the median will be plotted.
 Similarly, if `val_mean` is present, the mean will be plotted.
@@ -269,7 +277,12 @@ plot_forecast(fc)
 
 # Plot it and display 3 quantile intervals
 plot_forecast(fc, quant_intervals=list(c(25,75), c(2.5,97.5), c(5,95)))
+```
 
+For summarized forecast data, if `val_q50` is present in the forecast data, then the median will be plotted.
+Similarly, if `val_mean` is present, the mean will be plotted.
+
+```{r plot_forecast_examples2}
 # Create a forecast with mean and median data
 fc2 <- create_forecast(data.frame(
   time=1:5,
@@ -283,9 +296,9 @@ plot_forecast(fc2)
 
 ### Plot observations with scores
 
-`plot_forecast()` computes scores internally, so there is no need to precompute them as we did [above](#score-a-forecast). (However, it is important to understand the scoring functions available, in order to use `plot_forecast()`.) Just pass a compatible scoring function (one that supports the `summarize` flag) to the `score` argument. Then, `plot_forecast()` will run `score(fcst, obs, summarize=FALSE)`, and use the resulting data frame's `score` column to color code the observation points.
+If `plot_forecast()` is given observations and a scoring function, it can additionally compute scores internally. Just pass a scoring function to the `score` argument and `plot_forecast()` will run `score(fcst, obs, summarize=FALSE)` in order to plot the forecast with observations colour-coded with the scores.
 
-```{r plot_forecast_examples2}
+```{r plot_forecast_examples3}
 # Create some observations
 obs <- data.frame(time=1:10, val_obs=c(1,4,8,10,11,8,5,3,3,2))
 
@@ -301,8 +314,7 @@ plot_forecast(fc, obs=obs, score=log_score, quant_intervals = c(2.5, 97.5))
 You can pass additional arguments to `score` through the ellipsis parameter in `plot_forecast()`.
 For example, you can specify quantile pairs to `accuracy()` using this method.
 
-```{r plot_forecast_examples3}
-
+```{r plot_forecast_examples4}
 # Identify the observations inside the 5%-95% quantile interval
 quant <- c(5,95)
 pp <- plot_forecast(fc, obs=obs, quant_intervals=list(c(25,75), c(2.5,97.5), c(5,95)), score=accuracy, quant_pairs=quant)
@@ -323,7 +335,7 @@ plot_forecast(fc, obs, score=crps, invert_scale=TRUE)
 ### Customize the output
 Since `plot_forecast()` returns a `ggplot2::ggplot` object, you can further customize the plot to suit your application:
 
-```{r plot_forecast_examples4}
+```{r plot_forecast_examples5}
 (pp
   + ggplot2::labs(
     x = "Days from forecast",
@@ -336,9 +348,9 @@ Since `plot_forecast()` returns a `ggplot2::ggplot` object, you can further cust
 )
 ```
 
-## Other plotting functions
+## Atomic plotting functions
 
-Behind the scenes, `plot_forecast()` relies on several helper functions to plot the different aspects of a forecast.
+Behind the scenes, `plot_forecast()` weaves together the outputs of several helper functions to plot the different aspects of a forecast.
 If you want further control over the visualization process, you can use these functions directly.
 They are as follows:
 
@@ -350,8 +362,12 @@ They are as follows:
 - `plot_obs_score()` is a wrapper for `plot_observations()` which allows you to pass a scoring function, scoring parameters, and a forecast to be scored
 
 All these functions consume a `ggplot2::ggplot` object as their first parameter, and return a `ggplot2::ggplot` object as well.
-This makes it possible to compose these functions in any order to produce the plot you want.
+This makes it possible to compose these functions in any order using a pipe to produce the plot you want.
 
 ```{r other_plot_examples}
-NULL |> plot_ensemble(fc) |> plot_mean(fc) |> plot_quant_intervals(fc, c(25,75)) |> plot_obs_score(fc, obs, score=accuracy, quant_pairs=c(25,75))
+(plot_ensemble(fcst = fc) 
+  |> plot_quant_intervals(fc, c(25,75)) 
+  |> plot_mean(fc) 
+  |> plot_obs_score(fc, obs, score=accuracy, quant_pairs=c(25,75))
+)
 ```
