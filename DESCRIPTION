@@ -1,17 +1,17 @@
 Package: casteval
 Title: Modular tools for scoring and comparing infectious disease forecasts
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Daniel", "Yu", , "daniel.yu@phac-aspc.gc.ca", role = c("aut", "cre")),
     person("Irena", "Papst", , "irena.papst@phac-aspc.gc.ca", role = c("aut"))
     )
-URL: https://phrsd.pages.cscscience.ca/risk/casteval
-Description: Provides a generalized, modular set of tools to facilitate/automate the scoring and comparing of infectious disease forecasts. 
+URL: http://phrsd.pages.cscscience.ca/risk/casteval
+Description: Provides a generalized, modular set of tools to facilitate the scoring and comparing of infectious disease forecasts. 
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, roclets = c("collate", "namespace", "rd",
     "roxyglobals::global_roclet"))
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Suggests: 
     knitr,
     rmarkdown,
@@ -24,7 +24,8 @@ Suggests:
     htmltools,
     vdiffr,
     readr,
-    emo
+    emo,
+    withr
 Config/testthat/edition: 3
 Imports: 
     dplyr,

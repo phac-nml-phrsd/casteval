@@ -1,0 +1,249 @@
+---
+title: "Scoring forecasts"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{scoring}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  strip.white=TRUE,
+  fig.width = 7
+)
+
+library(casteval)
+
+ggplot2::theme_set(ggplot2::theme_light())
+```
+
+`{casteval}` includes several scoring funcions, such as `accuracy()`, `log_score()`, and `bias()`.
+These functions can be passed to `score()`, `plot_forecast()`, etc., or they can be used directly for scoring.
+
+In general, scoring functions accept the following arguments:
+
+- `fcst`: a [forecast object](casteval.html#forecast-object)
+- `obs`: an [observations data frame](casteval.html#observations-data-frame)
+- Additional arguments specific to particular scoring functions, such as [the `summarize` flag](#summarize-flag)
+
+In order for scoring to be possible, `fcst` and `obs` must use the same `time` type. If `fcst` or `obs` contain times not contained by the other, these times will be ignored when scoring.
+
+If the forecast object includes a forecast date, then all data prior to `fcst$forecast_time` will be ignored when scoring.
+
+## The `summarize` flag {#summarize-flag}
+
+Many scoring functions calculate intermediate scores for each time point, and then select/combine those scores in order to return a single value.
+These functions accept an optional `summarize` parameter, which is a boolean.
+
+If `summarize` is `TRUE` (the default), the scoring function will usually return the score as a single number^[One exception is `accuracy()`, which returns a vector of numbers if a list of quantile pairs is provided, as expained [below](#accuracy-score)]. 
+
+If `summarize` is `FALSE`, the scoring function will return a data frame with `time`, `obs`, and `score` columns, containing the observations and scores calculated for each time point that was scored.
+The type of the `score` column is not necessarily numeric (for example, in `accuracy()`, it is logical).
+
+# Scoring functions
+
+Below we describe the behaviour of all the builtin scoring functions.
+See the function documentation for details.
+
+## Accuracy score {#accuracy-score}
+
+`accuracy()` calculates the proportion of observations that fall inside a quantile interval of the forecast data.
+
+If the forecast contains summarized forecast data, accuracy will be calculated using the provided quantiles. 
+If the forecast contains raw forecast data, you can use the `quant_pairs` parameter to specify a pair of quantiles (_e.g._, `c(2.5, 97.5)`) or a list of pairs of quantiles (_e.g._, `list(c(2.5, 97.5), c(10, 90))`) against which to calculate accuracy. 
+If a list of pairs of quantiles is provided, a separate score will be calculated for each pair.
+
+If `summarize` is `TRUE`, then the score(s) will be returned as a vector of numbers from 0 to 1, one score per quantile pair. 
+If `summarize` is `FALSE`, an accuracy score will be provided for each observation (as a boolean). 
+If more than one pair of quantiles is requested, then the returned data frame will contain an additional column named `pair`, which will indicate which quantile pair each score corresponds to.
+
+### Examples
+
+```{r accuracy_examples}
+# A forecast with raw data
+fc1 <- create_forecast(data.frame(
+  time=rep(1:5, each=11),
+  val=rep(0:10, 5)
+))
+
+# A forecast with quantile data
+fc2 <- create_forecast(dplyr::tibble(
+  time=1:5,
+  val_q5=c(0.5,0.5,0.5,0.5,0.5),
+  val_q10=c(1,1,1,1,1),
+  val_q25=c(2.5,2.5,2.5,2.5,2.5),
+  val_q75=c(7.5,7.5,7.5,7.5,7.5),
+  val_q90=c(9,9,9,9,9),
+  val_q95=c(9.5,9.5,9.5,9.5,9.5)
+))
+
+# Another forecast with quantile data
+fc3 <- create_forecast(data.frame(
+    time=1:5,
+    val_q2.5=c(6,6,6,6,6),
+    val_q97.5=c(10,10,10,10,10)
+))
+
+obs <- data.frame(time=1:5, val_obs=c(0, 2.4, 5, 9.5, 10))
+
+# Calculate accuracy from raw data
+accuracy(fc1, obs, quant_pairs=c(25, 75))
+
+# Calculate the accuracy for every quantile pair present
+accuracy(fc2, obs)
+
+# Calculate the accuracy for a subset of quantile pairs
+accuracy(fc2, obs, quant_pairs=list(c(5,95), c(25,75)))
+
+# Calculate accuracy for only one quantile pair
+accuracy(fc2, obs, quant_pairs=c(5, 95))
+
+# If `forecast_time` is NULL, every time point in the forecast will be scored
+accuracy(fc3, obs)
+
+# Otherwise, everything prior to `forecast_time` will be ignored
+fc3$forecast_time <- 3
+accuracy(fc3, obs)
+
+# We can see what is happening behind the scenes by passing `summarize=FALSE`
+df <- accuracy(fc3, obs, summarize=FALSE)
+df
+mean(df$score)
+
+# `pair` column maps rows to quantile pairs
+accuracy(fc2, obs, summarize=FALSE)
+```
+
+## Logarithmic score
+
+`log_score()` calculates the (positive) log score of a forecast.
+It uses [Kernel Density Estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation) (KDE) to obtain a probability distribution of forecasted values at each point in time in the forecast.
+If `f(x)` is the estimated probability distribution and `x_0` is the corresponding observation, then the log score at that point in time is `log(f(x_0))` (where `log()` is the natural logarithm).
+
+The forecast must contain raw data with 2 or more values per time point.
+
+If `summarize` is `TRUE`, one score will be returned and it will be based on either the score at time `at` or at `fcst$forecast_time + after`, depending on whether `at` or `after` is provided. (Only one is accepted at a time.)
+
+If `summarize` is `FALSE`, then `at` and `after` are ignored, and the output will be a data frame as described [above](#summarize-flag), with scores for each observation.
+
+The KDE requires a bandwidth in order to calculate the forecast distribution at each observation time.
+If `bw` is not provided, then a reasonable bandwidth will be automatically determined.
+Otherwise, the value of `bw` (which must be a number greater than 0) will be used. See `?log_score` for more details.
+
+### Visualizing the KDE
+
+When evaluating forecasts using `log_score()` you may want to inspect inspect the KDE as a confidence check, especially if the forecast data is very sparse.
+You may also want to see how setting the `bw` parameter affects the resulting distribution, or whether the automatically calculated bandwidth is acceptable. 
+
+`plot_KDE()` allows you to do this. Like `log_score()`, it accepts the parameters `fcst`, `obs` (which is now optional), `at`, `after`, and `bw`.
+It also accepts the optional parameters `from`, `to`, `n`, and `binwidth` (not to be confused with bandwidth). See `?plot_KDE` for a detailed explanation of these extra parameters.
+
+`plot_KDE()` will plot the following elements:
+
+- the data points of the `fcst` and/or `obs` at the time point specified by `at` or `after`
+- a histogram showing the distribution of `fcst`'s data points (once again specified by `at` or `after`), normalized to integrate to 1 in order to be comparable to a probability density
+- the density curve calculated by the KDE
+
+### Examples
+
+```{r log_score_examples}
+# generated using `rnorm(20) + 10`
+d <- c(10.609344, 10.383797, 11.102006, 10.232616, 11.372632, 11.489963, 10.359282, 10.303749,
+  7.477219,  9.612921,  8.568241, 11.467244,  9.979756, 10.226105, 9.592584,  9.582751,  8.674618,
+  8.706757,  9.810594, 10.752879)
+
+fcst <- create_forecast(
+  data.frame(time=rep(1:5, each=20), val=rep(d,5)),
+  forecast_time=2
+)
+
+obs <- data.frame(time=1:5, val_obs=c(2, 7, 10, 11, 100))
+
+# get the score at time 3
+log_score(fcst, obs, at=3)
+
+# get the score at time `fcst$forecast_time + 2` (4)
+log_score(fcst, obs, after=2)
+
+# get all the scores as part of a data frame
+log_score(fcst, obs, summarize=FALSE)
+
+# check the KDE at time 4 with default binwidth
+# the observation point shows up as a vertical line
+plot_KDE(fcst, obs, at=4)
+
+# check the KDE at time 4 with a too-low binwidth (making the resulting distribution very jagged)
+plot_KDE(fcst, obs, at=4, bw=0.2)
+
+# check the KDE at time 4 with a too-high binwidth (resulting in an underconfident distribution)
+plot_KDE(fcst, obs, at=4, bw=2)
+```
+
+## Continuous Ranked Probability Score (CRPS) {#crps}
+
+`crps()` is the [Continuous Ranked Probability Score](https://en.wikipedia.org/wiki/Scoring_rule#Continuous_ranked_probability_score). It is similar to the `log_score()` in that it can only be performed on raw forecast data, since it requires a distribution of predicted observations at each fixed time. 
+However, it works using the **cumulative distribution function** of the predicted observations at each time (and not the probability density function), so does not rely on kernel density estimation.
+It is also penalizes inaccurate forecasts less harshly than `log_score()`.
+
+### Examples
+```{r crps_examples}
+set.seed(42)
+dat <- rnorm(20) + 10
+
+fc <- create_forecast(data.frame(time=rep(1,20), val=dat))
+obs1 <- data.frame(time=1, val_obs=10)
+obs2 <- data.frame(time=1, val_obs=100)
+
+# the closer the score is to 0, the better
+crps(fc, obs1, at=1)
+
+# note how inaccuracies are not penalized as harshly as with `log_score()`
+crps(fc, obs2, at=1)
+```
+
+## Bias {#bias}
+
+`bias()` calculates how much a forecast overpredicts and underpredicts each observed value, and returns the result as a number between -1 and 1, where -1 means all observations were  underpredicted and 1 means all observations were overpredicted.
+
+`bias()` looks for three kinds of forecast data:
+
+1. raw data (`val`)
+2. mean data (`val_mean`)
+3. median data (`val_q50`)
+
+It uses the first of these that it can find to calculate the bias.
+
+### Examples
+```{r bias_examples}
+obs <- data.frame(time=1:5, val_obs=rep(10,5))
+
+# this forecast 
+fc1 <- create_forecast(dplyr::tibble(
+  time=c(1,1,2,2,3,3,4,4,5,5),
+  val=c(9, 9, 9, 10, 10, 10, 10, 11, 11, 11)
+))
+
+bias(fc1, obs, summarize=FALSE)
+
+fc2 <- create_forecast(data.frame(
+    time=c(1,1,1,2,2,2,3,3,3),
+    val=c(9,9,9,10,10,10,11,9,9)
+))
+
+bias(fc2, obs)
+
+fc3 <- create_forecast(data.frame(time=1:3, val_mean=c(12,12,10)))
+bias(fc3, obs)
+
+fc4 <- create_forecast(data.frame(time=1:3, val_q50=c(0,0,0)))
+bias(fc4, obs)
+```
+
+# Defining your own scoring functions
+
+You can define your own scoring functions and use them just as you would `{casteval}`'s built-in scoring functions.
+Like the functions described above, it should accept a forecast object `fcst`, an observations data frame `obs`, and possibly additional arguments.
+If your scoring function returns a score for each observation (in [the same way that `summarize=FALSE` does](#summarize-flag) for the functions above), then the plotting functions can readily use this added information when visualizing forecast scores (discussed further below).

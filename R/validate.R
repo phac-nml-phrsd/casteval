@@ -460,3 +460,42 @@ validate_quant_pair <- function(pair) {
 
     invisible(NULL)
 }
+
+
+#' Validate a single quantile
+#'
+#' Given a quantile, check that it:
+#' - is a single number
+#' - is between 0 and 100, inclusive
+#'
+#' @param quant The quantile to validate
+#'
+#' @returns `NULL` if valid, error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' # valid
+#' casteval:::validate_quant(50)
+#' casteval:::validate_quant(0)
+#' casteval:::validate_quant(100)
+#' casteval:::validate_quant(2.5)
+#' 
+#' # invalid
+#' try(casteval:::validate_quant("50"))
+#' try(casteval:::validate_quant(-1))
+#' try(casteval:::validate_quant(c(25,75)))
+validate_quant <- function(quant) {
+    if(!is.numeric(quant)) {
+        stop("`quant` must be numeric")
+    }
+
+    if(length(quant) != 1) {
+        stop(glue::glue("`quant` must be exactly 1 number, received numeric vector of length {length(quant)}"))
+    }
+
+    if(quant < 0 || quant > 100) {
+        stop("`quant` must be between 0 and 100")
+    }
+
+    invisible(NULL)
+}

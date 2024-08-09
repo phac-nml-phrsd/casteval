@@ -7,6 +7,7 @@
 R/test.R
 inst/doc
 /doc/
+public/
 /Meta/
 data-raw/test.R
 tests/vdiffr.Rout.fail

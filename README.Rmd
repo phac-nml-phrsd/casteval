@@ -30,18 +30,21 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-The simplest way to install `{casteval}` is to:
+The simplest way to install `{casteval}` is to use 
 
-1. Install the `devtools` package
-1. Clone the `{casteval}` repository locally
-1. Open an R session at the top level of the `casteval` repo
-1. Execute `devtools::install()`
+```
+install.packages("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")
+```
 
 ## Usage
 
 See `vignette("casteval")` to get started.
 
 ## For developers
+
+### Source code
+
+The source code is located [here](https://gitlab.cscscience.ca/phrsd/risk/casteval)
 
 ### `renv`
 
@@ -57,4 +60,4 @@ A side effect of this default behaviour is that, when you open a new R session i
 
 ### Test coverage
 
-You can use `covr::report()` to periodically check test coverage locally in development. When a merge request is created, a GitLab CI pipeline will generate a test coverage report [here](http://phrsd.pages.cscscience.ca/risk/casteval/coverage.html).
+You can use `covr::report()` to periodically check test coverage locally in development.

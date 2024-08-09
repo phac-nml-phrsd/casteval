@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_observations.R
 \name{plot_observations}
 \alias{plot_observations}
-\title{Intelligently plot observations}
+\title{Plot observations}
 \usage{
 plot_observations(plt = NULL, obs, alpha = 0.4, colour = "black")
 }
@@ -15,9 +15,9 @@ Defaults to NULL, in which case a blank ggplot object will be created.}
 the observation points will be colour-coded according to the scores.
 Otherwise, the \code{alpha} and \code{colour} parameters will determine the opacity and colour of the points.}
 
-\item{alpha}{(Optional) The alpha value to be passed to \code{ggplot2}.}
+\item{alpha}{(Optional) The alpha parameter to be passed to \code{ggplot2}}
 
-\item{colour}{(Optional) The colour to be passed to \code{ggplot2}.}
+\item{colour}{(Optional) The colour to be passed to \code{ggplot2}}
 }
 \value{
 A ggplot object.
@@ -34,14 +34,14 @@ fc <- create_forecast(list(
 obs <- data.frame(time=1:3, val_obs=c(5,9,13))
 
 # plot observations on their own
-casteval:::plot_observations(NULL, obs)
+plot_observations(NULL, obs)
 
 # plot observations alongside forecast data
-casteval:::plot_observations(casteval:::plot_ensemble(NULL, fc), obs)
+plot_observations(plot_ensemble(NULL, fc), obs)
 
 # plot observations alongside forecast data, and colour-code by score
-casteval:::plot_observations(
-  casteval:::plot_ensemble(NULL, fc),
+plot_observations(
+  plot_ensemble(NULL, fc),
   log_score(fc, obs, summarize=FALSE)
 )
 }

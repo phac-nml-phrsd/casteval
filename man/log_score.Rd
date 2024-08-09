@@ -16,7 +16,7 @@ If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code
 containing the scores for each individual time point.
 This can be used by plotting functions to colour-code observations, for example.}
 
-\item{at}{(Optional) A time (compatible with \code{fcst} and \code{obs}).
+\item{at}{(Optional) A time (must be compatible with \code{fcst} and \code{obs}).
 If specified, the score for this time point will be returned.
 Mutually exclusive with \code{after}.}
 
@@ -29,7 +29,7 @@ If not provided, a bandwidth will automatically be calculated by \code{scoringRu
 }
 \value{
 If \code{summarize} is \code{FALSE},
-a data frame containing times, raw data, observations, and scores for those times.
+a data frame containing times, observations, and scores.
 Otherwise, the score at the time speficied by either \code{at} or \code{after}.
 }
 \description{

@@ -1,44 +1,50 @@
-test_that("plot_quant_intervals() works", {
-  fc1 <- create_forecast(dplyr::tibble(
-    time=1:3,
-    val_q5=8:6, val_q95=22:20,
-    val_q10=10:8, val_q90=20:18,
-    val_q25=14:12, val_q75=16:14
+test_that("plot_quantiles() works", {
+  fc <- create_forecast(list(
+    time=1:10,
+    vals=list(
+      c(1,2,3,5,4,5,4,6,6,5),
+      c(1,3,5,4,6,5,7,9,8,8),
+      c(1,4,3,4,5,6,5,3,2,2),
+      c(1,2,4,5,7,8,7,9,10,9)
+    )
   ))
 
-  fc2 <- create_forecast(dplyr::tibble(
-    time=rep(1:3, each=5),
-    sim=rep(1:5, 3),
-    val=c(c(3,5,6,7,3), c(6,8,7,8,7), c(11,15,13,14,17))
-  ))
+  vdiffr::expect_doppelganger("quant1",
+    NULL |> plot_ensemble(fc) |> plot_quantiles(fc, quants=50)
+  )
 
-  vdiffr::expect_doppelganger("interval1",
-    plot_quant_intervals(NULL, fc1, list(c(25,75), c(5,95), c(10,90)))
+  vdiffr::expect_doppelganger("quant2",
+    NULL |> plot_ensemble(fc) |> plot_quantiles(fc, quants=c(2.5, 5, 10, 25, 50, 90, 95, 97.5))
+  )
+
+  vdiffr::expect_doppelganger("quant3",
+    NULL |> plot_ensemble(fc) |> plot_quantiles(fc, quants=c(2.5, 50, 97.5), colour="green", alpha=0.5)
   )
 
   expect_error(
-    plot_quant_intervals(NULL, fc1, list(c(2.5, 97.5))),
-    "could not compute/obtain 2.5% quantile from data frame"
+    NULL |> plot_quantiles(fc),
+    "no quantile columns in forecast data and `quants` not provided"
   )
 
-  vdiffr::expect_doppelganger("interval2",
-    plot_quant_intervals(NULL, fc1)
+  fc2 <- create_forecast(data.frame(
+    time=1:10,
+    val_q2.5=1:10,
+    val_q25=2:11,
+    val_q50=3:12,
+    val_q75=4:13,
+    val_q97.5=5:14
+  ))
+
+  vdiffr::expect_doppelganger("quant4",
+    NULL |> plot_quantiles(fc2)
   )
 
-  vdiffr::expect_doppelganger("interval3",
-    plot_quant_intervals(NULL, fc1, list(c(25,75), c(10,90)), palette="Greens", alpha=1)
+  vdiffr::expect_doppelganger("quant5",
+    NULL |> plot_quantiles(fc2, quants=c(2.5,50,97.5))
   )
 
   expect_error(
-    plot_quant_intervals(NULL, fc2),
-    "could not infer quantile pairs from forecast data"
-  )
-
-  vdiffr::expect_doppelganger("interval4",
-    plot_quant_intervals(NULL, fc2, list(c(5, 95), c(25,75)))
-  )
-
-  vdiffr::expect_doppelganger("interval5",
-    NULL |> plot_ensemble(fc2) |> plot_quant_intervals(fc2, list(c(25, 75), c(5, 95)))
+    NULL |> plot_quantiles(fc2, quants=c(50,50)),
+    "`quants` contains duplicate quantiles"
   )
 })

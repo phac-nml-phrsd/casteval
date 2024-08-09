@@ -6,18 +6,20 @@
 #'
 #' @template plt
 #' @template fcst
-#' @template ggplot2params
+#' @template alpha
+#' @template colour
 #'
 #' @returns A ggplot object.
 #' @autoglobal
+#' @export
 #'
 #' @examples
-#' casteval:::plot_ensemble(
+#' plot_ensemble(
 #'   NULL,
 #'   create_forecast(dplyr::tibble(time=rep(1:3,each=3), sim=rep(1:3,3), val=c(4:12))
 #' ))
 #' 
-#' NULL |> casteval:::plot_ensemble(create_forecast(data.frame(
+#' NULL |> plot_ensemble(create_forecast(data.frame(
 #'   time=lubridate::as_datetime(c(0,20000,100000)),
 #'   val=c(20,30,40)
 #' )))

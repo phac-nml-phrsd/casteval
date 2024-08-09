@@ -2,36 +2,43 @@
 
 utils::globalVariables(c(
   "pair", # <accuracy>
-  "score", # <accuracy>
   "quant", # <accuracy_help>
   "time", # <accuracy_help>
   "val_obs", # <accuracy_help>
-  "score", # <accuracy_help>
   "val", # <bias>
   "val_mean", # <bias>
   "val_q50", # <bias>
   "prediction", # <bias>
   "val_obs", # <bias>
   "time", # <bias>
-  "score", # <bias>
+  "time", # <crps>
+  "val", # <crps>
+  "val_obs", # <crps>
   "time", # <log_score>
   "val", # <log_score>
   "val_obs", # <log_score>
-  "score", # <log_score>
   "y", # <plot_KDE>
   "density", # <plot_KDE>
   "time", # <plot_ensemble>
   "val", # <plot_ensemble>
   "sim", # <plot_ensemble>
+  "time", # <plot_mean>
+  "val", # <plot_mean>
+  "val_mean", # <plot_mean>
   "time", # <plot_observations>
   "val_obs", # <plot_observations>
-  "score", # <plot_observations>
+  "alpha", # <plot_obs_score>
+  "colour", # <plot_obs_score>
   ".", # <plot_quant_intervals>
   "quant", # <plot_quant_intervals>
   "time", # <plot_quant_intervals>
   "lo", # <plot_quant_intervals>
   "hi", # <plot_quant_intervals>
   "interval", # <plot_quant_intervals>
+  "quant", # <plot_quantiles>
+  "linetype", # <plot_quantiles>
+  "time", # <plot_quantiles>
+  "value", # <plot_quantiles>
   "time", # <get_quantile>
   "val", # <get_quantile>
   "time", # <filter_forecast_time>

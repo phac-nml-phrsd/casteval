@@ -1,4 +1,4 @@
-#' Intelligently plot observations
+#' Plot observations
 #'
 #' Plot observation points. If scores are provided alongside the observations,
 #'  the plot can be colour-coded to convey information about score, accuracy, etc.
@@ -7,10 +7,12 @@
 #' @param obs An observations data frame. If it contains a `score` column,
 #'  the observation points will be colour-coded according to the scores.
 #'  Otherwise, the `alpha` and `colour` parameters will determine the opacity and colour of the points.
-#' @template ggplot2params
+#' @template alpha
+#' @template colour
 #'
 #' @returns A ggplot object.
 #' @autoglobal
+#' @export
 #'
 #' @examples
 #' fc <- create_forecast(list(
@@ -20,17 +22,18 @@
 #' obs <- data.frame(time=1:3, val_obs=c(5,9,13))
 #' 
 #' # plot observations on their own
-#' casteval:::plot_observations(NULL, obs)
+#' plot_observations(NULL, obs)
 #' 
 #' # plot observations alongside forecast data
-#' casteval:::plot_observations(casteval:::plot_ensemble(NULL, fc), obs)
+#' plot_observations(plot_ensemble(NULL, fc), obs)
 #' 
 #' # plot observations alongside forecast data, and colour-code by score
-#' casteval:::plot_observations(
-#'   casteval:::plot_ensemble(NULL, fc),
+#' plot_observations(
+#'   plot_ensemble(NULL, fc),
 #'   log_score(fc, obs, summarize=FALSE)
 #' )
 plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
+    validate_obs(obs)
     if(is.null(plt)) {
         plt <- ggplot2::ggplot()
     }
@@ -48,3 +51,51 @@ plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
     }
 }
 # TODO make TRUE consistently one color and FALSE consistently another
+
+
+#' Plot and score against observations
+#'
+#' Wrapper for `plot_observations()`.
+#' Scores the given forecast against the given observations,
+#' then plots the observations with a colour scale corresponding to score.
+#'
+#' @template plt
+#' @template fcst
+#' @param obs An observations data frame
+#' @param invert_scale (Optional) a boolean. If `TRUE`, the color scale will be inverted.
+#' This is useful for scores where smaller values are better, e.x. CRPS.
+#' @template score
+#' @param ... Additional parameters to be passed to `score`.
+#' Note that `summarize` should not be one of them,
+#' since `casteval` already passes that to `score`.
+#'
+#' @returns A ggplot object
+#' @export
+#' @autoglobal
+#'
+#' @examples
+#' fc <- create_forecast(list(
+#'   time=1:10,
+#'   vals=list(
+#'     c(1,2,3,5,4,5,4,6,6,5),
+#'     c(1,3,5,4,6,5,7,9,8,8),
+#'     c(1,4,3,4,5,6,5,3,2,2),
+#'     c(1,2,4,5,7,8,7,9,10,9)
+#'   )
+#' ))
+#' 
+#' obs <- data.frame(time=1:10, val_obs=c(1,4,8,10,11,8,5,3,3,2))
+#' 
+#' NULL |> plot_obs_score(fc, obs, score=log_score, bw=2)
+plot_obs_score <- function(plt=NULL, fcst, obs, invert_scale=FALSE, score, ...) {
+    validate_fcst_obs_pair(fcst, obs)
+
+    obs <- score(fcst, obs, summarize=FALSE, ...)
+    plt <- plt |> plot_observations(obs, alpha=alpha, colour=colour)
+
+    if(invert_scale) {
+        plt <- plt + ggplot2::scale_color_continuous(trans="reverse")
+    }
+
+    plt
+}
