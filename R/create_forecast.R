@@ -68,7 +68,6 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
 
     #TODO messages & quiet mode
 
-    #check quant symmetry
     if(is.data.frame(dat)) {
         validate_data_frame(dat)
         df <- dat
@@ -94,7 +93,7 @@ create_forecast <- function(dat, name=NULL, forecast_time=NULL) {
         validate_time(fcst$forecast_time, fcst)
     }
 
-    # warn if unpaired quantiles that aren't the median
+    # warn about unpaired quantiles that aren't the median
     quants <- get_quant_percentages(df)
     unpaired <- pair_quantiles(quants)$unpaired
     unpaired <- unpaired[unpaired != 50]
