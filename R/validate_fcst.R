@@ -55,6 +55,107 @@ validate_forecast <- function(fcst) {
 }
 
 
+#' Validate forecast data frame
+#'
+#' Given a data frame, checks that:
+#' 
+#' - it isn't empty
+#' - it has a valid time column
+#' - its quantile columns are properly named and their values are in order
+#' - it has at least one data column
+#' - its data columns are numeric
+#'
+#' @param df A data frame
+#'
+#' @returns NULL on success. Error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' # valid
+#' casteval:::validate_data_frame(data.frame(
+#'   time=1:3,
+#'   val=4:6
+#' ))
+#' 
+#' # invalid (summary and unsummary data)
+#' try(casteval:::validate_data_frame(data.frame(
+#'   time=1:3,
+#'   val=4:6,
+#'   val_mean=7:9
+#' )))
+#' 
+#' # invalid (no data columns)
+#' try(casteval:::validate_data_frame(data.frame(
+#'   time=1:3
+#' )))
+validate_data_frame <- function(df) {
+    if(nrow(df) == 0) {
+        stop("data frame has no rows")
+    }
+
+    cols <- colnames(df)
+
+    # check time column
+    if(! "time" %in% cols) {
+        stop("data frame must contain `time` column")
+    }
+    validate_time_column(df$time)
+
+    # check quantile column names
+    quant_cols <- stringr::str_subset(cols, "^val_q")
+    quant_cols |> purrr::walk(validate_quant_name)
+
+    # check group column names
+    df |> get_group_names() |> validate_group_names()
+
+    # check contents of numeric columns
+    numeric_columns <- c("sim", "val", "val_mean", quant_cols)
+    for(col in numeric_columns) {
+        if(col %in% cols) {
+            if(!is.numeric(df[[col]])) {
+                stop(glue::glue("{col} column must be numeric"))
+            }
+        }
+    }
+
+    # if sim exists, val must exist
+    if("sim" %in% cols && (!"val" %in% cols)) {
+        stop("sim column present but val column missing")
+    }
+
+    summary_present <- "val_mean" %in% cols || length(quant_cols) > 0
+
+    if("val" %in% cols && summary_present) {
+        stop("both summarized and unsummarized (`val`) data provided")
+    }
+
+    # check for duplicate entries
+    if(("val" %in% cols && "sim" %in% cols) || summary_present) {
+        if(summary_present) {
+            grouped <- df |> dplyr::group_by(time)
+        } else {
+            grouped <- df |> dplyr::group_by(time, sim)
+        }
+
+        # group by group columns as well
+        grouped <- grouped |> group_all(.add=TRUE)
+
+        dups <- grouped |> dplyr::filter(dplyr::n() > 1)
+        if(nrow(dups) > 0) {
+            stop("data frame contains duplicate entries")
+        }
+    }
+
+    if((!"val" %in% cols) && !summary_present) {
+        stop("data frame contains no data columns")
+    }
+
+    validate_quant_order(df)
+
+    invisible(NULL)
+}
+
+
 #' Validate observations data frame
 #'
 #' Check that a given object:
@@ -153,106 +254,5 @@ validate_fcst_obs_pair <- function(fcst, obs) {
     if(get_time_type(obs) != get_time_type(fcst$data)) {
         stop("observations time type must match forecast time type")
     }
-    invisible(NULL)
-}
-
-
-#' Validate forecast data frame
-#'
-#' Given a data frame, checks that:
-#' 
-#' - it isn't empty
-#' - it has a valid time column
-#' - its quantile columns are properly named and their values are in order
-#' - it has at least one data column
-#' - its data columns are numeric
-#'
-#' @param df A data frame
-#'
-#' @returns NULL on success. Error otherwise
-#' @autoglobal
-#'
-#' @examples
-#' # valid
-#' casteval:::validate_data_frame(data.frame(
-#'   time=1:3,
-#'   val=4:6
-#' ))
-#' 
-#' # invalid (summary and unsummary data)
-#' try(casteval:::validate_data_frame(data.frame(
-#'   time=1:3,
-#'   val=4:6,
-#'   val_mean=7:9
-#' )))
-#' 
-#' # invalid (no data columns)
-#' try(casteval:::validate_data_frame(data.frame(
-#'   time=1:3
-#' )))
-validate_data_frame <- function(df) {
-    if(nrow(df) == 0) {
-        stop("data frame has no rows")
-    }
-
-    cols <- colnames(df)
-
-    # check time column
-    if(! "time" %in% cols) {
-        stop("data frame must contain `time` column")
-    }
-    validate_time_column(df$time)
-
-    # check quantile column names
-    quant_cols <- stringr::str_subset(cols, "^val_q")
-    quant_cols |> purrr::walk(validate_quant_name)
-
-    # check group column names
-    df |> get_group_names() |> validate_group_names()
-
-    # check contents of numeric columns
-    numeric_columns <- c("sim", "val", "val_mean", quant_cols)
-    for(col in numeric_columns) {
-        if(col %in% cols) {
-            if(!is.numeric(df[[col]])) {
-                stop(glue::glue("{col} column must be numeric"))
-            }
-        }
-    }
-
-    # if sim exists, val must exist
-    if("sim" %in% cols && (!"val" %in% cols)) {
-        stop("sim column present but val column missing")
-    }
-
-    summary_present <- "val_mean" %in% cols || length(quant_cols) > 0
-
-    if("val" %in% cols && summary_present) {
-        stop("both summarized and unsummarized (`val`) data provided")
-    }
-
-    # check for duplicate entries
-    if(("val" %in% cols && "sim" %in% cols) || summary_present) {
-        if(summary_present) {
-            grouped <- df |> dplyr::group_by(time)
-        } else {
-            grouped <- df |> dplyr::group_by(time, sim)
-        }
-
-        # group by group columns as well
-        grouped <- grouped |> group_all(.add=TRUE)
-
-        dups <- grouped |> dplyr::filter(dplyr::n() > 1)
-        if(nrow(dups) > 0) {
-            stop("data frame contains duplicate entries")
-        }
-    }
-
-    if((!"val" %in% cols) && !summary_present) {
-        stop("data frame contains no data columns")
-    }
-
-    validate_quant_order(df)
-
     invisible(NULL)
 }
