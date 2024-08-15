@@ -67,6 +67,11 @@ test_that("validate_obs() works", {
     "obs contains duplicate observations at time 2"
   )
 
+  expect_error(
+    validate_obs(data.frame(time=1, val_obs=4, grp_variable=3, grp_=2)),
+    "provided empty group name"
+  )
+
   expect_equal(
     validate_obs(data.frame(time=1:3, val_obs=4:6)),
     NULL
@@ -202,6 +207,13 @@ test_that("validate_data_frame() works", {
       time=c(1,1,2), val_q50=c(4,5,6)
     )),
     "data frame contains duplicate entries"
+  )
+
+  expect_error(
+    validate_data_frame(data.frame(
+      time=1, val=2, grp_scenario=3, grp_=4
+    )),
+    "provided empty group name"
   )
 
   expect_equal(
