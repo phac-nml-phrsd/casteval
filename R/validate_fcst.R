@@ -229,6 +229,7 @@ validate_obs <- function(obs) {
 #' - forecast is valid
 #' - observations are valid
 #' - forecast time type matches observations time type
+#' - forecast group columns match observations group columns
 #'
 #' @template fcst
 #' @param obs An observations data frame.
