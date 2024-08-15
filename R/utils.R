@@ -136,7 +136,10 @@ join_fcst_obs <- function(df, obs) {
     # filter out NAs
     obs <- obs |> dplyr::filter(!is.na(val_obs))
 
-    df <- dplyr::inner_join(df, obs, dplyr::join_by(time))
+    # create character vector of columns to join by
+    joinby <- c("time", get_group_cols(df))
+    # join
+    df <- dplyr::inner_join(df, obs, joinby)
 
     if(nrow(df) == 0) {
         stop("forecast and observations data do not share any time points")
