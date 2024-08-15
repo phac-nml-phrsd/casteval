@@ -1,21 +1,21 @@
 groupex <- dplyr::tribble(
-    ~time,  ~grp_variable,  ~grp_province,  ~grp_scenario,  ~val_q5,    ~val_q95,
-    1,      "hosp",         "ON",           1,              10,         20,
-    1,      "case",         "ON",           1,              1000,       2000,
-    1,      "hosp",         "QC",           1,              11,         21,
-    1,      "case",         "QC",           1,              1100,       2100,
-    1,      "hosp",         "ON",           2,              15,         25,
-    1,      "case",         "ON",           2,              1500,       2500,
-    1,      "hosp",         "QC",           2,              16,         26,
-    1,      "case",         "QC",           2,              1600,       2600,
-    2,      "hosp",         "ON",           1,              50,         60,
-    2,      "case",         "ON",           1,              5000,       6000,
-    2,      "hosp",         "QC",           1,              51,         61,
-    2,      "case",         "QC",           1,              5100,       6100,
-    2,      "hosp",         "ON",           2,              55,         65,
-    2,      "case",         "ON",           2,              5500,       6500,
-    2,      "hosp",         "QC",           2,              56,         66,
-    2,      "case",         "QC",           2,              5600,       6600
+    ~time,  ~grp_variable,  ~grp_province,  ~grp_scenario,  ~val_q5,    ~val_q95,   ~val_mean,
+    1,      "hosp",         "ON",           1,              10,         20,         15,
+    1,      "case",         "ON",           1,              1000,       2000,       1500,
+    1,      "hosp",         "QC",           1,              11,         21,         16,
+    1,      "case",         "QC",           1,              1100,       2100,       1600,
+    1,      "hosp",         "ON",           2,              15,         25,         20,
+    1,      "case",         "ON",           2,              1500,       2500,       2000,
+    1,      "hosp",         "QC",           2,              16,         26,         21,
+    1,      "case",         "QC",           2,              1600,       2600,       2100,
+    2,      "hosp",         "ON",           1,              50,         60,         55,
+    2,      "case",         "ON",           1,              5000,       6000,       5500,
+    2,      "hosp",         "QC",           1,              51,         61,         56,
+    2,      "case",         "QC",           1,              5100,       6100,       5600,
+    2,      "hosp",         "ON",           2,              55,         65,         60,
+    2,      "case",         "ON",           2,              5500,       6500,       6000,
+    2,      "hosp",         "QC",           2,              56,         66,         61,
+    2,      "case",         "QC",           2,              5600,       6600,       6100
 )
 
 groupex_obs <- dplyr::tribble(
