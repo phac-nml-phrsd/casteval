@@ -107,7 +107,9 @@ validate_time_column <- function(times) {
 #' casteval:::validate_group_names(c("variable", "scenario", "___12345"))
 #' 
 #' # invalid
-#' casteval:::validate_group_names(c("variable", ""))
+#' try(
+#'   casteval:::validate_group_names(c("variable", ""))
+#' )
 validate_group_names <- function(names) {
     # check for empty string
     if("" %in% names) {
