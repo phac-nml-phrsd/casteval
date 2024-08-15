@@ -249,10 +249,21 @@ validate_obs <- function(obs) {
 #'   data.frame(time=lubridate::ymd("2024-01-01"), val_obs=5)
 #' ))
 validate_fcst_obs_pair <- function(fcst, obs) {
+    # validate each independently
     validate_forecast(fcst)
     validate_obs(obs)
+
+    # check time type same
     if(get_time_type(obs) != get_time_type(fcst$data)) {
         stop("observations time type must match forecast time type")
     }
+
+    # check group columns same
+    obsgroups <- get_group_names(obs)
+    fcgroups <- get_group_names(fcst)
+    if(!setequal(obsgroups, fcgroups)) {
+        stop(glue::glue("differing group columns: forecast has {toString(fcgroups)}, observations have {toString(obsgroups)}"))
+    }
+
     invisible(NULL)
 }
