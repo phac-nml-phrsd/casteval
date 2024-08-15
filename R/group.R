@@ -11,7 +11,11 @@
 #' @autoglobal
 #'
 #' @examples
-#' #TODO
+#' # character(0)
+#' casteval:::get_group_names(data.frame(time=1))
+#' 
+#' # c("variable", "scenario")
+#' casteval:::get_group_names(data.frame(time=1, grp_variable=2, grp_scenario=3))
 get_group_names <- function(df) {
     colnames(df) |>
         stringr::str_subset("^grp_") |>
