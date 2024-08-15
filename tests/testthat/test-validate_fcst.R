@@ -67,6 +67,16 @@ test_that("validate_obs() works", {
     "obs contains duplicate observations at time 2"
   )
 
+  expect_equal(
+    validate_obs(groupex_obs),
+    NULL
+  )
+
+  expect_error(
+    validate_obs(dplyr::select(groupex_obs, time, grp_scenario, grp_variable, val_obs)),
+    "obs contains duplicate observations at time 1"
+  )
+
   expect_error(
     validate_obs(data.frame(time=1, val_obs=4, grp_variable=3, grp_=2)),
     "provided empty group name"
@@ -206,6 +216,16 @@ test_that("validate_data_frame() works", {
     validate_data_frame(data.frame(
       time=c(1,1,2), val_q50=c(4,5,6)
     )),
+    "data frame contains duplicate entries"
+  )
+
+  expect_equal(
+    validate_data_frame(groupex),
+    NULL
+  )
+
+  expect_error(
+    validate_data_frame(dplyr::select(groupex, time, val_q5, val_q95, grp_variable, grp_province)),
     "data frame contains duplicate entries"
   )
 
