@@ -260,9 +260,9 @@ validate_fcst_obs_pair <- function(fcst, obs) {
 
     # check group columns same
     obsgroups <- get_group_names(obs)
-    fcgroups <- get_group_names(fcst)
+    fcgroups <- get_group_names(fcst$data)
     if(!setequal(obsgroups, fcgroups)) {
-        stop(glue::glue("differing group columns: forecast has {toString(fcgroups)}, observations have {toString(obsgroups)}"))
+        stop(glue::glue("differing group columns: forecast has [{toString(fcgroups)}], observations have [{toString(obsgroups)}]"))
     }
 
     invisible(NULL)
