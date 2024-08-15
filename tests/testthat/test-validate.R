@@ -65,7 +65,7 @@ test_that("validate_column() works", {
 test_that("validate_group_names() works", {
   expect_error(
     validate_group_names(c("hi", "")),
-    "empty string present in group names"
+    "provided empty group name"
   )
 
   expect_equal(
