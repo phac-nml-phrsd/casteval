@@ -22,3 +22,22 @@ get_group_names <- function(df) {
         purrr::map(\(col) regmatches(col, regexpr("_", col), invert = TRUE)[[1]][[2]]) |>
         as.character()
 }
+
+
+#' Group forecast data frame
+#'
+#' Given a forecast data frame, group it by all the `grp_*` columns
+#'
+#' @param df A forecast data frame
+#' @param .add (Optional) The `.add` parameter to be passed to `dplyr::group_by()`.
+#' Defaults to `FALSE`
+#'
+#' @returns The grouped forecast data frame
+#' @autoglobal
+#'
+#' @examples
+#' 
+group_all <- function(df, .add=FALSE) {
+    group_cols <- colnames(df) |> stringr::str_subset("^grp_")
+    df |> dplyr::group_by(dplyr::pick(group_cols), .add=.add)
+}
