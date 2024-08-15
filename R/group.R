@@ -36,8 +36,11 @@ get_group_names <- function(df) {
 #' @autoglobal
 #'
 #' @examples
+#' # `{casteval}` exports an example data frame for grouping
+#' casteval:::group_all(groupex)
 #' 
+#' dplyr::group_by(groupex, time) |> casteval:::group_all(.add=TRUE)
 group_all <- function(df, .add=FALSE) {
     group_cols <- colnames(df) |> stringr::str_subset("^grp_")
-    df |> dplyr::group_by(dplyr::pick(group_cols), .add=.add)
+    df |> dplyr::group_by(dplyr::pick(dplyr::all_of(group_cols)), .add=.add)
 }

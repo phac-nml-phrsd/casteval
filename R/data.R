@@ -29,3 +29,8 @@
 #' @source <https://www.nature.com/articles/s41567-020-01121-y>
 #' @source <https://github.com/jonassjuul/curvestat>
 "denmark2020ens"
+
+#' Grouping example
+#'
+#' An example data frame for demonstrating `{casteval}`'s grouping functionality.
+"groupex"
