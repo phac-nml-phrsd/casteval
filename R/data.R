@@ -30,7 +30,11 @@
 #' @source <https://github.com/jonassjuul/curvestat>
 "denmark2020ens"
 
-#' Grouping example
+#' Grouping example forecast
 #'
-#' An example data frame for demonstrating `{casteval}`'s grouping functionality.
+#' An example forecast data frame for demonstrating `{casteval}`'s grouping functionality.
 "groupex"
+
+#' Grouping example observations
+#' An example observations data frame for demonstration `{casteval}`'s grouping functionality.
+"groupex_obs"

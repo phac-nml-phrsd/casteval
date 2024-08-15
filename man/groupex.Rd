@@ -3,7 +3,7 @@
 \docType{data}
 \name{groupex}
 \alias{groupex}
-\title{Grouping example}
+\title{Grouping example forecast}
 \format{
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 16 rows and 6 columns.
 }
@@ -11,6 +11,6 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 groupex
 }
 \description{
-An example data frame for demonstrating \code{{casteval}}'s grouping functionality.
+An example forecast data frame for demonstrating \code{{casteval}}'s grouping functionality.
 }
 \keyword{datasets}

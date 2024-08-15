@@ -4,13 +4,12 @@
 \alias{group_all}
 \title{Group forecast data frame}
 \usage{
-group_all(df, .add = FALSE)
+group_all(df, ...)
 }
 \arguments{
 \item{df}{A forecast data frame}
 
-\item{.add}{(Optional) The \code{.add} parameter to be passed to \code{dplyr::group_by()}.
-Defaults to \code{FALSE}}
+\item{...}{Additional arguments to be passed to \code{dplyr::group_by()} (e.x. \code{.add}, \code{.drop})}
 }
 \value{
 The grouped forecast data frame
