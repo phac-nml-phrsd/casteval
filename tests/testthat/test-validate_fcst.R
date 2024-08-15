@@ -88,24 +88,6 @@ test_that("validate_obs() works", {
   )
 })
 
-test_that("validate_fcst_obs_pair() works", {
-  expect_equal(
-    validate_fcst_obs_pair(
-      create_forecast(data.frame(time=1:10, val=11:20)),
-      data.frame(time=101:110, val_obs=111:120)
-    ),
-    NULL
-  )
-
-  expect_error(
-    validate_fcst_obs_pair(
-      create_forecast(data.frame(time=1:10, val=11:20)),
-      data.frame(time=lubridate::ymd("2024-01-01"), val_obs=5)
-    ),
-    "observations time type must match forecast time type"
-  )
-})
-
 test_that("validate_data_frame() works", {
   expect_error(
     validate_data_frame(data.frame(time=NULL,val=NULL)),
@@ -248,5 +230,44 @@ test_that("validate_data_frame() works", {
       time=c(1,1,2,2,3,3), sim=c(1,2,1,2,1,2), val=c(1,2,3,4,5,6)
     )),
     NULL
+  )
+})
+
+test_that("validate_fcst_obs_pair() works", {
+  expect_equal(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:10, val=11:20)),
+      data.frame(time=101:110, val_obs=111:120)
+    ),
+    NULL
+  )
+
+  expect_error(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:10, val=11:20)),
+      data.frame(time=lubridate::ymd("2024-01-01"), val_obs=5)
+    ),
+    "observations time type must match forecast time type"
+  )
+
+  expect_equal(
+    validate_fcst_obs_pair(create_forecast(groupex), groupex_obs),
+    NULL
+  )
+
+  expect_error(
+    validate_fcst_obs_pair(
+      create_forecast(data.frame(time=1:3, val=4:6)),
+      groupex_obs
+    ),
+    "differing group columns"
+  )
+
+  expect_error(
+    validate_fcst_obs_pair(
+      create_forecast(groupex |> dplyr::filter(grp_variable=="hosp") |> dplyr::select(time, val_q5, val_q95, grp_scenario, grp_province)),
+      groupex_obs
+    ),
+    "differing group columns"
   )
 })
