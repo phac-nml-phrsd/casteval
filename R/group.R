@@ -43,3 +43,21 @@ group_all <- function(df, ...) {
     group_cols <- colnames(df) |> stringr::str_subset("^grp_")
     df |> dplyr::group_by(dplyr::pick(dplyr::all_of(group_cols)), ...)
 }
+
+
+#' Does the forecast data have groups?
+#' 
+#' Predicate function which determines whether `df` contains `grp_*` columns
+#'
+#' @param df A forecast data frame
+#'
+#' @returns `TRUE` if there are groups, `FALSE` otherwise
+#' @autoglobal
+#'
+#' @examples
+#' casteval:::has_groups(data.frame(time=1,val=2))
+#' 
+#' casteval:::has_groups(data.frame(time=1, val=2, grp_scenario=3))
+has_groups <- function(df) {
+    length(get_group_names(df)) > 0
+}

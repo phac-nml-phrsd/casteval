@@ -45,3 +45,15 @@ test_that("group_all() works", {
     dplyr::group_by(tb, time)
   )
 })
+
+test_that("has_groups() works", {
+  expect_equal(
+    has_groups(data.frame(time=1, val=2, grp_scenario=3)),
+    TRUE
+  )
+
+  expect_equal(
+    has_groups(data.frame(time=1,val=2)),
+    FALSE
+  )
+})
