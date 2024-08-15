@@ -172,6 +172,11 @@ test_that("join_fcst_obs() works", {
     ),
     data.frame(time=1:3, val=4:6, val_obs=8:10)
   )
+
+  expect_equal(
+    join_fcst_obs(groupex, groupex_obs),
+    dplyr::inner_join(groupex, groupex_obs, dplyr::join_by(time, grp_variable, grp_province, grp_scenario))
+  )
 })
 
 test_that("get_time_point() works", {
