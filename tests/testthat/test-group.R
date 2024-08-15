@@ -27,4 +27,21 @@ test_that("group_all() works", {
     groupex |> dplyr::group_by(time) |> group_all(.add=TRUE),
     dplyr::group_by(groupex, time, grp_variable, grp_province, grp_scenario)
   )
+
+
+  tb <- dplyr::tibble(time=1:3, val=1:3)
+  expect_equal(
+    group_all(tb),
+    tb
+  )
+
+  expect_equal(
+    tb |> dplyr::group_by(time) |> group_all(),
+    tb
+  )
+
+  expect_equal(
+    tb |> dplyr::group_by(time) |> group_all(.add=TRUE),
+    dplyr::group_by(tb, time)
+  )
 })

@@ -29,8 +29,7 @@ get_group_names <- function(df) {
 #' Given a forecast data frame, group it by all the `grp_*` columns
 #'
 #' @param df A forecast data frame
-#' @param .add (Optional) The `.add` parameter to be passed to `dplyr::group_by()`.
-#' Defaults to `FALSE`
+#' @param ... Additional arguments to be passed to `dplyr::group_by()` (e.x. `.add`, `.drop`)
 #'
 #' @returns The grouped forecast data frame
 #' @autoglobal
@@ -40,7 +39,7 @@ get_group_names <- function(df) {
 #' casteval:::group_all(groupex)
 #' 
 #' dplyr::group_by(groupex, time) |> casteval:::group_all(.add=TRUE)
-group_all <- function(df, .add=FALSE) {
+group_all <- function(df, ...) {
     group_cols <- colnames(df) |> stringr::str_subset("^grp_")
-    df |> dplyr::group_by(dplyr::pick(dplyr::all_of(group_cols)), .add=.add)
+    df |> dplyr::group_by(dplyr::pick(dplyr::all_of(group_cols)), ...)
 }
