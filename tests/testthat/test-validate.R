@@ -110,6 +110,11 @@ test_that("validate_obs() works", {
     validate_obs(data.frame(time=c(1,2,2), val_obs=c(1,2,3))),
     "obs contains duplicate observations at time 2"
   )
+
+  expect_equal(
+    validate_obs(data.frame(time=1:3, val_obs=4:6)),
+    NULL
+  )
 })
 
 test_that("validate_column() works", {
