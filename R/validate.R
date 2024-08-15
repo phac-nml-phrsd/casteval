@@ -499,3 +499,29 @@ validate_quant <- function(quant) {
 
     invisible(NULL)
 }
+
+
+#' Validate forecast group names
+#'
+#' Check that the forecast groups don't contain any invalid names (in particular, the empty string)
+#'
+#' @param names A character vector of the group names (without the leading "grp_")
+#'
+#' @returns NULL if valid, error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' # valid
+#' casteval:::validate_group_names(character(0))
+#' casteval:::validate_group_names(c("variable", "scenario", "___12345"))
+#' 
+#' # invalid
+#' casteval:::validate_group_names(c("variable", ""))
+validate_group_names <- function(names) {
+    # check for empty string
+    if("" %in% names) {
+        stop("empty string present in group names")
+    }
+
+    invisible(NULL)
+}
