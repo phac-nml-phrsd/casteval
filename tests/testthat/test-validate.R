@@ -355,3 +355,20 @@ test_that("validate_quant() works", {
   expect_error(validate_quant(numeric(0)), "`quant` must be exactly 1 number, received numeric vector of length 0")
   expect_error(validate_quant(c(1,2)), "`quant` must be exactly 1 number, received numeric vector of length 2")
 })
+
+test_that("validate_group_names() works", {
+  expect_error(
+    validate_group_names(c("hi", "")),
+    "empty string present in group names"
+  )
+
+  expect_equal(
+    validate_group_names(c("variable", "scenario", "___12345")),
+    NULL
+  )
+
+  expect_equal(
+    validate_group_names(character(0)),
+    NULL
+  )
+})
