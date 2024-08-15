@@ -109,7 +109,8 @@ validate_obs <- function(obs) {
     }
 
     # check for duplicates
-    dups <- obs |> dplyr::group_by(time) |> dplyr::filter(dplyr::n() > 1)
+    grouped <- obs |> dplyr::group_by(time) |> group_all(.add=TRUE)
+    dups <- grouped dplyr::filter(dplyr::n() > 1)
     if(nrow(dups) > 0) {
         tm <- dups$time[[1]]
         stop(glue::glue("obs contains duplicate observations at time {tm}"))
@@ -237,6 +238,10 @@ validate_data_frame <- function(df) {
         } else {
             grouped <- df |> dplyr::group_by(time, sim)
         }
+
+        # group by group columns as well
+        grouped <- grouped |> group_all(.add=TRUE)
+
         dups <- grouped |> dplyr::filter(dplyr::n() > 1)
         if(nrow(dups) > 0) {
             stop("data frame contains duplicate entries")
