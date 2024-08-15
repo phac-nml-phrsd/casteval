@@ -206,6 +206,9 @@ validate_data_frame <- function(df) {
     quant_cols <- stringr::str_subset(cols, "^val_q")
     quant_cols |> purrr::walk(validate_quant_name)
 
+    # check group column names
+    df |> get_group_names() |> validate_group_names()
+
     # check contents of numeric columns
     numeric_columns <- c("sim", "val", "val_mean", quant_cols)
     for(col in numeric_columns) {
