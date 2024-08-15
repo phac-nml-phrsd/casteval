@@ -111,6 +111,10 @@ validate_obs <- function(obs) {
         tm <- dups$time[[1]]
         stop(glue::glue("obs contains duplicate observations at time {tm}"))
     }
+
+    obs |> get_group_names() |> validate_group_names()
+
+    invisible(NULL)
 }
 
 
@@ -138,7 +142,7 @@ validate_time <- function(t, fcst) {
     if((lubridate::is.Date(t) && time_type == "date") ||
         (lubridate::is.POSIXt(t) && time_type == "date-time") ||
         (is.numeric(t) && time_type == "numeric")) {
-        return(NULL)
+        return(invisible(NULL))
     } else {
         stop("type of `t` does not match `fcst$time_type`")
     }
