@@ -4,6 +4,7 @@
 #' Get group names of forecast data
 #'
 #' Gets the names of groups in a forecast by inspecting its columns.
+#' Wrapper for `get_group_cols()`
 #'
 #' @param df A forecast data frame
 #'
@@ -17,10 +18,25 @@
 #' # c("variable", "scenario")
 #' casteval:::get_group_names(data.frame(time=1, grp_variable=2, grp_scenario=3))
 get_group_names <- function(df) {
-    colnames(df) |>
-        stringr::str_subset("^grp_") |>
+    get_group_cols(df) |>
         purrr::map(\(col) regmatches(col, regexpr("_", col), invert = TRUE)[[1]][[2]]) |>
         as.character()
+}
+
+
+#' Get group column names of forecast data
+#'
+#' desc
+#'
+#' @param df A forecast data frame
+#'
+#' @returns A character vector of column names
+#' @autoglobal
+#'
+#' @examples
+#' casteval:::get_group_cols(data.frame(time=1,val=2,grp_scenario=3,grp_variable=4))
+get_group_cols <- function(df) {
+    colnames(df) |> stringr::str_subset("^grp_")
 }
 
 
@@ -40,7 +56,7 @@ get_group_names <- function(df) {
 #' 
 #' dplyr::group_by(groupex, time) |> casteval:::group_all(.add=TRUE)
 group_all <- function(df, ...) {
-    group_cols <- colnames(df) |> stringr::str_subset("^grp_")
+    group_cols <- get_group_cols(df)
     df |> dplyr::group_by(dplyr::pick(dplyr::all_of(group_cols)), ...)
 }
 
