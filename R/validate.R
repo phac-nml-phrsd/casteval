@@ -113,7 +113,7 @@ validate_time_column <- function(times) {
 validate_group_names <- function(names) {
     # check for empty string
     if("" %in% names) {
-        stop("empty string present in group names")
+        stop("provided empty group name ('grp_')")
     }
 
     invisible(NULL)
