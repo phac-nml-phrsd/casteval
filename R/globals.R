@@ -45,8 +45,8 @@ utils::globalVariables(c(
   "val_obs", # <join_fcst_obs>
   "time", # <join_fcst_obs>
   "time", # <get_time_point>
-  "time", # <validate_obs>
   "time", # <validate_data_frame>
   "sim", # <validate_data_frame>
+  "time", # <validate_obs>
   NULL
 ))
