@@ -20,6 +20,7 @@ Given a forecast and observations, verify that:
 \item forecast is valid
 \item observations are valid
 \item forecast time type matches observations time type
+\item forecast group columns match observations group columns
 }
 }
 \examples{
