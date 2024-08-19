@@ -65,7 +65,7 @@ bias <- function(fcst, obs, summarize=TRUE) {
         dplyr::mutate(score=sign(prediction - val_obs))
 
     if(!summarize) {
-        df <- df |> dplyr::group_by(time) |> group_all(.add=TRUE) |> dplyr::summarize(val_obs=val_obs[[1]], score=mean(score), .groups="drop")
+        df <- df |> group_all(.add=TRUE) |> dplyr::group_by(time, .add=TRUE) |> dplyr::summarize(val_obs=val_obs[[1]], score=mean(score), .groups="drop")
         return(df)
     }
 
