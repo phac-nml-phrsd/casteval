@@ -1,6 +1,6 @@
 #' Plot forecast quantiles
 #'
-#' Given forecast data, plot the requested quantiles as lines
+#' Given forecast data, plot the requested quantiles as lines.
 #'
 #' @template plt
 #' @template fcst

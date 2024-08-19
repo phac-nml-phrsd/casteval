@@ -25,7 +25,6 @@ Additional parameters can be passed along to the scoring function.
 }
 \details{
 See \code{vignette("scoring")} for a complete list of scoring functions available, along with the details of their use.
-s
 }
 \examples{
 fc1 <- create_forecast(data.frame(time=1:5, val=6:10))

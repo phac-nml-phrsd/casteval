@@ -2,8 +2,9 @@
 
 #' Calculate forecast bias
 #'
-#' @details
 #' Given a forecast and a set of observations, compute the bias of the forecast's predictions.
+#'
+#' @details
 #' `bias()` looks for forecast data in the following order:
 #' 1. raw data (`val`)
 #' 2. mean (`val_mean`)

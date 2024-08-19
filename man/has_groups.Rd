@@ -13,7 +13,7 @@ has_groups(df)
 \code{TRUE} if there are groups, \code{FALSE} otherwise
 }
 \description{
-Predicate function which determines whether \code{df} contains \verb{grp_*} columns
+Predicate function which determines whether \code{df} contains \verb{grp_*} columns.
 }
 \examples{
 casteval:::has_groups(data.frame(time=1,val=2))

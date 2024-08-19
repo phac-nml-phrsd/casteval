@@ -58,7 +58,6 @@ validate_forecast <- function(fcst) {
 #' Validate forecast data frame
 #'
 #' Given a data frame, checks that:
-#' 
 #' - it isn't empty
 #' - it has a valid time column
 #' - its quantile columns are properly named and their values are in order

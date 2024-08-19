@@ -15,7 +15,7 @@ group_all(df, ...)
 The grouped forecast data frame
 }
 \description{
-Given a forecast data frame, group it by all the \verb{grp_*} columns
+Given a forecast data frame, group it by all its \verb{grp_*} columns.
 }
 \examples{
 # `{casteval}` exports an example data frame for grouping

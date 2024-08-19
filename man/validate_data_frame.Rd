@@ -14,8 +14,6 @@ NULL on success. Error otherwise
 }
 \description{
 Given a data frame, checks that:
-}
-\details{
 \itemize{
 \item it isn't empty
 \item it has a valid time column

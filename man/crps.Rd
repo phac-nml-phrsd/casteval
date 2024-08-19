@@ -31,10 +31,10 @@ Otherwise, the score at the time speficied by either \code{at} or \code{after}.
 }
 \description{
 Given a forecast and set of observations, compute the
+Continuous Ranked Probability Score (CRPS) for every time point.
 }
 \details{
-Continuous Ranked Probability Score (CRPS) for every time point.
-The CRPS for a given distribution \code{f} and observation \code{y},
+For a given distribution \code{f} and observation \code{y},
 let \code{F} be the CDF of \code{f}. Then the CRPS is the integral of the square
 of \code{F(x) - H(x - y)}, where \code{H} is the Heaviside function.
 

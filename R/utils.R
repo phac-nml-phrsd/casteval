@@ -4,6 +4,8 @@
 #' Is it a forecast?
 #'
 #' Determines whether a given R object is a forecast object or not.
+#' 
+#' @details
 #' An R object is a forecast object if:
 #' 
 #' - It is a list (and also not a data frame)
