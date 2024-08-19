@@ -51,36 +51,39 @@ log_score <- function(fcst, obs, summarize=TRUE, at=NULL, after=NULL, bw=NULL) {
     }
     df <- filter_forecast_time(fcst$data, fcst$forecast_time)
 
-    # join
-    df <- df |> dplyr::select(time, val) |> join_fcst_obs(obs)
-
-    # group by time
-    df <- df |> dplyr::group_by(time)
+    # join & group
+    df <- df |> join_fcst_obs(obs) |>
+        dplyr::group_by(time) |>
+        group_all(.add=TRUE)
 
     # check if any time points
     not_enough_points <- df |> dplyr::filter(dplyr::n() < 2)
     if(nrow(not_enough_points) > 0) {
         tm <- not_enough_points$time[[1]]
+        # TODO make this error message specify the groups as well
         stop(glue::glue("not enough data points at time {tm} (at least 2 required to calculate KDE)"))
     }
 
     # scoringRules::logs_sample computes the negative log score. we negate it again to compute the log score
-    df <- df |> dplyr::summarize(score = -scoringRules::logs_sample(val_obs[[1]], val, bw=bw), val_obs=val_obs[[1]])
-    #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
+    df <- df |> dplyr::summarize(score = -scoringRules::logs_sample(val_obs[[1]], val, bw=bw), val_obs=val_obs[[1]], .groups="drop")
+    #TODO? if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
 
     if(!summarize) { # return the whole data frame with the score column
-        return(dplyr::select(df, time, val_obs, score))
+        #return(dplyr::select(df, time, val_obs, score))
+        return(df)
     }
     
     t <- calc_specified_time(fcst, at, after)
-
     df <- df |> dplyr::filter(time==t)
-
     if(nrow(df) == 0) {
         stop(glue::glue("score was not calculated for time {t}"))
     }
 
-    df$score[[1]]
+    if(has_groups(df)) {
+        return(df)
+    } else {
+        return(df$score[[1]])
+    }
 }
 
 

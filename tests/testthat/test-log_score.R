@@ -83,7 +83,7 @@ test_that("log_score() works", {
       summarize=FALSE
     ),
     dplyr::tibble(
-      time=1:3, val_obs=c(-1, 2.5, 5), score=c(-4.03779, -1.649454, -2.004065)
+      time=1:3, score=c(-4.03779, -1.649454, -2.004065), val_obs=c(-1, 2.5, 5)
     ),
     tolerance=0.0001
   )
