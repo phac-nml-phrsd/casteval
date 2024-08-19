@@ -32,7 +32,7 @@
 #' crps(fc, data.frame(time=1:3, val_obs=c(3,4,5)), summarize=FALSE)
 #' 
 #' crps(fc, data.frame(time=1:3, val_obs=c(3,4,5)), at=2)
-crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
+crps <- function(fcst, obs, summarize=TRUE, at=NULL, after=NULL) {
     # validate
     validate_fcst_obs_pair(fcst, obs)
     if(!"val" %in% colnames(fcst$data)) {
