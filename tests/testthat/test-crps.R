@@ -75,3 +75,21 @@ test_that("crps() works", {
     tolerance=0.001
   )
 })
+
+test_that("crps() grouping works", {
+  fc <- create_forecast(groups2)
+  obs <- groups_obs
+
+  res <- join_fcst_obs(fc$data, obs) |> dplyr::group_by(time) |> group_all(.add=TRUE) |>
+      dplyr::summarize(score=scoringRules::crps_sample(val_obs[[1]], val), val_obs=val_obs[[1]], .groups="drop")
+
+  expect_equal(
+    crps(fc, obs, summarize=FALSE),
+    res
+  )
+
+  expect_equal(
+    crps(fc, obs, at=2),
+    res |> dplyr::filter(time==2)
+  )
+})
