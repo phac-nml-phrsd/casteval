@@ -44,13 +44,12 @@ crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
 
     # join & group
     df <- df |>
-        dplyr::select(time, val) |>
         join_fcst_obs(obs) |>
         dplyr::group_by(time) |>
         group_all(.add=TRUE)
 
     # compute the CRPS score
-    df <- df |> dplyr::summarize(score=scoringRules::crps_sample(val_obs[[1]], val), val_obs=val_obs[[1]])
+    df <- df |> dplyr::summarize(score=scoringRules::crps_sample(val_obs[[1]], val), val_obs=val_obs[[1]], .groups="drop")
 
     if(!summarize) {
         return(df)
