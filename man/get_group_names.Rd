@@ -14,6 +14,7 @@ A character vector of names
 }
 \description{
 Gets the names of groups in a forecast by inspecting its columns.
+Wrapper for \code{get_group_cols()}
 }
 \examples{
 # character(0)
