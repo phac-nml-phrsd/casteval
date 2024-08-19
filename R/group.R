@@ -52,9 +52,9 @@ get_group_cols <- function(df) {
 #'
 #' @examples
 #' # `{casteval}` exports an example data frame for grouping
-#' casteval:::group_all(groupex)
+#' casteval:::group_all(groups1)
 #' 
-#' dplyr::group_by(groupex, time) |> casteval:::group_all(.add=TRUE)
+#' dplyr::group_by(groups1, time) |> casteval:::group_all(.add=TRUE)
 group_all <- function(df, ...) {
     group_cols <- get_group_cols(df)
     df |> dplyr::group_by(dplyr::pick(dplyr::all_of(group_cols)), ...)

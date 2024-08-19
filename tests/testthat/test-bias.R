@@ -55,8 +55,8 @@ test_that("bias() works", {
 })
 
 test_that("bias() grouping works", {
-  fc <- create_forecast(groupex)
-  obs <- groupex_obs
+  fc <- create_forecast(groups1)
+  obs <- groups_obs
   
   expect_equal(
     bias(fc, obs),

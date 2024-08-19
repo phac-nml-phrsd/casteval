@@ -68,12 +68,12 @@ test_that("validate_obs() works", {
   )
 
   expect_equal(
-    validate_obs(groupex_obs),
+    validate_obs(groups_obs),
     NULL
   )
 
   expect_error(
-    validate_obs(dplyr::select(groupex_obs, time, grp_scenario, grp_variable, val_obs)),
+    validate_obs(dplyr::select(groups_obs, time, grp_scenario, grp_variable, val_obs)),
     "obs contains duplicate observations at time 1"
   )
 
@@ -202,12 +202,12 @@ test_that("validate_data_frame() works", {
   )
 
   expect_equal(
-    validate_data_frame(groupex),
+    validate_data_frame(groups1),
     NULL
   )
 
   expect_error(
-    validate_data_frame(dplyr::select(groupex, time, val_q5, val_q95, grp_variable, grp_province)),
+    validate_data_frame(dplyr::select(groups1, time, val_q5, val_q95, grp_variable, grp_province)),
     "data frame contains duplicate entries"
   )
 
@@ -251,22 +251,22 @@ test_that("validate_fcst_obs_pair() works", {
   )
 
   expect_equal(
-    validate_fcst_obs_pair(create_forecast(groupex), groupex_obs),
+    validate_fcst_obs_pair(create_forecast(groups1), groups_obs),
     NULL
   )
 
   expect_error(
     validate_fcst_obs_pair(
       create_forecast(data.frame(time=1:3, val=4:6)),
-      groupex_obs
+      groups_obs
     ),
     "differing group columns"
   )
 
   expect_error(
     validate_fcst_obs_pair(
-      create_forecast(groupex |> dplyr::filter(grp_variable=="hosp") |> dplyr::select(time, val_q5, val_q95, grp_scenario, grp_province)),
-      groupex_obs
+      create_forecast(groups1 |> dplyr::filter(grp_variable=="hosp") |> dplyr::select(time, val_q5, val_q95, grp_scenario, grp_province)),
+      groups_obs
     ),
     "differing group columns"
   )

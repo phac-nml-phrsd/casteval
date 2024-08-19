@@ -33,9 +33,10 @@
 #' Grouping example forecast
 #'
 #' An example forecast data frame for demonstrating (and testing) `{casteval}`'s grouping functionality.
-"groupex"
+#' Contains mean-and-quantiles data.
+"groups1"
 
 #' Grouping example observations
 #' 
 #' An example observations data frame for demonstrating (and testing) `{casteval}`'s grouping functionality.
-"groupex_obs"
+"groups_obs"

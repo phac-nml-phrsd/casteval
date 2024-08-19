@@ -174,8 +174,8 @@ test_that("join_fcst_obs() works", {
   )
 
   expect_equal(
-    join_fcst_obs(groupex, groupex_obs),
-    dplyr::inner_join(groupex, groupex_obs, dplyr::join_by(time, grp_variable, grp_province, grp_scenario))
+    join_fcst_obs(groups1, groups_obs),
+    dplyr::inner_join(groups1, groups_obs, dplyr::join_by(time, grp_variable, grp_province, grp_scenario))
   )
 })
 
