@@ -11,6 +11,6 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 groupex
 }
 \description{
-An example forecast data frame for demonstrating \code{{casteval}}'s grouping functionality.
+An example forecast data frame for demonstrating (and testing) \code{{casteval}}'s grouping functionality.
 }
 \keyword{datasets}

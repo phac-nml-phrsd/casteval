@@ -2,7 +2,7 @@
 % Please edit documentation in R/group.R
 \name{get_group_cols}
 \alias{get_group_cols}
-\title{Get group column names of forecast data}
+\title{Get group column names}
 \usage{
 get_group_cols(df)
 }
@@ -13,7 +13,7 @@ get_group_cols(df)
 A character vector of column names
 }
 \description{
-desc
+Get group column names of a given forecast data frame
 }
 \examples{
 casteval:::get_group_cols(data.frame(time=1,val=2,grp_scenario=3,grp_variable=4))

@@ -49,7 +49,7 @@ get_quant_col <- function(df, num) {
 
 #' Turn quantile number into column name
 #'
-#' Given a number, returns the column name of a corresponding quantile column
+#' Given a number, returns the column name of a corresponding quantile column.
 #'
 #' @param num The quantile number.
 #'
@@ -107,7 +107,7 @@ get_quantile <- function(df, perc) {
 #' Pair up matching quantiles
 #'
 #' Given a list of quantiles, pair together the ones symmetrical around the median.
-#' For example, the 2.5% quantile and 97.5% quantile go together.
+#' For example, the 2.5% quantile and 97.5% quantile form a pair.
 #' The 50% quantile will never be paired.
 #'
 #' @param quants A vector of distinct numbers between 0 and 100.
@@ -155,7 +155,7 @@ pair_quantiles <- function(quants) {
 }
 
 
-#' Pairs quantile pair(s)
+#' Parse quantile pair(s)
 #'
 #' Helper function for funtions that accept a `quant_pairs` argument.
 #' Validates/formats the given pairs, or infers the quantile pairs from forecast data.

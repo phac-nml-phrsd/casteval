@@ -134,12 +134,12 @@ plot_forecast <- function(fcst, obs=NULL, quant_intervals=NULL, invert_scale=FAL
 
 #' Integer breaks on ggplot2 axes
 #'
-#' A modified version of scales::pretty_breaks() for only integer-valued ticks
+#' A modified version of `scales::pretty_breaks()` for only integer-valued ticks.
 #' 
 #' @param n Number of breaks.
 #' @param ... other arguments passed to `pretty()`
 #' 
-#' @source https://gist.github.com/jhrcook/eb7b63cc57c683a6eb4986c4107a88ec
+#' @source <https://gist.github.com/jhrcook/eb7b63cc57c683a6eb4986c4107a88ec>
 integer_breaks <- function(n = 5, ...) {
     fxn <- function(x) {
     breaks <- floor(pretty(x, n, ...))

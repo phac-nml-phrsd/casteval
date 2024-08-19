@@ -32,9 +32,10 @@
 
 #' Grouping example forecast
 #'
-#' An example forecast data frame for demonstrating `{casteval}`'s grouping functionality.
+#' An example forecast data frame for demonstrating (and testing) `{casteval}`'s grouping functionality.
 "groupex"
 
 #' Grouping example observations
-#' An example observations data frame for demonstration `{casteval}`'s grouping functionality.
+#' 
+#' An example observations data frame for demonstrating (and testing) `{casteval}`'s grouping functionality.
 "groupex_obs"

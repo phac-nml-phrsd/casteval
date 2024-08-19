@@ -15,7 +15,7 @@ validate_column(df, col)
 NULL if valid, error otherwise.
 }
 \description{
-Errors of \code{col} is not a column in data frame.
+Errors if \code{col} is not a column in data frame.
 }
 \examples{
 casteval:::validate_column(

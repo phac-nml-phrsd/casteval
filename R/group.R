@@ -24,9 +24,9 @@ get_group_names <- function(df) {
 }
 
 
-#' Get group column names of forecast data
+#' Get group column names
 #'
-#' desc
+#' Get group column names of a given forecast data frame
 #'
 #' @param df A forecast data frame
 #'
@@ -42,7 +42,7 @@ get_group_cols <- function(df) {
 
 #' Group forecast data frame
 #'
-#' Given a forecast data frame, group it by all the `grp_*` columns
+#' Given a forecast data frame, group it by all its `grp_*` columns.
 #'
 #' @param df A forecast data frame
 #' @param ... Additional arguments to be passed to `dplyr::group_by()` (e.x. `.add`, `.drop`)
@@ -63,7 +63,7 @@ group_all <- function(df, ...) {
 
 #' Does the forecast data have groups?
 #' 
-#' Predicate function which determines whether `df` contains `grp_*` columns
+#' Predicate function which determines whether `df` contains `grp_*` columns.
 #'
 #' @param df A forecast data frame
 #'

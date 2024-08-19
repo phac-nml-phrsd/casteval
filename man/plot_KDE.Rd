@@ -41,7 +41,7 @@ Create a plot displaying the density function calculated by the Kernel Density E
 for the specified time in the forecast.
 }
 \details{
-Creates a plot containing:
+\code{plot_KDE()} creates a plot containing:
 \itemize{
 \item The density curve at the given time calculated by the KDE
 \item The forecast data points at the given time, along the x-axis

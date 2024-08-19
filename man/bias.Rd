@@ -20,10 +20,9 @@ This can be used by plotting functions to colour-code observations, for example.
 A number between -1 and 1, inclusive. -1 means 100\% underprediction and 1 means 100\% overprediction.
 }
 \description{
-Calculate forecast bias
+Given a forecast and a set of observations, compute the bias of the forecast's predictions.
 }
 \details{
-Given a forecast and a set of observations, compute the bias of the forecast's predictions.
 \code{bias()} looks for forecast data in the following order:
 \enumerate{
 \item raw data (\code{val})

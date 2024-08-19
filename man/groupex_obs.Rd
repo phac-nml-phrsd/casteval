@@ -3,8 +3,7 @@
 \docType{data}
 \name{groupex_obs}
 \alias{groupex_obs}
-\title{Grouping example observations
-An example observations data frame for demonstration \code{{casteval}}'s grouping functionality.}
+\title{Grouping example observations}
 \format{
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 16 rows and 5 columns.
 }
@@ -12,7 +11,6 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 groupex_obs
 }
 \description{
-Grouping example observations
-An example observations data frame for demonstration \code{{casteval}}'s grouping functionality.
+An example observations data frame for demonstrating (and testing) \code{{casteval}}'s grouping functionality.
 }
 \keyword{datasets}

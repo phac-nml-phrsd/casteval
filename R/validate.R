@@ -35,7 +35,7 @@ validate_time <- function(t, fcst) {
 
 #' Check that column is in data frame
 #'
-#' Errors of `col` is not a column in data frame.
+#' Errors if `col` is not a column in data frame.
 #'
 #' @param df A data frame.
 #' @param col A string containing the column name.
