@@ -43,7 +43,6 @@ utils::globalVariables(c(
   "val", # <get_quantile>
   "time", # <filter_forecast_time>
   "val_obs", # <join_fcst_obs>
-  "time", # <join_fcst_obs>
   "time", # <get_time_point>
   "time", # <validate_data_frame>
   "sim", # <validate_data_frame>

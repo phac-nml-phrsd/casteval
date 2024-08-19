@@ -2,6 +2,7 @@
 
 #' Calculate forecast bias
 #'
+#' @details
 #' Given a forecast and a set of observations, compute the bias of the forecast's predictions.
 #' `bias()` looks for forecast data in the following order:
 #' 1. raw data (`val`)
@@ -17,6 +18,7 @@
 #' @template summarize
 #'
 #' @returns A number between -1 and 1, inclusive. -1 means 100% underprediction and 1 means 100% overprediction.
+#' @template grouping
 #' @export
 #' @autoglobal
 #'
