@@ -19,6 +19,7 @@
 #' @template summarize
 #'
 #' @template at_after_returns
+#' @template grouping
 #' @export
 #' @autoglobal
 #'
@@ -45,13 +46,14 @@ crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
     df <- df |>
         dplyr::select(time, val) |>
         join_fcst_obs(obs) |>
-        dplyr::group_by(time)
+        dplyr::group_by(time) |>
+        group_all(.add=TRUE)
 
     # compute the CRPS score
     df <- df |> dplyr::summarize(score=scoringRules::crps_sample(val_obs[[1]], val), val_obs=val_obs[[1]])
 
     if(!summarize) {
-        return(dplyr::select(df, time, val_obs, score))
+        return(df)
     }
 
     t <- calc_specified_time(fcst, at, after)
@@ -60,5 +62,10 @@ crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
         stop(glue::glue("score was not calculated for time {t}"))
     }
 
-    df$score[[1]]
+    if(has_groups(df)) {
+        return(df)
+    }
+    else {
+        return(df$score[[1]])
+    }
 }
