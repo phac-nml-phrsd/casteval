@@ -1,3 +1,4 @@
+# mean-and-quantiles
 groups1 <- dplyr::tribble(
     ~time,  ~grp_variable,  ~grp_province,  ~grp_scenario,  ~val_q5,    ~val_q95,   ~val_mean,
     1,      "hosp",         "ON",           1,              10,         20,         15,
@@ -18,6 +19,44 @@ groups1 <- dplyr::tribble(
     2,      "case",         "QC",           2,              5600,       6600,       6100
 )
 
+# raw
+groups2 <- dplyr::tribble(
+    ~time,  ~grp_variable,  ~grp_province,  ~grp_scenario,  ~val,
+    1,      "hosp",         "ON",           1,              15,
+    1,      "hosp",         "ON",           1,              15,
+    1,      "case",         "ON",           1,              1499,
+    1,      "case",         "ON",           1,              1501,
+    1,      "hosp",         "QC",           1,              14,
+    1,      "hosp",         "QC",           1,              18,
+    1,      "case",         "QC",           1,              1597,
+    1,      "case",         "QC",           1,              1603,
+    1,      "hosp",         "ON",           2,              16,
+    1,      "hosp",         "ON",           2,              24,
+    1,      "case",         "ON",           2,              1995,
+    1,      "case",         "ON",           2,              2005,
+    1,      "hosp",         "QC",           2,              15,
+    1,      "hosp",         "QC",           2,              27,
+    1,      "case",         "QC",           2,              2092,
+    1,      "case",         "QC",           2,              2108,
+    2,      "hosp",         "ON",           1,              46,
+    2,      "hosp",         "ON",           1,              64,
+    2,      "case",         "ON",           1,              5490,
+    2,      "case",         "ON",           1,              5510,
+    2,      "hosp",         "QC",           1,              1,
+    2,      "hosp",         "QC",           1,              2,
+    2,      "case",         "QC",           1,              3,
+    2,      "case",         "QC",           1,              4,
+    2,      "hosp",         "ON",           2,              5,
+    2,      "hosp",         "ON",           2,              6,
+    2,      "case",         "ON",           2,              7,
+    2,      "case",         "ON",           2,              8,
+    2,      "hosp",         "QC",           2,              9,
+    2,      "hosp",         "QC",           2,              10,
+    2,      "case",         "QC",           2,              11,
+    2,      "case",         "QC",           2,              12
+)
+
+# observations
 groups_obs <- dplyr::tribble(
     ~time,  ~grp_variable,  ~grp_province,  ~grp_scenario,  ~val_obs,
     1,      "hosp",         "ON",           1,              9,
@@ -39,4 +78,5 @@ groups_obs <- dplyr::tribble(
 )
 
 usethis::use_data(groups1, overwrite=TRUE)
+usethis::use_data(groups2, overwrite=TRUE)
 usethis::use_data(groups_obs, overwrite=TRUE)
