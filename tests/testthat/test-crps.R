@@ -42,7 +42,7 @@ test_that("crps() works", {
 
   expect_equal(
     crps(fc2, data.frame(time=1:3, val_obs=c(3,4,5)), summarize=FALSE),
-    dplyr::tibble(time=1:3, val_obs=3:5, score=c(.4, .6, 1.2))
+    dplyr::tibble(time=1:3, score=c(.4, .6, 1.2), val_obs=3:5)
   )
 
   expect_equal(

@@ -14,18 +14,18 @@ test_that("get_group_names() works", {
 
 test_that("group_all() works", {
   expect_equal(
-    group_all(groupex),
-    dplyr::group_by(groupex, grp_variable, grp_province, grp_scenario)
+    group_all(groups1),
+    dplyr::group_by(groups1, grp_variable, grp_province, grp_scenario)
   )
 
   expect_equal(
-    groupex |> dplyr::group_by(time) |> group_all(),
-    dplyr::group_by(groupex, grp_variable, grp_province, grp_scenario)
+    groups1 |> dplyr::group_by(time) |> group_all(),
+    dplyr::group_by(groups1, grp_variable, grp_province, grp_scenario)
   )
 
   expect_equal(
-    groupex |> dplyr::group_by(time) |> group_all(.add=TRUE),
-    dplyr::group_by(groupex, time, grp_variable, grp_province, grp_scenario)
+    groups1 |> dplyr::group_by(time) |> group_all(.add=TRUE),
+    dplyr::group_by(groups1, time, grp_variable, grp_province, grp_scenario)
   )
 
 

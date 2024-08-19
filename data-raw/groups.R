@@ -1,4 +1,4 @@
-groupex <- dplyr::tribble(
+groups1 <- dplyr::tribble(
     ~time,  ~grp_variable,  ~grp_province,  ~grp_scenario,  ~val_q5,    ~val_q95,   ~val_mean,
     1,      "hosp",         "ON",           1,              10,         20,         15,
     1,      "case",         "ON",           1,              1000,       2000,       1500,
@@ -18,7 +18,7 @@ groupex <- dplyr::tribble(
     2,      "case",         "QC",           2,              5600,       6600,       6100
 )
 
-groupex_obs <- dplyr::tribble(
+groups_obs <- dplyr::tribble(
     ~time,  ~grp_variable,  ~grp_province,  ~grp_scenario,  ~val_obs,
     1,      "hosp",         "ON",           1,              9,
     1,      "case",         "ON",           1,              1000,
@@ -38,5 +38,5 @@ groupex_obs <- dplyr::tribble(
     2,      "case",         "QC",           2,              16
 )
 
-usethis::use_data(groupex, overwrite=TRUE)
-usethis::use_data(groupex_obs, overwrite=TRUE)
+usethis::use_data(groups1, overwrite=TRUE)
+usethis::use_data(groups_obs, overwrite=TRUE)
