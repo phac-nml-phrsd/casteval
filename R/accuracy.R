@@ -73,9 +73,8 @@ accuracy <- function(fcst, obs,
 
     # TODO reinstate this message once grouping is figured out (in v0.4 probably)
     #message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
-
     if(has_groups(scores)) {
-        return(df)
+        return(scores)
     } else {
         scores$acc
     }
@@ -112,7 +111,8 @@ accuracy_help <- function(fcst, obs, pair) {
     # calculate accuracy
     obs <- obs |> dplyr::mutate(score=dplyr::between(val_obs, low, high))
 
-    return(obs |> dplyr::select(time, val_obs, score))
+    group_cols <- get_group_cols(obs)
+    return(obs |> dplyr::select(time, dplyr::all_of(group_cols), val_obs, score))
 }
 
 
