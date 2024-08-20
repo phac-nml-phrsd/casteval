@@ -165,7 +165,7 @@ join_fcst_obs <- function(df, obs) {
 #' #TODO
 join_data <- function(df1, df2) {
     joinby <- c("time", get_group_cols(df1))
-    dplyr::inner_join(df1, df2, joinby)
+    dplyr::inner_join(df1, df2, by=joinby)
 }
 
 

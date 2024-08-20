@@ -95,7 +95,8 @@ get_quantile <- function(df, perc) {
     }
 
     else if(qcol %in% colnames(df)) {
-        return(dplyr::select(df, time, quant=dplyr::all_of(qcol)))
+        groupcols <- get_group_cols(df)
+        return(dplyr::select(df, time, dplyr::all_of(groupcols), quant=dplyr::all_of(qcol)))
     }
 
     else {
