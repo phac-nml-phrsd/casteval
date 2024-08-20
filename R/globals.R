@@ -3,8 +3,8 @@
 utils::globalVariables(c(
   "pair", # <accuracy>
   "quant", # <accuracy_help>
-  "time", # <accuracy_help>
   "val_obs", # <accuracy_help>
+  "time", # <accuracy_help>
   "val", # <bias>
   "val_mean", # <bias>
   "val_q50", # <bias>
