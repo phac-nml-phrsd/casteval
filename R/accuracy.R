@@ -89,7 +89,10 @@ accuracy_help <- function(fcst, obs, pair) {
     high <- get_quantile(fcst$data, pair[[2]]) |> dplyr::rename(high=quant)
 
     # attach quant columns to obs data frame
-    obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
+    #obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
+    
+    obs <- obs |> join_data(low) |> join_data(high)
+
     if(nrow(obs) == 0) {
         stop("observations and forecast data share no time points")
     }
