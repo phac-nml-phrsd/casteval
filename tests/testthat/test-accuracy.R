@@ -77,6 +77,46 @@ test_that("accuracy() validates", {
   )
 })
 
+test_that("accuracy() grouping works", {
+  fc1 <- create_forecast(groups1)
+  fc2 <- create_forecast(groups2)
+  obs <- groups_obs
+
+  expect_equal(
+    accuracy(fc1, obs),
+    join_fcst_obs(fc1$data, obs) |> 
+      dplyr::mutate(score=dplyr::between(val_obs, val_q5, val_q95)) |>
+      group_all() |>
+      dplyr::summarize(n=dplyr::n(), score=mean(score), .groups="drop") |>
+      dplyr::mutate(pair=1) |> dplyr::relocate(pair, grp_variable, grp_province, grp_scenario, n, score)
+  )
+
+  expect_equal(
+    accuracy(fc1, obs, summarize=FALSE),
+    join_fcst_obs(fc1$data, obs) |> 
+      dplyr::mutate(score=dplyr::between(val_obs, val_q5, val_q95), pair=1) |>
+      dplyr::select(time, grp_variable, grp_province, grp_scenario, val_obs, score, pair)
+  )
+
+  expect_equal(
+    accuracy(fc2, obs, quant_pairs=c(5,95)),
+    obs |> join_data(dplyr::rename(get_quantile(fc2$data, 5), low=quant)) |>
+      join_data(dplyr::rename(get_quantile(fc2$data, 95), high=quant)) |>
+      dplyr::mutate(score=dplyr::between(val_obs, low, high)) |>
+      group_all() |>
+      dplyr::summarize(n=dplyr::n(), score=mean(score), .groups="drop") |>
+      dplyr::mutate(pair=1) |> dplyr::relocate(pair, grp_variable, grp_province, grp_scenario, n, score)
+  )
+
+  expect_equal(
+    accuracy(fc2, obs, quant_pairs=c(5,95), summarize=FALSE),
+    obs |> join_data(dplyr::rename(get_quantile(fc2$data, 5), low=quant)) |>
+      join_data(dplyr::rename(get_quantile(fc2$data, 95), high=quant)) |>
+      dplyr::mutate(score=dplyr::between(val_obs, low, high), pair=1) |>
+      dplyr::select(time, grp_variable, grp_province, grp_scenario, val_obs, score, pair)
+  )
+})
+
 # TODO figure out what to do with this once NAs are re-figured out
 # test_that("accuracy() handles NAs", {
 #   expect_error(

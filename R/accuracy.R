@@ -68,15 +68,16 @@ accuracy <- function(fcst, obs,
     }
 
     # calculate accuracy
-    scores <- scores |> dplyr::group_by(pair) |> group_all(.add=TRUE) |> dplyr::summarize(n=dplyr::n(), acc=mean(score))
+    scores <- scores |> dplyr::group_by(pair) |> group_all(.add=TRUE) |> dplyr::summarize(n=dplyr::n(), score=mean(score), .groups="drop")
     # print how many points used
 
     # TODO reinstate this message once grouping is figured out (in v0.4 probably)
+    # document the `n` column (which tells how many were used)
     #message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
     if(has_groups(scores)) {
         return(scores)
     } else {
-        scores$acc
+        scores$score
     }
 }
 
