@@ -138,16 +138,34 @@ join_fcst_obs <- function(df, obs) {
     # filter out NAs
     obs <- obs |> dplyr::filter(!is.na(val_obs))
 
-    # create character vector of columns to join by
-    joinby <- c("time", get_group_cols(df))
-    # join
-    df <- dplyr::inner_join(df, obs, joinby)
+    df <- join_data(df, obs)
 
     if(nrow(df) == 0) {
         stop("forecast and observations data do not share any time points")
     }
 
     df
+}
+
+
+#' Join two data frames
+#'
+#' Join two data frames by time and grouping columns.
+#'
+#' @param df1 The first data frame
+#' @param df2 The second data frame
+#'
+#' @details
+#' `df1` and `df2` should both have a `time` column and the exact same grouping columns.
+#' 
+#' @returns The inner join of the two data frames
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+join_data <- function(df1, df2) {
+    joinby <- c("time", get_group_cols(df1))
+    dplyr::inner_join(df1, df2, joinby)
 }
 
 
