@@ -30,7 +30,7 @@
 #' @source <https://github.com/jonassjuul/curvestat>
 "denmark2020ens"
 
-#' Grouping example forecast
+#' Grouping example forecast 1
 #'
 #' An example forecast data frame for demonstrating (and testing) `{casteval}`'s grouping functionality.
 #' Contains mean-and-quantiles data.
@@ -40,3 +40,9 @@
 #' 
 #' An example observations data frame for demonstrating (and testing) `{casteval}`'s grouping functionality.
 "groups_obs"
+
+#' Grouping example forecast 2
+#'
+#' An example forecast data frame for demonstrating (and testing) `{casteval}`'s grouping functionality.
+#' Contains raw data.
+"groups2"
