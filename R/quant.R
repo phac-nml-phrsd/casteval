@@ -89,7 +89,7 @@ get_quantile <- function(df, perc) {
     # if raw values present, compute quantile from them, regardless of whether quantile columns present
     if("val" %in% colnames(df)) {
         # group by time
-        quants <- df |> dplyr::group_by(time) |>
+        quants <- df |> dplyr::group_by(time) |> group_all(.add=TRUE) |>
             dplyr::summarize(quant=stats::quantile(val, perc/100)[[1]])
         return(quants)
     }
