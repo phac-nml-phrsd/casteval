@@ -200,6 +200,24 @@ test_that("log_score() works", {
   expect_equal(s1,s2)
 })
 
+test_that("log_score() grouping works", {
+  fc <- create_forecast(groups2)
+  obs <- groups_obs
+
+  res <- join_fcst_obs(fc$data, obs) |> dplyr::group_by(time) |> group_all(.add=TRUE) |>
+      dplyr::summarize(score=-scoringRules::logs_sample(val_obs[[1]], val), val_obs=val_obs[[1]], .groups="drop")
+
+  expect_equal(
+    log_score(fc, obs, summarize=FALSE),
+    res
+  )
+
+  expect_equal(
+    log_score(fc, obs, at=2),
+    res |> dplyr::filter(time==2)
+  )
+})
+
 test_that("make_log_score() works", {
   # copied from above
   dat <- c(1.65333590, -0.45354373, -0.72833227, -0.57932896,  0.22393422,  1.66474380,  1.25860070, -0.45031426,
