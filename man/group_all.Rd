@@ -19,7 +19,7 @@ Given a forecast data frame, group it by all its \verb{grp_*} columns.
 }
 \examples{
 # `{casteval}` exports an example data frame for grouping
-casteval:::group_all(groupex)
+casteval:::group_all(groups1)
 
-dplyr::group_by(groupex, time) |> casteval:::group_all(.add=TRUE)
+dplyr::group_by(groups1, time) |> casteval:::group_all(.add=TRUE)
 }

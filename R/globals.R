@@ -12,11 +12,11 @@ utils::globalVariables(c(
   "val_obs", # <bias>
   "time", # <bias>
   "time", # <crps>
-  "val", # <crps>
   "val_obs", # <crps>
+  "val", # <crps>
   "time", # <log_score>
-  "val", # <log_score>
   "val_obs", # <log_score>
+  "val", # <log_score>
   "y", # <plot_KDE>
   "density", # <plot_KDE>
   "time", # <plot_ensemble>
