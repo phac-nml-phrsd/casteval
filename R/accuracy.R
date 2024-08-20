@@ -68,11 +68,17 @@ accuracy <- function(fcst, obs,
     }
 
     # calculate accuracy
-    scores <- scores |> dplyr::group_by(pair) |> dplyr::summarize(n=dplyr::n(), acc=mean(score))
+    scores <- scores |> dplyr::group_by(pair) |> group_all(.add=TRUE) |> dplyr::summarize(n=dplyr::n(), acc=mean(score))
     # print how many points used
-    if(!silent) message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
 
-    return(scores$acc)
+    # TODO reinstate this message once grouping is figured out (in v0.4 probably)
+    #message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
+
+    if(has_groups(scores)) {
+        return(df)
+    } else {
+        scores$acc
+    }
 }
 
 
@@ -96,7 +102,7 @@ accuracy_help <- function(fcst, obs, pair) {
 
     # attach quant columns to obs data frame
     #obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
-    
+
     obs <- obs |> join_data(low) |> join_data(high)
 
     if(nrow(obs) == 0) {
