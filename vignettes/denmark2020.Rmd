@@ -1,0 +1,47 @@
+---
+title: "Casteval demonstration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{denmark2020}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  strip.white=TRUE,
+  fig.width = 7
+)
+
+library(casteval)
+
+ggplot2::theme_set(ggplot2::theme_light())
+```
+
+Here is a forecast that was created by epidemiologists in Denmark in 2020.
+
+```{r ens}
+str(denmark2020ens)
+```
+
+It is an ensemble of 500 different realizations of a simulation, with 150 time points each.
+
+To give this data into `{casteval}` we need to provide time points.
+This forecast happens to be from 5 May 2020 to 1 Oct 2020.
+
+```{r times}
+library(lubridate)
+times <- seq(ymd("2020-05-05"), ymd("2020-10-01"), by="days")
+```
+
+Now we can create a forecast.
+
+```{r create_forecast}
+fc <- create_forecast(
+    list(time=times, vals=denmark2020ens),
+    name="Denmark 2020 forecast",
+    forecast_time=ymd("2020-05-05")
+)
+```
