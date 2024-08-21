@@ -54,7 +54,6 @@ bias <- function(fcst, obs, summarize=TRUE) {
 
     # place the data to be scored in `prediction` column
     if("val" %in% cols) { # try raw data
-        # TODO have a flag to specify whether the mean or median is wanted. and get rid of this first if clause
         df <- df |> dplyr::rename(prediction=val)
     } else if("val_mean" %in% cols) { # then try mean data
         df <- df |> dplyr::rename(prediction=val_mean)
