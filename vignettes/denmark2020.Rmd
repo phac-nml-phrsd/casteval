@@ -20,6 +20,8 @@ library(casteval)
 ggplot2::theme_set(ggplot2::theme_light())
 ```
 
+# Formatting
+
 Here is a forecast that was created by epidemiologists in Denmark in 2020.
 
 ```{r ens}
@@ -28,7 +30,7 @@ str(denmark2020ens)
 
 It is an ensemble of 500 different realizations of a simulation, with 150 time points each.
 
-To give this data into `{casteval}` we need to provide time points.
+To use this data with `{casteval}` we need to provide time points.
 This forecast happens to be from 5 May 2020 to 1 Oct 2020.
 
 ```{r times}
@@ -36,7 +38,7 @@ library(lubridate)
 times <- seq(ymd("2020-05-05"), ymd("2020-10-01"), by="days")
 ```
 
-Now we can create a forecast.
+Now we can create a forecast object.
 
 ```{r create_forecast}
 fc <- create_forecast(
@@ -44,4 +46,85 @@ fc <- create_forecast(
     name="Denmark 2020 forecast",
     forecast_time=ymd("2020-05-05")
 )
+
+fc
 ```
+
+Here is a made-up set of observations over roughly the same time period.
+
+```{r obs}
+obs <- denmark2020obs
+obs
+```
+
+These simply consist of a `time` column and a `val_obs` column.
+
+# Visualizing
+
+Let's visualize the forecast and the observations.
+
+```{r plot1}
+plot_forecast(fc, obs)
+```
+
+Since there are so many realizations, the observations are kind of hard to see.
+We can tweak the opacity and colors using the modular plotting functions.
+
+```{r plot2}
+NULL |> plot_ensemble(fc, alpha=0.05) |> plot_observations(obs, colour="green")
+```
+
+# Scoring
+
+We can pass the data to any scoring function we like.
+
+```{r score}
+bias(fc, obs)
+
+log_score(fc, obs, at=ymd("2020-10-01"))
+
+crps(fc, obs, after=60)
+
+pairs <- list(c(.5,99.5), c(5,95), c(25,75))
+accuracy(fc, obs, quant_pairs=pairs)
+```
+
+The default behaviour is to summarize the data into a single score.
+To get the unsummarized scores, we pass `summarize=FALSE`.
+
+```{r score_unsummarized}
+bias(fc, obs, summarize=FALSE)
+
+crps(fc, obs, after=60, summarize=FALSE)
+
+log_score(fc, obs, at=ymd("2020-10-01"), summarize=FALSE)
+
+accuracy(fc, obs, quant_pairs=pairs, summarize=FALSE)
+```
+
+Note how for `accuracy()`, the score column is a boolean, not a number.
+
+## Custom scoring
+
+Let's say we want to modify `accuracy()` so that it returns the rate at which numbers fall *outside* a quantile interval.
+We can define our own scoring function to wrap `accuracy()`, and then use it like any other.
+
+```{r score_custom}
+accuracy_inverse <- function(fcst, obs, summarize=TRUE, quant_pairs=NULL) {
+    scores <- accuracy(fcst, obs, summarize=summarize, quant_pairs=quant_pairs)
+    
+    if(summarize) {
+        1 - scores
+    } else {
+        scores |> dplyr::mutate(score=!score)
+    }
+}
+
+accuracy_inverse(fc, obs, quant_pairs=pairs)
+
+accuracy_inverse(fc, obs, quant_pairs=pairs, summarize=FALSE)
+```
+
+# Visualizing scores
+
+We can visualize the output of our scoring functions 
