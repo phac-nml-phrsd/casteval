@@ -139,7 +139,7 @@ test_that("create_forecast() works with ensemble of realizations", {
     list(
       name="hi",
       forecast_time=1,
-      data=data.frame(time=c(1,2,3,1,2,3,1,2,3), sim=c(1,1,1,2,2,2,3,3,3), val=c(4:12))
+      data=dplyr::tibble(time=c(1,2,3,1,2,3,1,2,3), sim=c(1,1,1,2,2,2,3,3,3), val=c(4:12))
     )
   )
 })
