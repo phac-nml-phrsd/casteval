@@ -13,13 +13,9 @@
 
 #' Denmark 2020 COVID-19 observations
 #'
-#' Daily COVID-19 hospitalizations in Denmark from the 55 days leading up to
-#' the 5 May 2020 forecast (see `?denmark2020fc`), from the same source.
-#' 
-#' Formatted as a two-column data frame.
+#' An observations data frame containing made-up daily hospitalization data for demonstration purposes.
+#' Meant to be used in conjunction with `denmark2020fc` and `denmark2020ens`.
 #'
-#' @source <https://www.nature.com/articles/s41567-020-01121-y>
-#' @source <https://github.com/jonassjuul/curvestat>
 "denmark2020obs"
 
 #' Denmark 2020 COVID-19 forecast ensemble

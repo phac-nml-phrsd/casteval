@@ -5,7 +5,7 @@
 \alias{denmark2020fc}
 \title{Denmark 2020 COVID-19 forecast data}
 \format{
-An object of class \code{list} of length 5.
+An object of class \code{list} of length 3.
 }
 \source{
 \url{https://www.nature.com/articles/s41567-020-01121-y}
