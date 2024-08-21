@@ -148,7 +148,7 @@ create_forecast_ensemble <- function(time, vals) {
     }
 
     # create a data frame from each vector in vals, give them each a unique sim number, then bind them together
-    vals |> purrr::imap(\(val, i) data.frame(time=time, sim=i, val=val)) |>
+    vals |> purrr::imap(\(val, i) dplyr::tibble(time=time, sim=i, val=val)) |>
         dplyr::bind_rows()
 }
 
