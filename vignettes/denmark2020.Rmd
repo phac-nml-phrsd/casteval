@@ -63,14 +63,14 @@ These simply consist of a `time` column and a `val_obs` column.
 
 Let's visualize the forecast and the observations.
 
-```{r plot1}
+```{r vis}
 plot_forecast(fc, obs)
 ```
 
 Since there are so many realizations, the observations are kind of hard to see.
 We can tweak the opacity and colors using the modular plotting functions.
 
-```{r plot2}
+```{r vis_modular}
 NULL |> plot_ensemble(fc, alpha=0.05) |> plot_observations(obs, colour="green")
 ```
 
@@ -127,4 +127,20 @@ accuracy_inverse(fc, obs, quant_pairs=pairs, summarize=FALSE)
 
 # Visualizing scores
 
-We can visualize the output of our scoring functions 
+We can visualize the output of our scoring functions alongside the forecast data and observations.
+
+```{r viz_scoring1}
+plot_forecast(fc, obs, score=bias)
+
+plot_forecast(fc, obs, score=crps, invert_scale=TRUE)
+
+plot_forecast(fc, obs, score=log_score)
+
+plot_forecast(fc, obs, quant_intervals=pairs, score=accuracy, quant_pairs=c(25,75))
+```
+
+Notes:
+
+- The `invert_scale` flag lets us flip the color scale, which is useful for CRPS where lower scores are better
+- The grey dots correspond to scores of negative infinity, which is a common occurence with the logarithmic score
+- Quantile intervals can be plotted and made to line up with `accuracy()` using the `quant_intervals` parameter
