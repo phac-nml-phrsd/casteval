@@ -31,7 +31,6 @@ str(denmark2020ens)
 It is an ensemble of 500 different realizations of a simulation, with 150 time points each.
 
 To use this data with `{casteval}` we need to provide time points.
-This forecast happens to be from 5 May 2020 to 1 Oct 2020.
 
 ```{r times}
 library(lubridate)
