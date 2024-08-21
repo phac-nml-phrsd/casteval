@@ -5,21 +5,13 @@
 \alias{denmark2020obs}
 \title{Denmark 2020 COVID-19 observations}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 55 rows and 2 columns.
-}
-\source{
-\url{https://www.nature.com/articles/s41567-020-01121-y}
-
-\url{https://github.com/jonassjuul/curvestat}
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 204 rows and 2 columns.
 }
 \usage{
 denmark2020obs
 }
 \description{
-Daily COVID-19 hospitalizations in Denmark from the 55 days leading up to
-the 5 May 2020 forecast (see \code{?denmark2020fc}), from the same source.
-}
-\details{
-Formatted as a two-column data frame.
+An observations data frame containing made-up daily hospitalization data for demonstration purposes.
+Meant to be used in conjunction with \code{denmark2020fc} and \code{denmark2020ens}.
 }
 \keyword{datasets}
