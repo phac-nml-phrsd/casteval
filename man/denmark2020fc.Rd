@@ -16,13 +16,8 @@ An object of class \code{list} of length 3.
 denmark2020fc
 }
 \description{
-Forecast realizations from a Danish COVID-19 forecasting effort,
+A \code{{casteval}} forecast object containing data from a Danish COVID-19 forecasting effort,
 concerning 5 May to 1 October 2020.
-}
-\details{
-Formatted as a \code{casteval} forecast object.
-
-Acquired from the below paper/repository.
 }
 \seealso{
 \link{denmark2020df}, \link{denmark2020obs}, \link{denmark2020ens}
