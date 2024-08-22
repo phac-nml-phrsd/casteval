@@ -253,11 +253,11 @@ test_that("calc_specified_time() works", {
 test_that("apply_facets() works", {
   obs <- groups_obs |> dplyr::filter(grp_scenario==1)
   
-  vdiffr::expect_doppelganger("facet1",
+  vdiffr::expect_doppelganger("apply_facet1",
     NULL |> plot_observations(obs) |> apply_facets(c("grp_variable"))
   )
 
-  vdiffr::expect_doppelganger("facet2",
+  vdiffr::expect_doppelganger("apply_facet2",
     NULL |> plot_observations(obs) |> apply_facets(c("grp_variable", "grp_province"))
   )
 
