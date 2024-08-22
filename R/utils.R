@@ -288,3 +288,44 @@ calc_specified_time <- function(fcst, at=NULL, after=NULL) {
 
     t
 }
+
+
+#' Apply facets to plot
+#'
+#' Apply the given facets to the given plot
+#'
+#' @param plot A `ggplot` object
+#' @param plotting_groups A character vector of up to 2 group column names
+#'
+#' @details
+#' 
+#' - If `plotting_groups` is empty, `plot` is returned unchanged
+#' - If `plotting_groups` has one element, `ggplot2::facet_wrap()` is used
+#' - If `plotting_groups` has two elements, `ggplot2::facet_grid()` is used
+#' 
+#' @returns desc
+#' @autoglobal
+#'
+#' @examples
+#' obs <- groups_obs |> dplyr::filter(grp_scenario==1)
+#' NULL |> plot_observations(obs) |> casteval:::apply_facets(c("grp_variable"))
+#' NULL |> plot_observations(obs) |> casteval:::apply_facets(c("grp_variable", "grp_province"))
+apply_facets <- function(plot, plotting_groups) {
+    len <- length(plotting_groups)
+    if(len == 0) {
+       return(plot)
+    } else if(len == 1) {
+        # turn a string into `ggplot2`'s requested facet syntax
+        # https://stackoverflow.com/questions/11028353/passing-string-variable-facet-wrap-in-ggplot-using-r
+        fac <- as.formula(glue::glue("~{plotting_groups[[1]]}"))
+        return(plot + ggplot2::facet_wrap(fac))
+    } else if(len == 2) {
+        # see above
+        a <- plotting_groups[[1]]
+        b <- plotting_groups[[2]]
+        fac <- as.formula(glue::glue("{a} ~ {b}"))
+        return(plot + ggplot2::facet_grid(fac))
+    } else {
+        stop("more than 2 plotting groups provided to `apply_facets()`")
+    }
+}

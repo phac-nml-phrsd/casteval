@@ -249,3 +249,20 @@ test_that("calc_specified_time() works", {
     "type of `at` must match type of forecast times"
   )
 })
+
+test_that("apply_facets() works", {
+  obs <- groups_obs |> dplyr::filter(grp_scenario==1)
+  
+  vdiffr::expect_doppelganger("facet1",
+    NULL |> plot_observations(obs) |> apply_facets(c("grp_variable"))
+  )
+
+  vdiffr::expect_doppelganger("facet2",
+    NULL |> plot_observations(obs) |> apply_facets(c("grp_variable", "grp_province"))
+  )
+
+  expect_error(
+    NULL |> plot_observations(obs) |> apply_facets(c("grp_variable", "grp_province", "grp_scenario")),
+    "more than 2 plotting groups provided to `apply_facets\\(\\)"
+  )
+})
