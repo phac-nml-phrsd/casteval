@@ -116,4 +116,8 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
     # label axes
     plt <- plt + ggplot2::xlab("value") + ggplot2::ylab("density")
     plt
+
+    # uncomment this and write grouping tests for plot_KDE()
+    # validate_plotting_groups(fcst$data)
+    # plt |> apply_facets(get_plotting_groups(fcst$data))
 }
