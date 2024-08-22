@@ -1,11 +1,7 @@
 #' Denmark 2020 COVID-19 forecast object
 #'
-#' Forecast realizations from a Danish COVID-19 forecasting effort,
+#' A `{casteval}` forecast object containing data from a Danish COVID-19 forecasting effort,
 #' concerning 5 May to 1 October 2020.
-#' 
-#' Formatted as a `casteval` forecast object.
-#' 
-#' Acquired from the below paper/repository.
 #' 
 #' @seealso [denmark2020df], [denmark2020obs], [denmark2020ens]
 #' @source <https://www.nature.com/articles/s41567-020-01121-y>
