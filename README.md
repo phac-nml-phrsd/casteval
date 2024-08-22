@@ -8,7 +8,7 @@
 
 ## Overview
 
-`{casteval}` facilitaties the evaluation of time series forecasts.
+`{casteval}` facilitates the evaluation of time series forecasts.
 
 ✅ Flexibly accepts forecasts as either a set of individual model
 realizations or as the summary of an ensemble of realizations via
@@ -21,9 +21,20 @@ scoring performance
 
 ## Installation
 
-The simplest way to install `{casteval}` is to use
+The simplest way to install `{casteval}` is to use the
+[`remotes`](https://remotes.r-lib.org/) package:
 
-    install.packages("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")
+``` r
+# install.packages("remotes")
+remotes::install_git("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")
+```
+
+If you do not wish to install the `remotes` package, or have trouble
+using it, you can simply clone this repository locally and then use:
+
+``` r
+install.packages("your/path/to/casteval", type="source")
+```
 
 ## Usage
 
@@ -34,7 +45,7 @@ See `vignette("casteval")` to get started.
 ### Source code
 
 The source code is located
-[here](https://gitlab.cscscience.ca/phrsd/risk/casteval)
+[here](https://gitlab.cscscience.ca/phrsd/risk/casteval).
 
 ### `renv`
 
