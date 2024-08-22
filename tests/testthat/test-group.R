@@ -57,3 +57,35 @@ test_that("has_groups() works", {
     FALSE
   )
 })
+
+test_that("get_plotting_groups() works", {
+  expect_equal(
+    get_plotting_groups(data.frame(time=1, val=2)),
+    character(0)
+  )
+
+  expect_equal(
+    get_plotting_groups(data.frame(time=1:5, val=2:6, grp_variable=3:7)),
+    c("grp_variable")
+  )
+
+  expect_equal(
+    get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=8:10)),
+    c("grp_var", "grp_loc")
+  )
+
+  expect_equal(
+    get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=10:12, grp_sce=13:15)),
+    c("grp_var", "grp_loc", "grp_sce")
+  )
+
+  expect_equal(
+    get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=c(1,1,1), grp_sce=13:15)),
+    c("grp_var", "grp_sce")
+  )
+
+  expect_equal(
+    get_plotting_groups(data.frame(time=1, val=2, grp_var=3, grp_loc=4, grp_sce=5, grp_foo=6, grp_bar=7)),
+    character(0)
+  )
+})

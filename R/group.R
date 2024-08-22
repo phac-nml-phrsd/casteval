@@ -77,3 +77,36 @@ group_all <- function(df, ...) {
 has_groups <- function(df) {
     length(get_group_names(df)) > 0
 }
+
+
+#' Find the groups relevant to plotting
+#'
+#' `{casteval}` allows plotting of forecasts with up to 2 groups.
+#' This function finds all group columns with more than one value in them.
+#'
+#' @param df A forecast data frame
+#'
+#' @returns A character vector containing all the group column names with multiple values
+#' @autoglobal
+#'
+#' @examples
+#' casteval:::get_plotting_groups(data.frame(time=1, val=2))
+#' 
+#' casteval:::get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=8:10))
+#' 
+#' casteval:::get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=10:12, grp_sce=13:15))
+#' 
+#' casteval:::get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=c(1,1,1), grp_sce=13:15))
+get_plotting_groups <- function(df) {
+    plotting_groups <- character(0)
+    group_cols <- get_group_cols(df)
+
+    for(name in group_cols) {
+        col <- df[[name]]
+        if(length(unique(col)) > 1) {
+            plotting_groups <- c(plotting_groups, name)
+        }
+    }
+
+    plotting_groups
+}
