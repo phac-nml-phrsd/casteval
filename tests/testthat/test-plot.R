@@ -29,5 +29,11 @@ test_that("facets work", {
     NULL |> plot_ensemble(create_forecast(groups2 |> dplyr::filter(grp_province=="ON", grp_variable=="case")))
   )
 
+  vdiffr::expect_doppelganger("facet7",
+    NULL |> plot_mean(create_forecast(groups1 |> dplyr::filter(grp_province=="ON", grp_variable=="case")))
+  )
 
+  vdiffr::expect_doppelganger("facet8",
+    NULL |> plot_mean(create_forecast(groups1 |> dplyr::filter(grp_variable=="case")))
+  )
 })
