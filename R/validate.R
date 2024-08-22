@@ -146,7 +146,7 @@ validate_plotting_groups <- function(df) {
     }
 
     if(length(relevant_groups) > 2) {
-        stop(glue::glue("more than 2 groups contain multiple values: {toString(relevant_groups)}"))
+        stop(glue::glue("more than 2 groups contain multiple values: {toString(relevant_groups)}. See `vignette(\"casteval\")` for details on plotting with groups."))
     }
 
     invisible(NULL)
