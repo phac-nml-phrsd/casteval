@@ -14,4 +14,7 @@ groups2
 An example forecast data frame for demonstrating (and testing) \code{{casteval}}'s grouping functionality.
 Contains raw data.
 }
+\seealso{
+\link{groups1}, \link{groups_obs}
+}
 \keyword{datasets}

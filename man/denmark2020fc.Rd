@@ -3,7 +3,7 @@
 \docType{data}
 \name{denmark2020fc}
 \alias{denmark2020fc}
-\title{Denmark 2020 COVID-19 forecast data}
+\title{Denmark 2020 COVID-19 forecast object}
 \format{
 An object of class \code{list} of length 3.
 }
@@ -23,5 +23,8 @@ concerning 5 May to 1 October 2020.
 Formatted as a \code{casteval} forecast object.
 
 Acquired from the below paper/repository.
+}
+\seealso{
+\link{denmark2020df}, \link{denmark2020obs}, \link{denmark2020ens}
 }
 \keyword{datasets}

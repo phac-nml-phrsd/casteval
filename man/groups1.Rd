@@ -14,4 +14,7 @@ groups1
 An example forecast data frame for demonstrating (and testing) \code{{casteval}}'s grouping functionality.
 Contains mean-and-quantiles data.
 }
+\seealso{
+\link{groups2}, \link{groups_obs}
+}
 \keyword{datasets}

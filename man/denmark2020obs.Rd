@@ -14,4 +14,7 @@ denmark2020obs
 An observations data frame containing made-up daily hospitalization data for demonstration purposes.
 Meant to be used in conjunction with \code{denmark2020fc} and \code{denmark2020ens}.
 }
+\seealso{
+\link{denmark2020fc}, \link{denmark2020df}, \link{denmark2020ens}
+}
 \keyword{datasets}
