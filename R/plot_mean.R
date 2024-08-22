@@ -39,5 +39,8 @@ plot_mean <- function(plt=NULL, fcst, alpha=0.5, colour="green", linewidth=2) {
     else {
         dat <- fcst$data
     }
-    plt + ggplot2::geom_line(ggplot2::aes(x=time, y=val_mean, linetype="mean"), data=dat, alpha=alpha, colour=colour, linewidth=linewidth)
+    plt <- plt + ggplot2::geom_line(ggplot2::aes(x=time, y=val_mean, linetype="mean"), data=dat, alpha=alpha, colour=colour, linewidth=linewidth)
+
+    validate_plotting_groups(fcst$data)
+    plt |> apply_facets(get_plotting_groups(fcst$data))
 }
