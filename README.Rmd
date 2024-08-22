@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-`{casteval}` facilitaties the evaluation of time series forecasts.
+`{casteval}` facilitates the evaluation of time series forecasts.
 
 `r emo::ji("white heavy check mark")` Flexibly accepts forecasts as either a set of individual model realizations or as the summary of an ensemble of realizations via quantiles at each time point
 
@@ -30,10 +30,16 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-The simplest way to install `{casteval}` is to use 
+The simplest way to install `{casteval}` is to use the [`remotes`](https://remotes.r-lib.org/) package:
 
+```{r, eval = FALSE}
+# install.packages("remotes")
+remotes::install_git("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")
 ```
-install.packages("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")
+
+If you do not wish to install the `remotes` package, or have trouble using it, you can simply clone this repository locally and then use:
+```{r, eval = FALSE}
+install.packages("your/path/to/casteval", type="source")
 ```
 
 ## Usage
@@ -44,7 +50,7 @@ See `vignette("casteval")` to get started.
 
 ### Source code
 
-The source code is located [here](https://gitlab.cscscience.ca/phrsd/risk/casteval)
+The source code is located [here](https://gitlab.cscscience.ca/phrsd/risk/casteval).
 
 ### `renv`
 
