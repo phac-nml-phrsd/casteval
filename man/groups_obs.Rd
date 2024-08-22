@@ -13,4 +13,7 @@ groups_obs
 \description{
 An example observations data frame for demonstrating (and testing) \code{{casteval}}'s grouping functionality.
 }
+\seealso{
+\link{groups1}, \link{groups2}
+}
 \keyword{datasets}
