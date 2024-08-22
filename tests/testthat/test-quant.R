@@ -63,7 +63,7 @@ test_that("get_quantile() works", {
 
   expect_equal(
     get_quantile(groups2, 50),
-    groups2 |> dplyr::group_by(time) |> group_all(.add=TRUE) |> dplyr::summarize(quant=stats::quantile(val, .5)[[1]])
+    groups2 |> dplyr::group_by(time) |> group_all(.add=TRUE) |> dplyr::summarize(quant=stats::quantile(val, .5)[[1]], .groups="drop")
   )
 })
 
