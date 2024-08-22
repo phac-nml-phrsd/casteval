@@ -90,7 +90,7 @@ get_quantile <- function(df, perc) {
     if("val" %in% colnames(df)) {
         # group by time
         quants <- df |> dplyr::group_by(time) |> group_all(.add=TRUE) |>
-            dplyr::summarize(quant=stats::quantile(val, perc/100)[[1]])
+            dplyr::summarize(quant=stats::quantile(val, perc/100)[[1]], .groups="drop")
         return(quants)
     }
 
