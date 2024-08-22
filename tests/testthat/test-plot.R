@@ -44,4 +44,12 @@ test_that("facets work", {
   vdiffr::expect_doppelganger("facet10",
     NULL |> plot_quant_intervals(create_forecast(groups1 |> dplyr::filter(grp_variable=="case", grp_scenario==2)))
   )
+
+  vdiffr::expect_doppelganger("facet11",
+    NULL |> plot_quantiles(create_forecast(groups1 |> dplyr::filter(grp_variable=="case", grp_scenario==2)))
+  )
+
+  vdiffr::expect_doppelganger("facet12",
+    NULL |> plot_quantiles(create_forecast(groups1 |> dplyr::filter(grp_scenario==2)))
+  )
 })
