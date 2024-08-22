@@ -118,3 +118,36 @@ validate_group_names <- function(names) {
 
     invisible(NULL)
 }
+
+
+#' Check that groups can be plotted
+#'
+#' `{casteval}` allows plotting of forecasts with up to 2 groups.
+#' This function checks that at most 2 group columns in a given forecast data frame
+#' have more than one value in them.
+#'
+#' @param df A forecast data frame
+#'
+#' @returns NULL if valid, error otherwise
+#' @autoglobal
+#'
+#' @examples
+#' 
+validate_plotting_groups <- function(df) {
+    group_cols <- get_group_cols(df)
+
+    # a group is "relevant" to plotting if it takes on more than 1 value in the data frame
+    relevant_groups <- character(0)
+    for(name in group_cols) {
+        col <- df[[name]]
+        if(length(unique(col)) > 1) {
+            relevant_groups <- c(relevant_groups, name)
+        }
+    }
+
+    if(length(relevant_groups) > 2) {
+        stop(glue::glue("more than 2 groups contain multiple values: {toString(relevant_groups)}"))
+    }
+
+    invisible(NULL)
+}
