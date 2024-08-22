@@ -129,7 +129,8 @@ plot_forecast <- function(fcst, obs=NULL, quant_intervals=NULL, invert_scale=FAL
     plt <- plt + ggplot2::scale_x_continuous(breaks=integer_breaks())
     #plt <- plt + ggplot2::scale_y_continuous(breaks=integer_breaks())
 
-    plt
+    validate_plotting_groups(fcst$data)
+    plt |> apply_facets(get_plotting_groups(fcst$data))
 }
 
 #' Integer breaks on ggplot2 axes

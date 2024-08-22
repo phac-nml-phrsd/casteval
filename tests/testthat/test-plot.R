@@ -52,4 +52,37 @@ test_that("facets work", {
   vdiffr::expect_doppelganger("facet12",
     NULL |> plot_quantiles(create_forecast(groups1 |> dplyr::filter(grp_scenario==2)))
   )
+
+  vdiffr::expect_doppelganger("facet13",
+    plot_forecast(create_forecast(groups2 |> dplyr::filter(grp_scenario==1)))
+  )
+
+  vdiffr::expect_doppelganger("facet14",
+    plot_forecast(create_forecast(groups2 |> dplyr::filter(grp_scenario==1, grp_province=="QC")))
+  )
+
+  vdiffr::expect_doppelganger("facet15",
+    plot_forecast(create_forecast(groups1 |> dplyr::filter(grp_scenario==1)))
+  )
+
+  vdiffr::expect_doppelganger("facet16",
+    plot_forecast(create_forecast(groups1 |> dplyr::filter(grp_scenario==1, grp_province=="ON")))
+  )
+
+  # TODO plot_forecast() definitely needs to be modified to do group filtering for us. it's way too tedious to have to filter the forecast and observations in separate but identical ways
+  vdiffr::expect_doppelganger("facet17",
+    plot_forecast(
+      create_forecast(groups1 |> dplyr::filter(grp_scenario==1, grp_province=="ON")),
+      groups_obs |> dplyr::filter(grp_scenario==1, grp_province=="ON"),
+      score=bias
+    )
+  )
+
+  vdiffr::expect_doppelganger("facet18",
+    plot_forecast(
+      create_forecast(groups1 |> dplyr::filter(grp_scenario==1)),
+      groups_obs |> dplyr::filter(grp_scenario==1),
+      score=bias
+    )
+  )
 })
