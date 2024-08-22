@@ -146,19 +146,10 @@ validate_group_names <- function(names) {
 #' # 2 significant groups (grp_loc has only one value)
 #' casteval:::validate_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=c(1,1,1), grp_sce=13:15))
 validate_plotting_groups <- function(df) {
-    group_cols <- get_group_cols(df)
+    plotting_groups <- get_plotting_groups(df)
 
-    # a group is "relevant" to plotting if it takes on more than 1 value in the data frame
-    relevant_groups <- character(0)
-    for(name in group_cols) {
-        col <- df[[name]]
-        if(length(unique(col)) > 1) {
-            relevant_groups <- c(relevant_groups, name)
-        }
-    }
-
-    if(length(relevant_groups) > 2) {
-        stop(glue::glue("more than 2 groups contain multiple values: {toString(relevant_groups)}. See `vignette(\"casteval\")` for details on plotting with groups."))
+    if(length(plotting_groups) > 2) {
+        stop(glue::glue("more than 2 groups contain multiple values: {toString(plotting_groups)}. See `vignette(\"casteval\")` for details on plotting with groups."))
     }
 
     invisible(NULL)
