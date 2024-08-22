@@ -85,7 +85,7 @@ plot_quant_intervals <- function(plt=NULL, fcst, quant_intervals=NULL, alpha=NUL
 
     ## plot the intervals
 
-    plt +
+    plt <- plt +
         # plot ribbons, with fill varying by interval number
         ggplot2::geom_ribbon(
             ggplot2::aes(x=time, ymin=lo, ymax=hi, fill=interval),
@@ -94,4 +94,7 @@ plot_quant_intervals <- function(plt=NULL, fcst, quant_intervals=NULL, alpha=NUL
         ) +
         # adjust the color palette
         ggplot2::scale_fill_brewer(palette=palette)
+
+    validate_plotting_groups(fcst$data)
+    plt |> apply_facets(get_plotting_groups(fcst$data))
 }
