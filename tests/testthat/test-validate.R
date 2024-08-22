@@ -78,3 +78,35 @@ test_that("validate_group_names() works", {
     NULL
   )
 })
+
+test_that("validate_plotting_groups() works", {
+  expect_equal(
+    validate_plotting_groups(data.frame(time=1, val=2)),
+    NULL
+  )
+
+  expect_equal(
+    validate_plotting_groups(data.frame(time=1:5, val=2:6, grp_variable=3:7)),
+    NULL
+  )
+
+  expect_equal(
+    validate_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=8:10)),
+    NULL
+  )
+
+  expect_error(
+    validate_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=10:12, grp_sce=13:15)),
+    "more than 2 groups contain multiple values"
+  )
+
+  expect_equal(
+    validate_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=c(1,1,1), grp_sce=13:15)),
+    NULL
+  )
+
+  expect_equal(
+    validate_plotting_groups(data.frame(time=1, val=2, grp_var=3, grp_loc=4, grp_sce=5, grp_foo=6, grp_bar=7)),
+    NULL
+  )
+})
