@@ -61,7 +61,7 @@ test_that("bias() grouping works", {
   expect_equal(
     bias(fc, obs),
     join_fcst_obs(fc$data, obs) |> dplyr::mutate(score=sign(val_mean-val_obs)) |>
-        group_all() |> dplyr::summarize(val_obs=val_obs[[1]], score=mean(score), .groups="drop")
+        group_all() |> dplyr::summarize(score=mean(score), .groups="drop")
   )
 
   expect_equal(

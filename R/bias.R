@@ -73,7 +73,7 @@ bias <- function(fcst, obs, summarize=TRUE) {
     }
 
     if(has_groups(df)) {
-        df <- df |> group_all() |> dplyr::summarize(val_obs=val_obs[[1]], score=mean(score), .groups="drop")
+        df <- df |> group_all() |> dplyr::summarize(score=mean(score), .groups="drop")
         return(df)
     }
     else {
