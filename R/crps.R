@@ -62,7 +62,7 @@ crps <- function(fcst, obs, summarize=TRUE, at=NULL, after=NULL) {
     }
 
     if(has_groups(df)) {
-        return(df)
+        return(df |> dplyr::mutate(time=NULL, val_obs=NULL))
     }
     else {
         return(df$score[[1]])
