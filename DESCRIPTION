@@ -5,7 +5,7 @@ Authors@R: c(
     person("Daniel", "Yu", , "daniel.yu@phac-aspc.gc.ca", role = c("aut", "cre")),
     person("Irena", "Papst", , "irena.papst@phac-aspc.gc.ca", role = c("aut"))
     )
-URL: http://phrsd.pages.cscscience.ca/risk/casteval
+URL: https://phac-nml-phrsd.github.io/casteval
 Description: Provides a generalized, modular set of tools to facilitate the scoring and comparing of infectious disease forecasts. 
 License: GPL (>= 3)
 Encoding: UTF-8

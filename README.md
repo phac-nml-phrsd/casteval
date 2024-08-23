@@ -26,7 +26,7 @@ The simplest way to install `{casteval}` is to use the
 
 ``` r
 # install.packages("remotes")
-remotes::install_git("https://gitlab.cscscience.ca/phrsd/risk/casteval.git")
+remotes::install_github("phac-nml-phrsd/casteval")
 ```
 
 If you do not wish to install the `remotes` package, or have trouble
@@ -45,7 +45,7 @@ See `vignette("casteval")` to get started.
 ### Source code
 
 The source code is located
-[here](https://gitlab.cscscience.ca/phrsd/risk/casteval).
+[here](https://github.com/phac-nml-phrsd/casteval).
 
 ### `renv`
 
@@ -58,11 +58,8 @@ relevant for users, like `Imports` and `Depends` (see
 `renv::settings$package.dependency.fields()`). For developers, the
 `Suggests` field can be equally important to track as it can include
 packages used in the process of development but not in the actual source
-code of the package, like `devtools`, `covr`. This project’s GitLab CI
-pipeline relies on both of these packages, and the only reference it has
-for which packages to install/load when running is from the `renv`
-lockfile. Thus, it’s important for us to track our development packages
-with `renv`.
+code of the package, like `devtools`, `covr`, to ensure development
+environments don’t vary across users.
 
 The `renv` FAQ page [recommends tracking development dependencies in
 `Suggests`](https://rstudio.github.io/renv/articles/faq.html#how-should-i-handle-development-dependencies).

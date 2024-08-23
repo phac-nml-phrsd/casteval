@@ -11,7 +11,7 @@ Provides a generalized, modular set of tools to facilitate the scoring and compa
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://phrsd.pages.cscscience.ca/risk/casteval}
+  \item \url{https://phac-nml-phrsd.github.io/casteval}
 }
 
 }
