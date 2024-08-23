@@ -90,6 +90,6 @@ test_that("crps() grouping works", {
 
   expect_equal(
     crps(fc, obs, at=2),
-    res |> dplyr::filter(time==2)
+    res |> dplyr::filter(time==2) |> dplyr::mutate(time=NULL, val_obs=NULL)
   )
 })
