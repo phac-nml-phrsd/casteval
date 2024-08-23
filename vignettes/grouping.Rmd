@@ -68,7 +68,7 @@ crps(fc2, groups_obs, at=2)
 
 If `summarize=FALSE`, the output will be like a regular unsummarized data frame plus the group columns.
 
-```{r score_summarized}
+```{r score_unsummarized}
 bias(fc2, groups_obs, summarize=FALSE)
 
 crps(fc2, groups_obs, summarize=FALSE)
@@ -84,7 +84,7 @@ Every plotting function^[except for `plot_KDE()` at the moment] supports groupin
 However, there are some caveats.
 
 Up to two grouping columns in the input to a plotting function may take on multiple values.
-For exapmle, `groups1 |> dplyr::filter(grp_scenario==1)` is a valid plotting input, but `groups1` is not, since it has 3 groups which take on multiple values.
+For example, `groups1 |> dplyr::filter(grp_scenario==1)` is a valid plotting input, but `groups1` is not, since it has 3 groups which take on multiple values.
 
 Therefore at the moment, if you want to plot forecasts/observations with more than 3 groups, you will probably have to use `dplyr::filter()` and iteration in order to generate multiple plots.^[Tools to make this less tedious are planned for future versions]
 
