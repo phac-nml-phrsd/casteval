@@ -94,9 +94,13 @@ has_groups <- function(df) {
 #' 
 #' casteval:::get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=8:10))
 #' 
-#' casteval:::get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=10:12, grp_sce=13:15))
+#' casteval:::get_plotting_groups(
+#'   data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=10:12, grp_sce=13:15)
+#' )
 #' 
-#' casteval:::get_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=c(1,1,1), grp_sce=13:15))
+#' casteval:::get_plotting_groups(
+#'   data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=c(1,1,1), grp_sce=13:15)
+#' )
 get_plotting_groups <- function(df) {
     plotting_groups <- character(0)
     group_cols <- get_group_cols(df)
