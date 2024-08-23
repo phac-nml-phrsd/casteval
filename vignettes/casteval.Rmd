@@ -2,7 +2,7 @@
 title: "Evaluate time series forecasts with casteval"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{casteval}
+  %\VignetteIndexEntry{Evaluate time series forecasts with casteval}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
