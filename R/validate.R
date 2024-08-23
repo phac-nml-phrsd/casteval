@@ -140,11 +140,15 @@ validate_group_names <- function(names) {
 #' 
 #' # 3 significant groups
 #' try(
-#'   casteval:::validate_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=10:12, grp_sce=13:15))
+#'   casteval:::validate_plotting_groups(
+#'     data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=10:12, grp_sce=13:15)
+#'   )
 #' )
 #' 
 #' # 2 significant groups (grp_loc has only one value)
-#' casteval:::validate_plotting_groups(data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=c(1,1,1), grp_sce=13:15))
+#' casteval:::validate_plotting_groups(
+#'   data.frame(time=1:3, val=4:6, grp_var=7:9, grp_loc=c(1,1,1), grp_sce=13:15)
+#' )
 validate_plotting_groups <- function(df) {
     plotting_groups <- get_plotting_groups(df)
 

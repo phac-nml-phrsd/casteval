@@ -317,13 +317,13 @@ apply_facets <- function(plot, plotting_groups) {
     } else if(len == 1) {
         # turn a string into `ggplot2`'s requested facet syntax
         # https://stackoverflow.com/questions/11028353/passing-string-variable-facet-wrap-in-ggplot-using-r
-        fac <- as.formula(glue::glue("~{plotting_groups[[1]]}"))
+        fac <- stats::as.formula(glue::glue("~{plotting_groups[[1]]}"))
         return(plot + ggplot2::facet_wrap(fac))
     } else if(len == 2) {
         # see above
         a <- plotting_groups[[1]]
         b <- plotting_groups[[2]]
-        fac <- as.formula(glue::glue("{a} ~ {b}"))
+        fac <- stats::as.formula(glue::glue("{a} ~ {b}"))
         return(plot + ggplot2::facet_grid(fac))
     } else {
         stop("more than 2 plotting groups provided to `apply_facets()`")
