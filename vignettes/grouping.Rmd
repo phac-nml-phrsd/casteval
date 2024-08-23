@@ -2,7 +2,7 @@
 title: "Grouping forecast data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{grouping}
+  %\VignetteIndexEntry{Grouping forecast data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
