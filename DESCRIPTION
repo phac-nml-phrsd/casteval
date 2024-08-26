@@ -1,6 +1,6 @@
 Package: casteval
 Title: Modular tools for scoring and comparing infectious disease forecasts
-Version: 0.2.0
+Version: 0.2.0.1
 Authors@R: c(
     person("Daniel", "Yu", , "daniel.yu@phac-aspc.gc.ca", role = c("aut")),
     person("Irena", "Papst", , "irena.papst@phac-aspc.gc.ca", role = c("aut", "cre")),
