@@ -36,7 +36,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/scoring.html">Scoring forecasts</a></li>
+<li><a class="dropdown-item" href="articles/dev.html">For developers</a></li>
+    <li><a class="dropdown-item" href="articles/scoring.html">Scoring forecasts</a></li>
   </ul>
 </li>
       </ul>
@@ -79,31 +80,12 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>See <code><a href="articles/casteval.html">vignette("casteval")</a></code> to get started.</p>
+<p>See <code><a href="articles/casteval.html">vignette("casteval")</a></code> to get started with using this package.</p>
 </div>
 <div class="section level2">
 <h2 id="for-developers">For developers<a class="anchor" aria-label="anchor" href="#for-developers"></a>
 </h2>
-<div class="section level3">
-<h3 id="source-code">Source code<a class="anchor" aria-label="anchor" href="#source-code"></a>
-</h3>
-<p>The source code is located <a href="https://github.com/phac-nml-phrsd/casteval" class="external-link">here</a>.</p>
-</div>
-<div class="section level3">
-<h3 id="renv">
-<code>renv</code><a class="anchor" aria-label="anchor" href="#renv"></a>
-</h3>
-<p>This project uses <a href="https://rstudio.github.io/renv/index.html" class="external-link"><code>renv</code></a> to manage dependencies.</p>
-<p>For R package projects, <code>renv</code> tries to intelligently discover dependencies by looking at the fields in the DESCRIPTION file that are relevant for users, like <code>Imports</code> and <code>Depends</code> (see <code>renv::settings$package.dependency.fields()</code>). For developers, the <code>Suggests</code> field can be equally important to track as it can include packages used in the process of development but not in the actual source code of the package, like <code>devtools</code>, <code>covr</code>, to ensure development environments don’t vary across users.</p>
-<p>The <code>renv</code> FAQ page <a href="https://rstudio.github.io/renv/articles/faq.html#how-should-i-handle-development-dependencies" class="external-link">recommends tracking development dependencies in <code>Suggests</code></a>. It doesn’t, however, seem to tell you that in order to use their recommendation, you need to use the <code>dev = TRUE</code> flag in <code><a href="https://rstudio.github.io/renv/reference/status.html" class="external-link">renv::status()</a></code> to accurately check the status of such a project, as well as in <code><a href="https://rstudio.github.io/renv/reference/snapshot.html" class="external-link">renv::snapshot()</a></code> when recording files (the default is <code>dev = FALSE</code>). If you simply execute <code>renv::snapshot(dev = FALSE)</code>, <code>renv</code> will miss/remove the development dependencies in <code>Suggests</code>, which will break our CI pipelines. Once these dependencies have been recorded, <code>renv::status(dev = FALSE)</code> will report that the project is out-of-sync, as it will see installed dependencies that are not used anywhere (since it skips <code>Suggests</code>).</p>
-<p>The bottom line is to be sure to use the <code>dev = TRUE</code> option when working in this repository. If you need to add any development dependencies to the project, be sure to add them to the <code>Suggests</code> field of the <code>DESCRIPTION</code>, run <code>renv::install(dev = TRUE)</code> to install them, then <code>renv::snapshot(dev = TRUE)</code> to record them.</p>
-<p>A side effect of this default behaviour is that, when you open a new R session in this project, <code><a href="https://rstudio.github.io/renv/reference/status.html" class="external-link">renv::status()</a></code> will get called and report that the project is out-of-sync. Don’t trust this message! Run <code>renv::status(dev = TRUE)</code> to check the true status of the project. (There is a <a href="https://github.com/rstudio/renv/issues/1760" class="external-link">feature request</a> to enable a user to configure the default behaviour of <code><a href="https://rstudio.github.io/renv/reference/status.html" class="external-link">renv::status()</a></code> on a project-by-project basis specifically to accommodate the above situation, but this issue is still open as of this writing on 2024-06-11…)</p>
-</div>
-<div class="section level3">
-<h3 id="test-coverage">Test coverage<a class="anchor" aria-label="anchor" href="#test-coverage"></a>
-</h3>
-<p>You can use <code><a href="http://covr.r-lib.org/reference/report.html" class="external-link">covr::report()</a></code> to periodically check test coverage locally in development.</p>
-</div>
+<p>Please review <a href="https://phac-nml-phrsd.github.io/casteval/articles/dev.html">the developer guide</a> if you plan on contributing to this package.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
