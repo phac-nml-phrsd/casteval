@@ -126,8 +126,8 @@ plot_forecast <- function(fcst, obs=NULL, quant_intervals=NULL, invert_scale=FAL
     plt <- plt + ggplot2::xlab("time") + ggplot2::ylab("value")
 
     # make x axis integers only
-    plt <- plt + ggplot2::scale_x_continuous(breaks=integer_breaks())
-    #plt <- plt + ggplot2::scale_y_continuous(breaks=integer_breaks())
+    # plt <- plt + ggplot2::scale_x_continuous(breaks=integer_breaks())
+    # plt <- plt + ggplot2::scale_y_continuous(breaks=integer_breaks())
 
     validate_plotting_groups(fcst$data)
     plt |> apply_facets(get_plotting_groups(fcst$data))

@@ -5,9 +5,11 @@
 ^LICENSE\.md$
 ^doc$
 ^Meta$
-^\.gitlab-ci\.yml$
 ^man-roxygen$
 ^data-raw$
 ^_pkgdown\.yml$
 ^public$
 ^README\.Rmd$
+^\.github$
+^docs$
+^pkgdown$
