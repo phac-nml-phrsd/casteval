@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   casteval: casteval.html
   scoring: scoring.html
-last_built: 2024-08-26T13:57Z
+last_built: 2024-08-26T14:02Z
 urls:
   reference: https://phac-nml-phrsd.github.io/casteval/reference
   article: https://phac-nml-phrsd.github.io/casteval/articles
