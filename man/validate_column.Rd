@@ -15,15 +15,15 @@ validate_column(df, col)
 NULL if valid, error otherwise.
 }
 \description{
-Errors of \code{col} is not a column in data frame.
+Errors if \code{col} is not a column in data frame.
 }
 \examples{
 casteval:::validate_column(
-  data.frame(time=1, raw=4, quant_25=6, quant_75=8),
-  "quant_25"
+  data.frame(time=1, val=4, val_q25=6, val_q75=8),
+  "val_q25"
 )
 try(casteval:::validate_column(
-  data.frame(time=1, raw=4),
-  "mean"
+  data.frame(time=1, val=4),
+  "val_mean"
 ))
 }

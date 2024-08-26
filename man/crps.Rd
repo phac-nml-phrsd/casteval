@@ -4,12 +4,17 @@
 \alias{crps}
 \title{Compute Continuous Ranked Probability Score for forecast}
 \usage{
-crps(fcst, obs, at = NULL, after = NULL, summarize = TRUE)
+crps(fcst, obs, summarize = TRUE, at = NULL, after = NULL)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
 
 \item{obs}{An observations data frame.}
+
+\item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
+If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
+containing the scores for each individual time point.
+This can be used by plotting functions to colour-code observations, for example.}
 
 \item{at}{(Optional) A time (must be compatible with \code{fcst} and \code{obs}).
 If specified, the score for this time point will be returned.
@@ -18,11 +23,6 @@ Mutually exclusive with \code{after}.}
 \item{after}{(Optional) A number. If specified, the score at
 time \code{fcst$forecast_time + after} will be returned.
 Mutually exclusive with \code{at}.}
-
-\item{summarize}{A boolean, defaults to TRUE. If TRUE, a single number will be returned as the score for the forecast.
-If FALSE, a data frame with columns named \code{time}, \code{val_obs}, and \code{score} will be returned,
-containing the scores for each individual time point.
-This can be used by plotting functions to colour-code observations, for example.}
 }
 \value{
 If \code{summarize} is \code{FALSE},
@@ -31,15 +31,23 @@ Otherwise, the score at the time speficied by either \code{at} or \code{after}.
 }
 \description{
 Given a forecast and set of observations, compute the
+Continuous Ranked Probability Score (CRPS) for every time point.
 }
 \details{
-Continuous Ranked Probability Score (CRPS) for every time point.
-The CRPS for a given distribution \code{f} and observation \code{y},
+For a given distribution \code{f} and observation \code{y},
 let \code{F} be the CDF of \code{f}. Then the CRPS is the integral of the square
 of \code{F(x) - H(x - y)}, where \code{H} is the Heaviside function.
 
 The CDF is obtained using an emperical distribution function on the forecast data.
 }
+\section{Grouping}{
+
+If \code{summarize=FALSE} is passed, the resulting scores will be grouped by time.
+If group columns are present, the data will be grouped by the group columns before scoring.
+In either case, the return value will instead be a data frame with columns for the time, observation, score, and group columns if they exist.
+See \code{vignette("casteval")} for more details.
+}
+
 \examples{
 fc <- create_forecast(list(
   time=c(1,2,3),

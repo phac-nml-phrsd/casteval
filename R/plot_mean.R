@@ -34,10 +34,13 @@ plot_mean <- function(plt=NULL, fcst, alpha=0.5, colour="green", linewidth=2) {
         if(!"val" %in% colnames(fcst$data)) {
             stop("mean or raw data required to plot mean")
         }
-        dat <- fcst$data |> dplyr::group_by(time) |> dplyr::summarize(val_mean=mean(val))
+        dat <- fcst$data |> dplyr::group_by(time) |> group_all(.add=TRUE) |> dplyr::summarize(val_mean=mean(val), .groups="drop")
     }
     else {
         dat <- fcst$data
     }
-    plt + ggplot2::geom_line(ggplot2::aes(x=time, y=val_mean, linetype="mean"), data=dat, alpha=alpha, colour=colour, linewidth=linewidth)
+    plt <- plt + ggplot2::geom_line(ggplot2::aes(x=time, y=val_mean, linetype="mean"), data=dat, alpha=alpha, colour=colour, linewidth=linewidth)
+
+    validate_plotting_groups(fcst$data)
+    plt |> apply_facets(get_plotting_groups(fcst$data))
 }

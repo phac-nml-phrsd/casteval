@@ -3,7 +3,8 @@
 #' Create a plot displaying the density function calculated by the Kernel Density Estimation (KDE),
 #' for the specified time in the forecast.
 #' 
-#' Creates a plot containing:
+#' @details
+#' `plot_KDE()` creates a plot containing:
 #' - The density curve at the given time calculated by the KDE
 #' - The forecast data points at the given time, along the x-axis
 #' - A histogram of the density of the forecast data points
@@ -115,4 +116,8 @@ plot_KDE <- function(fcst, obs=NULL, at=NULL, after=NULL, bw=NULL, from=NULL, to
     # label axes
     plt <- plt + ggplot2::xlab("value") + ggplot2::ylab("density")
     plt
+
+    # uncomment this and write grouping tests for plot_KDE()
+    # validate_plotting_groups(fcst$data)
+    # plt |> apply_facets(get_plotting_groups(fcst$data))
 }

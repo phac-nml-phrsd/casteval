@@ -172,6 +172,11 @@ test_that("join_fcst_obs() works", {
     ),
     data.frame(time=1:3, val=4:6, val_obs=8:10)
   )
+
+  expect_equal(
+    join_fcst_obs(groups1, groups_obs),
+    dplyr::inner_join(groups1, groups_obs, dplyr::join_by(time, grp_variable, grp_province, grp_scenario))
+  )
 })
 
 test_that("get_time_point() works", {
@@ -242,5 +247,22 @@ test_that("calc_specified_time() works", {
   expect_error(
     calc_specified_time(fc, at=lubridate::as_date(1)),
     "type of `at` must match type of forecast times"
+  )
+})
+
+test_that("apply_facets() works", {
+  obs <- groups_obs |> dplyr::filter(grp_scenario==1)
+  
+  vdiffr::expect_doppelganger("apply_facet1",
+    NULL |> plot_observations(obs) |> apply_facets(c("grp_variable"))
+  )
+
+  vdiffr::expect_doppelganger("apply_facet2",
+    NULL |> plot_observations(obs) |> apply_facets(c("grp_variable", "grp_province"))
+  )
+
+  expect_error(
+    NULL |> plot_observations(obs) |> apply_facets(c("grp_variable", "grp_province", "grp_scenario")),
+    "more than 2 plotting groups provided to `apply_facets\\(\\)"
   )
 })

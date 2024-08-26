@@ -4,6 +4,8 @@
 #' Is it a forecast?
 #'
 #' Determines whether a given R object is a forecast object or not.
+#' 
+#' @details
 #' An R object is a forecast object if:
 #' 
 #' - It is a list (and also not a data frame)
@@ -136,13 +138,34 @@ join_fcst_obs <- function(df, obs) {
     # filter out NAs
     obs <- obs |> dplyr::filter(!is.na(val_obs))
 
-    df <- dplyr::inner_join(df, obs, dplyr::join_by(time))
+    df <- join_data(df, obs)
 
     if(nrow(df) == 0) {
         stop("forecast and observations data do not share any time points")
     }
 
     df
+}
+
+
+#' Join two data frames
+#'
+#' Join two data frames by time and grouping columns.
+#'
+#' @param df1 The first data frame
+#' @param df2 The second data frame
+#'
+#' @details
+#' `df1` and `df2` should both have a `time` column and the exact same grouping columns.
+#' 
+#' @returns The inner join of the two data frames
+#' @autoglobal
+#'
+#' @examples
+#' #TODO
+join_data <- function(df1, df2) {
+    joinby <- c("time", get_group_cols(df1))
+    dplyr::inner_join(df1, df2, by=joinby)
 }
 
 
@@ -264,4 +287,45 @@ calc_specified_time <- function(fcst, at=NULL, after=NULL) {
     }
 
     t
+}
+
+
+#' Apply facets to plot
+#'
+#' Apply the given facets to the given plot
+#'
+#' @param plot A `ggplot` object
+#' @param plotting_groups A character vector of up to 2 group column names
+#'
+#' @details
+#' 
+#' - If `plotting_groups` is empty, `plot` is returned unchanged
+#' - If `plotting_groups` has one element, `ggplot2::facet_wrap()` is used
+#' - If `plotting_groups` has two elements, `ggplot2::facet_grid()` is used
+#' 
+#' @returns desc
+#' @autoglobal
+#'
+#' @examples
+#' obs <- groups_obs |> dplyr::filter(grp_scenario==1)
+#' NULL |> plot_observations(obs) |> casteval:::apply_facets(c("grp_variable"))
+#' NULL |> plot_observations(obs) |> casteval:::apply_facets(c("grp_variable", "grp_province"))
+apply_facets <- function(plot, plotting_groups) {
+    len <- length(plotting_groups)
+    if(len == 0) {
+       return(plot)
+    } else if(len == 1) {
+        # turn a string into `ggplot2`'s requested facet syntax
+        # https://stackoverflow.com/questions/11028353/passing-string-variable-facet-wrap-in-ggplot-using-r
+        fac <- stats::as.formula(glue::glue("~{plotting_groups[[1]]}"))
+        return(plot + ggplot2::facet_wrap(fac))
+    } else if(len == 2) {
+        # see above
+        a <- plotting_groups[[1]]
+        b <- plotting_groups[[2]]
+        fac <- stats::as.formula(glue::glue("{a} ~ {b}"))
+        return(plot + ggplot2::facet_grid(fac))
+    } else {
+        stop("more than 2 plotting groups provided to `apply_facets()`")
+    }
 }

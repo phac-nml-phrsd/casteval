@@ -63,10 +63,17 @@ accuracy <- function(fcst, obs, summarize=TRUE, quant_pairs=NULL) {
     }
 
     # calculate accuracy
-    scores <- scores |> dplyr::group_by(pair) |> dplyr::summarize(n=dplyr::n(), acc=mean(score))
+    scores <- scores |> dplyr::group_by(pair) |> group_all(.add=TRUE) |> dplyr::summarize(n=dplyr::n(), score=mean(score), .groups="drop")
     # print how many points used
-    message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
-    scores$acc
+    
+    # TODO reinstate this message once grouping is figured out (in v0.4 probably)
+    # document the `n` column (which tells how many were used)
+    #message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
+    if(has_groups(scores)) {
+        return(scores)
+    } else {
+        scores$score
+    }
 }
 
 
@@ -89,7 +96,10 @@ accuracy_help <- function(fcst, obs, pair) {
     high <- get_quantile(fcst$data, pair[[2]]) |> dplyr::rename(high=quant)
 
     # attach quant columns to obs data frame
-    obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
+    #obs <- obs |> dplyr::inner_join(low, dplyr::join_by(time)) |> dplyr::inner_join(high, dplyr::join_by(time))
+    
+    obs <- obs |> join_data(low) |> join_data(high)
+
     if(nrow(obs) == 0) {
         stop("observations and forecast data share no time points")
     }
@@ -97,7 +107,8 @@ accuracy_help <- function(fcst, obs, pair) {
     # calculate accuracy
     obs <- obs |> dplyr::mutate(score=dplyr::between(val_obs, low, high))
 
-    return(obs |> dplyr::select(time, val_obs, score))
+    group_cols <- get_group_cols(obs)
+    return(obs |> dplyr::select(time, dplyr::all_of(group_cols), val_obs, score))
 }
 
 
@@ -121,8 +132,6 @@ accuracy_help <- function(fcst, obs, pair) {
 #' 
 #' acc <- make_accuracy(c(5,95))
 #' acc(fc, obs)
-#' 
-#' plot_forecast(fc, obs, score=make_accuracy(c(25,75)))
 make_accuracy <- function(quant_pairs) {
     function(...) {
         accuracy(..., quant_pairs=quant_pairs)

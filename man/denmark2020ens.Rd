@@ -18,4 +18,7 @@ denmark2020ens
 \description{
 The data used to create \code{denmark2020fc}, as a list of realization vectors.
 }
+\seealso{
+\link{denmark2020fc}, \link{denmark2020df}, \link{denmark2020obs}
+}
 \keyword{datasets}

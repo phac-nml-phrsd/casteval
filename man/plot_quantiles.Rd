@@ -24,7 +24,7 @@ If not provided, the quantile columns in \code{fcst$data} will be used.}
 A ggplot object
 }
 \description{
-Given forecast data, plot the requested quantiles as lines
+Given forecast data, plot the requested quantiles as lines.
 }
 \examples{
 fc <- create_forecast(list(

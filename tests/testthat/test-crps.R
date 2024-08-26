@@ -42,7 +42,7 @@ test_that("crps() works", {
 
   expect_equal(
     crps(fc2, data.frame(time=1:3, val_obs=c(3,4,5)), summarize=FALSE),
-    dplyr::tibble(time=1:3, val_obs=3:5, score=c(.4, .6, 1.2))
+    dplyr::tibble(time=1:3, score=c(.4, .6, 1.2), val_obs=3:5)
   )
 
   expect_equal(
@@ -73,5 +73,23 @@ test_that("crps() works", {
     crps(fc3, data.frame(time=1, val_obs=100), at=1),
     89.50063,
     tolerance=0.001
+  )
+})
+
+test_that("crps() grouping works", {
+  fc <- create_forecast(groups2)
+  obs <- groups_obs
+
+  res <- join_fcst_obs(fc$data, obs) |> dplyr::group_by(time) |> group_all(.add=TRUE) |>
+      dplyr::summarize(score=scoringRules::crps_sample(val_obs[[1]], val), val_obs=val_obs[[1]], .groups="drop")
+
+  expect_equal(
+    crps(fc, obs, summarize=FALSE),
+    res
+  )
+
+  expect_equal(
+    crps(fc, obs, at=2),
+    res |> dplyr::filter(time==2) |> dplyr::mutate(time=NULL, val_obs=NULL)
   )
 })

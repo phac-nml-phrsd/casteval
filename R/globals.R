@@ -3,8 +3,8 @@
 utils::globalVariables(c(
   "pair", # <accuracy>
   "quant", # <accuracy_help>
-  "time", # <accuracy_help>
   "val_obs", # <accuracy_help>
+  "time", # <accuracy_help>
   "val", # <bias>
   "val_mean", # <bias>
   "val_q50", # <bias>
@@ -12,11 +12,11 @@ utils::globalVariables(c(
   "val_obs", # <bias>
   "time", # <bias>
   "time", # <crps>
-  "val", # <crps>
   "val_obs", # <crps>
+  "val", # <crps>
   "time", # <log_score>
-  "val", # <log_score>
   "val_obs", # <log_score>
+  "val", # <log_score>
   "y", # <plot_KDE>
   "density", # <plot_KDE>
   "time", # <plot_ensemble>
@@ -43,10 +43,9 @@ utils::globalVariables(c(
   "val", # <get_quantile>
   "time", # <filter_forecast_time>
   "val_obs", # <join_fcst_obs>
-  "time", # <join_fcst_obs>
   "time", # <get_time_point>
-  "time", # <validate_obs>
   "time", # <validate_data_frame>
   "sim", # <validate_data_frame>
+  "time", # <validate_obs>
   NULL
 ))

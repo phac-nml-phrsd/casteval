@@ -13,7 +13,7 @@ quant_name(num)
 The quantile column name.
 }
 \description{
-Given a number, returns the column name of a corresponding quantile column
+Given a number, returns the column name of a corresponding quantile column.
 }
 \examples{
 # "val_q50"

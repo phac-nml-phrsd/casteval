@@ -40,15 +40,14 @@ plot_observations <- function(plt=NULL, obs, alpha=0.4, colour="black") {
 
     if("score" %in% colnames(obs)) {
         # TODO print debugging reveals that this code is covered by tests, but covr::report() marks it as untested. This is likely a problem with either vdiffr or covr
-        return(
-            # we don't change alpha here because it makes the score colormap inaccurate/misleading
-            plt + ggplot2::geom_point(ggplot2::aes(x=time, y=val_obs, color=score), data=obs)
-        )
+        # we don't change alpha here because it makes the score colormap inaccurate/misleading
+        plt <- plt + ggplot2::geom_point(ggplot2::aes(x=time, y=val_obs, color=score), data=obs)
     } else {
-        return(
-            plt + ggplot2::geom_point(ggplot2::aes(x=time, y=val_obs), data=obs, alpha=alpha, colour=colour)
-        )
+        plt <- plt + ggplot2::geom_point(ggplot2::aes(x=time, y=val_obs), data=obs, alpha=alpha, colour=colour)
     }
+
+    validate_plotting_groups(obs)
+    plt |> apply_facets(get_plotting_groups(obs))
 }
 # TODO make TRUE consistently one color and FALSE consistently another
 

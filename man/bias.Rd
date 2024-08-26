@@ -21,18 +21,27 @@ A number between -1 and 1, inclusive. -1 means 100\% underprediction and 1 means
 }
 \description{
 Given a forecast and a set of observations, compute the bias of the forecast's predictions.
+}
+\details{
 \code{bias()} looks for forecast data in the following order:
 \enumerate{
 \item raw data (\code{val})
 \item mean (\code{val_mean})
 \item median (\code{val_q50})
 }
-}
-\details{
+
 It uses the first that it finds to calculate bias,
 by assigning 1 for overprediction, 0 for equality, and -1 for underprediction.
 It then summarizes the score by taking the mean of the assigned values.
 }
+\section{Grouping}{
+
+If \code{summarize=FALSE} is passed, the resulting scores will be grouped by time.
+If group columns are present, the data will be grouped by the group columns before scoring.
+In either case, the return value will instead be a data frame with columns for the time, observation, score, and group columns if they exist.
+See \code{vignette("casteval")} for more details.
+}
+
 \examples{
 obs <- data.frame(time=1:5, val_obs=rep(10,5))
 
