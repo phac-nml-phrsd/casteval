@@ -11,3 +11,5 @@
 ^public$
 ^README\.Rmd$
 ^\.github$
+^docs$
+^pkgdown$

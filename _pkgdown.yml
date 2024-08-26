@@ -1,4 +1,4 @@
-url: https://phac-nml-phrsd.github.io/casteval
+url: https://phac-nml-phrsd.github.io/casteval/
 template:
   bootstrap: 5
-destination: public
+
