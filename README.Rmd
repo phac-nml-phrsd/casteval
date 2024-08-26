@@ -22,11 +22,11 @@ knitr::opts_chunk$set(
 
 `{casteval}` facilitates the evaluation of time series forecasts.
 
-`r emo::ji("white heavy check mark")` Flexibly accepts forecasts as either a set of individual model realizations or as the summary of an ensemble of realizations via quantiles at each time point
+✅ Flexibly accepts forecasts as either a set of individual model realizations or as the summary of an ensemble of realizations via quantiles at each time point
 
-`r emo::ji("white heavy check mark")` Includes multiple scoring methods
+✅ Includes multiple scoring methods
 
-`r emo::ji("white heavy check mark")` Provides a suite of visualiation tools to help assess forecast and scoring performance
+✅ Provides a suite of visualization tools to help assess forecast and scoring performance
 
 ## Installation
 

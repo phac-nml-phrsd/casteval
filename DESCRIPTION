@@ -24,7 +24,6 @@ Suggests:
     htmltools,
     vdiffr,
     readr,
-    emo,
     withr
 Config/testthat/edition: 3
 Imports: 
