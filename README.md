@@ -38,7 +38,9 @@ install.packages("your/path/to/casteval", type="source")
 
 ## Usage
 
-See `vignette("casteval")` to get started with using this package.
+Use the [Get
+started](https://phac-nml-phrsd.github.io/casteval/articles/casteval.html)
+guide to start using this package.
 
 ## For developers
 
