@@ -22,7 +22,7 @@ If provided, the score for each corresponding pairs of quantiles will be calcula
 If not provided, it will default to every symmetrical pair of quantiles that can be found in \code{fcst},
 ordered from widest to narrowest (e.x. the 25\% and 75\% quantiles are symmetrical).}
 
-\item{silent}{Boolean to silence messages. Default = \code{FALSE}.
+\item{silent}{Logical to silence messages.
 
 If \code{summarize} is \code{FALSE}, an additional column named \code{pair} will indicate which pair of quantiles each row represents.
 If \code{summarize} is \code{TRUE}, the output will be a vector with the same length as \code{quant_pairs},
