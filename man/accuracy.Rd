@@ -4,7 +4,7 @@
 \alias{accuracy}
 \title{Get accuracy from quantiles}
 \usage{
-accuracy(fcst, obs, summarize = TRUE, quant_pairs = NULL)
+accuracy(fcst, obs, summarize = TRUE, quant_pairs = NULL, silent = FALSE)
 }
 \arguments{
 \item{fcst}{A forecast object (see output of \code{create_forecast()}).}
@@ -20,7 +20,9 @@ This can be used by plotting functions to colour-code observations, for example.
 or a single pair of numbers between 0 and 100.
 If provided, the score for each corresponding pairs of quantiles will be calculated.
 If not provided, it will default to every symmetrical pair of quantiles that can be found in \code{fcst},
-ordered from widest to narrowest (e.x. the 25\% and 75\% quantiles are symmetrical).
+ordered from widest to narrowest (e.x. the 25\% and 75\% quantiles are symmetrical).}
+
+\item{silent}{Boolean to silence messages. Default = \code{FALSE}.
 
 If \code{summarize} is \code{FALSE}, an additional column named \code{pair} will indicate which pair of quantiles each row represents.
 If \code{summarize} is \code{TRUE}, the output will be a vector with the same length as \code{quant_pairs},
