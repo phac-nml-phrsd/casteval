@@ -12,7 +12,7 @@
 #' If provided, the score for each corresponding pairs of quantiles will be calculated.
 #' If not provided, it will default to every symmetrical pair of quantiles that can be found in `fcst`,
 #' ordered from widest to narrowest (e.x. the 25% and 75% quantiles are symmetrical).
-#' @param silent Boolean to silence messages. Default = `FALSE`.
+#' @param silent Logical to silence messages.
 #'
 #' If `summarize` is `FALSE`, an additional column named `pair` will indicate which pair of quantiles each row represents.
 #' If `summarize` is `TRUE`, the output will be a vector with the same length as `quant_pairs`,
@@ -53,8 +53,7 @@ accuracy <- function(fcst, obs,
 
     quant_pairs <- parse_quant_pairs(quant_pairs, fcst$data)
 
-    if(!silent)
-      message(glue::glue("Scoring accuracy using quantile pairs {toString(quant_pairs)}"))
+    if(!silent) message(glue::glue("Scoring accuracy using quantile pairs {toString(quant_pairs)}"))
 
     scores <- quant_pairs |>
         # get the score data frame for each pair and give it a `pair` numbering
@@ -71,8 +70,7 @@ accuracy <- function(fcst, obs,
     # calculate accuracy
     scores <- scores |> dplyr::group_by(pair) |> dplyr::summarize(n=dplyr::n(), acc=mean(score))
     # print how many points used
-    if(!silent)
-      message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
+    if(!silent) message(glue::glue("Used {scores$n[[1]]} time points to calculate accuracy"))
 
     return(scores$acc)
 }
