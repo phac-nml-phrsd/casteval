@@ -6,21 +6,28 @@
 \alias{casteval-package}
 \title{casteval: Modular tools for scoring and comparing infectious disease forecasts}
 \description{
-Provides a generalized, modular set of tools to facilitate the scoring and comparing of infectious disease forecasts.
+A generalized, modular set of tools to facilitate the scoring and comparing of time series forecasts.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://phac-nml-phrsd.github.io/casteval}
+  \item \url{https://phac-nml-phrsd.github.io/casteval/}
+  \item Report bugs at \url{https://github.com/phac-nml-phrsd/casteval/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Daniel Yu \email{daniel.yu@phac-aspc.gc.ca}
+\strong{Maintainer}: Irena Papst \email{irena.papst@phac-aspc.gc.ca}
 
 Authors:
 \itemize{
-  \item Irena Papst \email{irena.papst@phac-aspc.gc.ca}
+  \item Daniel Yu \email{daniel.yu@phac-aspc.gc.ca}
+}
+
+Other contributors:
+\itemize{
+  \item Government of Canada [copyright holder]
 }
 
 }

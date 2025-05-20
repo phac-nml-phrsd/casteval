@@ -242,6 +242,20 @@ test_that("accuracy() quant works", {
   )
 })
 
+test_that(desc = "accuracy(..., silent = TRUE) works",
+          code = {
+
+  fc <- create_forecast(dplyr::tibble(time=c(1,1,1,2,2,2,3,3,3), val=4:12))
+
+  testthat::expect_no_message(
+    accuracy(
+      fcst =  fc,
+      obs  = data.frame(time = 1:3, val_obs = c(5.1, 7.5, 11.5)),
+      quant_pairs = list(c(25, 75)),
+      silent = T
+  ))
+})
+
 test_that("accuracy(..., summarize=FALSE) works", {
   fc1 <- create_forecast(dplyr::tibble(time=c(1,1,1,2,2,2,3,3,3), val=4:12))
   expect_equal(
@@ -290,6 +304,9 @@ test_that("accuracy(..., summarize=FALSE) works", {
     data.frame(time=3:5, val_obs=c(0,5,10), score=c(FALSE,TRUE,FALSE), pair=rep(1,3))
   )
 })
+
+
+
 
 test_that("make_accuracy() works", {
   fc <- create_forecast(list(
