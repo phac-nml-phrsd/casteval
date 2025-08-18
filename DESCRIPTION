@@ -1,9 +1,10 @@
 Package: casteval
 Title: Modular tools for scoring and comparing infectious disease forecasts
-Version: 0.2.2.9000
+Version: 0.2.3
 Authors@R: c(
     person("Daniel", "Yu", , "daniel.yu@phac-aspc.gc.ca", role = c("aut")),
     person("Irena", "Papst", , "irena.papst@phac-aspc.gc.ca", role = c("aut", "cre")),
+    person("David", "Champredon", , "david.champredon@phac-aspc.gc.ca", role = c("aut")),
     person("Government of Canada", role = c("cph"))
     )
 URL: https://phac-nml-phrsd.github.io/casteval, https://phac-nml-phrsd.github.io/casteval/

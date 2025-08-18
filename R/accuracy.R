@@ -56,7 +56,8 @@ accuracy <- function(fcst, obs,
     if(!silent) message(glue::glue("Scoring accuracy using quantile pairs {toString(quant_pairs)}"))
 
     scores <- quant_pairs |>
-        # get the score data frame for each pair and give it a `pair` numbering
+        # get the score data frame for each pair
+        # and give it a `pair` numbering
         purrr::imap(\(pair, i)
             accuracy_help(fcst, obs, pair) |> dplyr::mutate(pair=i)
         ) |>
@@ -68,7 +69,11 @@ accuracy <- function(fcst, obs,
     }
 
     # calculate accuracy
-    scores <- scores |> dplyr::group_by(pair) |> group_all(.add=TRUE) |> dplyr::summarize(n=dplyr::n(), score=mean(score), .groups="drop")
+    scores <- scores |>
+      dplyr::group_by(pair) |> 
+      group_all(.add=TRUE) |>
+      dplyr::summarize(n=dplyr::n(), score=mean(score), .groups="drop")
+
     # print how many points used
 
     # TODO reinstate this message once grouping is figured out (in v0.4 probably)
