@@ -23,6 +23,7 @@ Useful links:
 Authors:
 \itemize{
   \item Daniel Yu \email{daniel.yu@phac-aspc.gc.ca}
+  \item David Champredon \email{david.champredon@phac-aspc.gc.ca}
 }
 
 Other contributors:

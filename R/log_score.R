@@ -24,14 +24,14 @@
 #'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   summarize=FALSE
 #' )
-#' 
+#'
 #' # use `at` parameter to specify absolute times
 #' log_score(
 #'   create_forecast(df, forecast_time=1),
 #'   data.frame(time=1:3, val_obs=c(-1, 2.5, 5)),
 #'   at=2
 #' )
-#' 
+#'
 #' # use `after` parameter to specify times relative to `forecast_time`
 #' log_score(
 #'   create_forecast(df, forecast_time=1),
@@ -64,14 +64,18 @@ log_score <- function(fcst, obs, summarize=TRUE, at=NULL, after=NULL, bw=NULL) {
         stop(glue::glue("not enough data points at time {tm} (at least 2 required to calculate KDE)"))
     }
 
-    # scoringRules::logs_sample computes the negative log score. we negate it again to compute the log score
-    df <- df |> dplyr::summarize(score = -scoringRules::logs_sample(val_obs[[1]], val, bw=bw), val_obs=val_obs[[1]])
-    #TODO if calculating a KDE becomes a bottleneck (unlikely but possible), then only calculate the score for the one time point specified by at/after.
+    # scoringRules::logs_sample computes the negative log score.
+    # we negate it again to compute the log score
+    df <- df |>
+      dplyr::summarize(score = -scoringRules::logs_sample(val_obs[[1]], val, bw=bw),
+                       val_obs = val_obs[[1]])
+    #TODO if calculating a KDE becomes a bottleneck (unlikely but possible),
+    # then only calculate the score for the one time point specified by at/after.
 
     if(!summarize) { # return the whole data frame with the score column
         return(dplyr::select(df, time, val_obs, score))
     }
-    
+
     t <- calc_specified_time(fcst, at, after)
 
     df <- df |> dplyr::filter(time==t)
@@ -100,10 +104,10 @@ log_score <- function(fcst, obs, summarize=TRUE, at=NULL, after=NULL, bw=NULL) {
 #' dat <- c(1.65333590, -0.45354373, -0.72833227, -0.57932896,  0.22393422)
 #' fc <- create_forecast(dplyr::tibble(time=rep(1,5), val=dat), forecast_time=1)
 #' obs <- data.frame(time=1, val_obs=0)
-#' 
+#'
 #' logs <- make_log_score(at=1)
 #' logs(fc, obs)
-#' 
+#'
 #' logs2 <- make_log_score(after=0, bw=0.3)
 #' logs2(fc, obs)
 make_log_score <- function(at=NULL, after=NULL, bw=NULL) {
