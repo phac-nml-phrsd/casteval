@@ -95,7 +95,7 @@ log_score_approx_normal <- function(fcst,
   q = qpairs[[quantpair.choice]]
 
   # Extract forecast values at those quantiles
-  x = fcst$data[, paste0('val_q',q)]
+  x = fcst$data[, paste0('val_q',q)] |> as.data.frame()
 
   # Calculate mean of approximate normal distribution
   m = apply(x, MARGIN = 1, FUN = mean)
@@ -112,22 +112,22 @@ log_score_approx_normal <- function(fcst,
 
   # Calculate log score, assuming a normal
   # distribution of the forecasted values
-  scores = stats::dnorm(x = obs$val_obs,
+  scores = stats::dnorm(x    = obs$val_obs,
                         mean = m,
-                        sd = sigma,
-                        log = TRUE)
+                        sd   = sigma,
+                        log  = TRUE)
 
   if(!summarize) res = obs |>
     dplyr::mutate(score = scores,
                   implied_normal_mean = m,
-                  implied_normal_sd = sigma[,1])|>
+                  implied_normal_sd = sigma)|>
     dplyr::bind_cols(x) |>
     dplyr::select(time, val_obs, score,
                   dplyr::starts_with('val_q'),
                   implied_normal_mean,
                   implied_normal_sd)
 
-  if(summarize) res  = mean(scores)
+  if(summarize) res = mean(scores)
 
   return(res)
 }
