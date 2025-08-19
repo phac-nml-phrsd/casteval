@@ -101,18 +101,21 @@ log_score_approx_normal <- function(fcst,
   m = apply(x, MARGIN = 1, FUN = mean)
 
   # Calculate standard deviation
-  # using the quantiles only
-  quantile_level <- q[1]
-  value_at_quantile <- x[,1]
+  # using the quantiles only.
+
+  # Use upper quantile `q[2]` as the value of the
+  # lower one (x[,1]) may be floored in some applications
+  quantile_level    <- q[2]
+  value_at_quantile <- x[,2]  |> as.numeric()
   z_score <- stats::qnorm(quantile_level / 100)
-  sigma <- (value_at_quantile - m) / z_score
+  sigma <- (value_at_quantile - m) / z_score |> as.numeric()
 
   # Calculate log score, assuming a normal
   # distribution of the forecasted values
   scores = stats::dnorm(x = obs$val_obs,
-                 mean = m,
-                 sd = sigma[,1],
-                 log = TRUE)
+                        mean = m,
+                        sd = sigma,
+                        log = TRUE)
 
   if(!summarize) res = obs |>
     dplyr::mutate(score = scores,
