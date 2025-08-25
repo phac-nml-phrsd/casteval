@@ -16,7 +16,7 @@ test_that("validate_time() works", {
     ),
     NULL
   )
-  
+
   expect_error(
     validate_time(
       lubridate::ymd_hms("2024-01-01_04:04:04"),
