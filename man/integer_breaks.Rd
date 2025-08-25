@@ -4,7 +4,7 @@
 \alias{integer_breaks}
 \title{Integer breaks on ggplot2 axes}
 \source{
-https://gist.github.com/jhrcook/eb7b63cc57c683a6eb4986c4107a88ec
+\url{https://gist.github.com/jhrcook/eb7b63cc57c683a6eb4986c4107a88ec}
 }
 \usage{
 integer_breaks(n = 5, ...)
@@ -15,5 +15,5 @@ integer_breaks(n = 5, ...)
 \item{...}{other arguments passed to \code{pretty()}}
 }
 \description{
-A modified version of scales::pretty_breaks() for only integer-valued ticks
+A modified version of \code{scales::pretty_breaks()} for only integer-valued ticks.
 }

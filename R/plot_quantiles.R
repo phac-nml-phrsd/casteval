@@ -1,6 +1,6 @@
 #' Plot forecast quantiles
 #'
-#' Given forecast data, plot the requested quantiles as lines
+#' Given forecast data, plot the requested quantiles as lines.
 #'
 #' @template plt
 #' @template fcst
@@ -67,7 +67,10 @@ plot_quantiles <- function(plt=NULL, fcst, quants=NULL, alpha=1, colour="orange"
         dplyr::mutate(quantile=as.factor(linetype))
 
     # plot
-    plt + ggplot2::geom_line(ggplot2::aes(x=time, y=value, linetype=linetype), data=quant_data, alpha=alpha, colour=colour)
+    plt <- plt + ggplot2::geom_line(ggplot2::aes(x=time, y=value, linetype=linetype), data=quant_data, alpha=alpha, colour=colour)
+
+    validate_plotting_groups(fcst$data)
+    plt |> apply_facets(get_plotting_groups(fcst$data))
 
     # using `{ggnewscale}` to make a second color scale is probably a bad idea because it impedes
     # customization by the user, and can be visually confusing

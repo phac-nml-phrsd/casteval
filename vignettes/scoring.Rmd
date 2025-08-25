@@ -2,7 +2,7 @@
 title: "Scoring forecasts"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{scoring}
+  %\VignetteIndexEntry{Scoring forecasts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

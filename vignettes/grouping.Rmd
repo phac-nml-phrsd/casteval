@@ -1,0 +1,106 @@
+---
+title: "Grouping forecast data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Grouping forecast data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  strip.white=TRUE
+)
+
+library(casteval)
+
+ggplot2::theme_set(ggplot2::theme_light())
+```
+
+The [Getting started vignette](casteval.html) should be read before this one.
+Here we explain all the grouping functionality supported by `{casteval}`.
+
+# Group columns
+
+On top of the `time`, `sim`, `val`, `val_mean`, etc. columns that can be in forecast data frames,
+a forecast data frame can contain as many grouping columns as you like.
+A grouping column starts with `grp_` followed by a nonempty string, for example `grp_variable`, `grp_scenario`, `grp_province`.
+These columns can be used to group your forecast data.
+
+```{r group_dataframe}
+# data frame with 3 group columns, each taking on 2 values
+# see ?groups1 for details
+groups1
+
+# a similar data frame but with raw data
+groups2
+```
+
+Similarly, observations data frames can also contain group columns.
+
+```{r group_obs}
+# an observations data frame with the same grouping columns as above
+groups_obs
+```
+
+# Scoring
+
+Scoring functions behave a little differently when given grouped data.
+For a forecast and observations to be compatible for scoring, they must have the exact same group columns.^[The same is true for plotting with `plot_forecast()`]
+
+If `summarize=TRUE`, then the result will be a data frame with the usual `val_obs` and `score` columns, as well as the group columns present in the forecast/observations.
+
+```{r score_summarized}
+fc1 <- create_forecast(groups1)
+fc2 <- create_forecast(groups2)
+
+bias(fc2, groups_obs)
+
+accuracy(fc1, groups_obs)
+
+# accuracy still works with multiple quantile pairs
+accuracy(fc2, groups_obs, quant_pairs=list(c(5,95), c(25,75)))
+
+crps(fc2, groups_obs, at=2)
+```
+
+If `summarize=FALSE`, the output will be like a regular unsummarized data frame plus the group columns.
+
+```{r score_unsummarized}
+bias(fc2, groups_obs, summarize=FALSE)
+
+crps(fc2, groups_obs, summarize=FALSE)
+
+accuracy(fc2, groups_obs, quant_pairs=list(c(5,95), c(25,75)), summarize=FALSE)
+```
+
+These unsummarized data frames remain compatible with plotting functions, as explained below.
+
+# Plotting
+
+Every plotting function^[except for `plot_KDE()` at the moment] supports grouping of its inputs (forecasts and observations).
+However, there are some caveats.
+
+Up to two grouping columns in the input to a plotting function may take on multiple values.
+For example, `groups1 |> dplyr::filter(grp_scenario==1)` is a valid plotting input, but `groups1` is not, since it has 3 groups which take on multiple values.
+
+Therefore at the moment, if you want to plot forecasts/observations with more than 3 groups, you will probably have to use `dplyr::filter()` and iteration in order to generate multiple plots.^[Tools to make this less tedious are planned for future versions]
+
+If 1 group column takes on multiple values, then `ggplot2::facet_wrap()` will be used.
+
+```{r facet_wrap}
+fc <- create_forecast(groups1 |> dplyr::filter(grp_scenario==1, grp_variable=="hosp"))
+obs <- groups_obs |> dplyr::filter(grp_scenario==1, grp_variable=="hosp")
+
+plot_forecast(fc, obs, score=bias)
+```
+
+If 2 group columns take on multiple values, then `ggplot2::facet_grid()` will be used.
+
+```{r facet_grid}
+fc <- create_forecast(groups2 |> dplyr::filter(grp_province=="ON"))
+obs <- groups_obs |> dplyr::filter(grp_province=="ON")
+plot_forecast(fc, obs, score=crps)
+```

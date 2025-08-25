@@ -1,0 +1,145 @@
+---
+title: "Casteval demonstration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{denmark2020}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  strip.white=TRUE,
+  fig.width = 7
+)
+
+library(casteval)
+
+ggplot2::theme_set(ggplot2::theme_light())
+```
+
+# Formatting
+
+Here is a forecast that was created by epidemiologists in Denmark in 2020.
+
+```{r ens}
+str(denmark2020ens)
+```
+
+It is an ensemble of 500 different realizations of a simulation, with 150 time points each.
+
+To use this data with `{casteval}` we need to provide time points.
+
+```{r times}
+library(lubridate)
+times <- seq(ymd("2020-05-05"), ymd("2020-10-01"), by="days")
+```
+
+Now we can create a forecast object.
+
+```{r create_forecast}
+fc <- create_forecast(
+    list(time=times, vals=denmark2020ens),
+    name="Denmark 2020 forecast",
+    forecast_time=ymd("2020-05-05")
+)
+
+fc
+```
+
+Here is a made-up set of observations over roughly the same time period.
+
+```{r obs}
+obs <- denmark2020obs
+obs
+```
+
+These simply consist of a `time` column and a `val_obs` column.
+
+# Visualizing
+
+Let's visualize the forecast and the observations.
+
+```{r vis}
+plot_forecast(fc, obs)
+```
+
+Since there are so many realizations, the observations are kind of hard to see.
+We can tweak the opacity and colors using the modular plotting functions.
+
+```{r vis_modular}
+NULL |> plot_ensemble(fc, alpha=0.05) |> plot_observations(obs, colour="green")
+```
+
+# Scoring
+
+We can pass the data to any scoring function we like.
+
+```{r score}
+bias(fc, obs)
+
+log_score(fc, obs, at=ymd("2020-10-01"))
+
+crps(fc, obs, after=60)
+
+pairs <- list(c(.5,99.5), c(5,95), c(25,75))
+accuracy(fc, obs, quant_pairs=pairs)
+```
+
+The default behaviour is to summarize the data into a single score.
+To get the unsummarized scores, we pass `summarize=FALSE`.
+
+```{r score_unsummarized}
+bias(fc, obs, summarize=FALSE)
+
+crps(fc, obs, after=60, summarize=FALSE)
+
+log_score(fc, obs, at=ymd("2020-10-01"), summarize=FALSE)
+
+accuracy(fc, obs, quant_pairs=pairs, summarize=FALSE)
+```
+
+Note how for `accuracy()`, the score column is a boolean, not a number.
+
+## Custom scoring
+
+Let's say we want to modify `accuracy()` so that it returns the rate at which numbers fall *outside* a quantile interval.
+We can define our own scoring function to wrap `accuracy()`, and then use it like any other.
+
+```{r score_custom}
+accuracy_inverse <- function(fcst, obs, summarize=TRUE, quant_pairs=NULL) {
+    scores <- accuracy(fcst, obs, summarize=summarize, quant_pairs=quant_pairs)
+    
+    if(summarize) {
+        1 - scores
+    } else {
+        scores |> dplyr::mutate(score=!score)
+    }
+}
+
+accuracy_inverse(fc, obs, quant_pairs=pairs)
+
+accuracy_inverse(fc, obs, quant_pairs=pairs, summarize=FALSE)
+```
+
+# Visualizing scores
+
+We can visualize the output of our scoring functions alongside the forecast data and observations.
+
+```{r viz_scoring1}
+plot_forecast(fc, obs, score=bias)
+
+plot_forecast(fc, obs, score=crps, invert_scale=TRUE)
+
+plot_forecast(fc, obs, score=log_score)
+
+plot_forecast(fc, obs, quant_intervals=pairs, score=accuracy, quant_pairs=c(25,75))
+```
+
+Notes:
+
+- The `invert_scale` flag lets us flip the color scale, which is useful for CRPS where lower scores are better
+- The grey dots correspond to scores of negative infinity, which is a common occurence with the logarithmic score
+- Quantile intervals can be plotted and made to line up with `accuracy()` using the `quant_intervals` parameter

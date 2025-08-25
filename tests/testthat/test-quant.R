@@ -60,6 +60,11 @@ test_that("get_quantile() works", {
     get_quantile(dplyr::tibble(time=1:2, val=c(NA,2)), 50),
     "missing values and NaN's not allowed if 'na.rm' is FALSE"
   )
+
+  expect_equal(
+    get_quantile(groups2, 50),
+    groups2 |> dplyr::group_by(time) |> group_all(.add=TRUE) |> dplyr::summarize(quant=stats::quantile(val, .5)[[1]], .groups="drop")
+  )
 })
 
 test_that("pair_quantiles() works", {

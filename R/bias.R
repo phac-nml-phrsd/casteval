@@ -3,6 +3,8 @@
 #' Calculate forecast bias
 #'
 #' Given a forecast and a set of observations, compute the bias of the forecast's predictions.
+#'
+#' @details
 #' `bias()` looks for forecast data in the following order:
 #' 1. raw data (`val`)
 #' 2. mean (`val_mean`)
@@ -17,6 +19,7 @@
 #' @template summarize
 #'
 #' @returns A number between -1 and 1, inclusive. -1 means 100% underprediction and 1 means 100% overprediction.
+#' @template grouping
 #' @export
 #' @autoglobal
 #'
@@ -65,9 +68,15 @@ bias <- function(fcst, obs, summarize=TRUE) {
         dplyr::mutate(score=sign(prediction - val_obs))
 
     if(!summarize) {
-        df <- df |> dplyr::group_by(time) |> dplyr::summarize(val_obs=val_obs[[1]], score=mean(score))
+        df <- df |> group_all(.add=TRUE) |> dplyr::group_by(time, .add=TRUE) |> dplyr::summarize(val_obs=val_obs[[1]], score=mean(score), .groups="drop")
         return(df)
     }
 
-    mean(df$score)
+    if(has_groups(df)) {
+        df <- df |> group_all() |> dplyr::summarize(score=mean(score), .groups="drop")
+        return(df)
+    }
+    else {
+        return(mean(df$score))
+    }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/quant.R
 \name{parse_quant_pairs}
 \alias{parse_quant_pairs}
-\title{Pairs quantile pair(s)}
+\title{Parse quantile pair(s)}
 \usage{
 parse_quant_pairs(quant_pairs, df, allow_empty = FALSE)
 }

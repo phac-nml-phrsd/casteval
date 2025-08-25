@@ -14,9 +14,9 @@ is_forecast(fcst)
 }
 \description{
 Determines whether a given R object is a forecast object or not.
-An R object is a forecast object if:
 }
 \details{
+An R object is a forecast object if:
 \itemize{
 \item It is a list (and also not a data frame)
 \item It has a \code{name} field (may be \code{NULL})
