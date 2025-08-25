@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">casteval</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,9 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/dev.html">For developers</a></li>
+<li><a class="dropdown-item" href="../articles/denmark2020.html">Casteval demonstration</a></li>
+    <li><a class="dropdown-item" href="../articles/dev.html">For developers</a></li>
+    <li><a class="dropdown-item" href="../articles/grouping.html">Grouping forecast data</a></li>
     <li><a class="dropdown-item" href="../articles/scoring.html">Scoring forecasts</a></li>
   </ul>
 </li>
@@ -88,9 +90,10 @@ corresponding observations, and a particular scoring function</li>
 forecast</strong></a> using <code><a href="../reference/plot_forecast.html">plot_forecast()</a></code> with a scored
 forecast and observations</li>
 </ol>
-<p>This vignette guides you through this process.
-<!-- In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples.
-For a more realistic start-to-finish demonstration of the package's usage with real forecasts, please see [`vignette("denmark2020")`](denmark2020.html). --></p>
+<p>This vignette guides you through this process.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;In this vignette, we demonstrate
+&lt;a href="https://phac-nml-phrsd.github.io/casteval"&gt;casteval&lt;/a&gt;’s main functionality via deliberately simple
+examples. For a more realistic start-to-finish demonstration of the
+package’s usage with real forecasts, please see &lt;a href="denmark2020.html"&gt;&lt;code&gt;vignette("denmark2020")&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;'><sup>1</sup></a></p>
 </div>
 <div class="section level2">
 <h2 id="create-a-forecast-object">Create a forecast object<a class="anchor" aria-label="anchor" href="#create-a-forecast-object"></a>
@@ -211,6 +214,13 @@ column.</p>
 <p>All forecast data columns (<code>val</code>, <code>val_*</code>) as
 well as the <code>sim</code> column must be numeric.</p>
 </div>
+<div class="section level4">
+<h4 id="grouping">Grouping<a class="anchor" aria-label="anchor" href="#grouping"></a>
+</h4>
+<p><a href="https://phac-nml-phrsd.github.io/casteval">casteval</a> supports <em>grouping</em>, whereby multiple
+locations, scenarios, variables, etc. can be stored in a single data
+frame for scoring and plotting. For details, see this <a href="grouping.html">vignette</a></p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="forecast-list">Forecast input as lists<a class="anchor" aria-label="anchor" href="#forecast-list"></a>
@@ -257,7 +267,7 @@ begins in <code>dat</code><a class="footnote-ref" tabindex="0" data-bs-toggle="p
 fit period and a forecast period, distinguished by whether or not
 observations were available at the time of forecast, respectively. It
 can be useful in visualizing and/or scoring forecasts to distinguish
-between these two periods.&lt;/p&gt;"><sup>1</sup></a>. The <code>forecast_time</code> format must
+between these two periods.&lt;/p&gt;"><sup>2</sup></a>. The <code>forecast_time</code> format must
 match that of the times in the <code>time</code> entry of
 <code>dat</code>, and can be used in scoring functions to compute scores
 only after times relative to <code>forecast_time</code>.</li>
@@ -292,22 +302,25 @@ only after times relative to <code>forecast_time</code>.</li>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt;    time sim val</span></span>
-<span><span class="co">#&gt; 1     1   1 100</span></span>
-<span><span class="co">#&gt; 2     2   1 102</span></span>
-<span><span class="co">#&gt; 3     3   1 110</span></span>
-<span><span class="co">#&gt; 4     4   1 108</span></span>
-<span><span class="co">#&gt; 5     1   2 200</span></span>
-<span><span class="co">#&gt; 6     2   2 195</span></span>
-<span><span class="co">#&gt; 7     3   2 197</span></span>
-<span><span class="co">#&gt; 8     4   2 196</span></span>
-<span><span class="co">#&gt; 9     1   3 300</span></span>
-<span><span class="co">#&gt; 10    2   3 301</span></span>
-<span><span class="co">#&gt; 11    3   3 300</span></span>
-<span><span class="co">#&gt; 12    4   3 302</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 12 × 3</span></span></span>
+<span><span class="co">#&gt;     time   sim   val</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>     1     1   100</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>     2     1   102</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>     3     1   110</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>     4     1   108</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>     1     2   200</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>     2     2   195</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>     3     2   197</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>     4     2   196</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>     1     3   300</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>     2     3   301</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span>     3     3   300</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span>     4     3   302</span></span>
 <span><span class="co"># aside from the order of rows, the resulting forecast data frames are identical</span></span>
 <span><span class="fu">waldo</span><span class="fu">::</span><span class="fu"><a href="https://waldo.r-lib.org/reference/compare.html" class="external-link">compare</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">fc1</span><span class="op">$</span><span class="va">data</span>, <span class="va">time</span><span class="op">)</span>, <span class="va">fc2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> No differences</span></span>
+<span><span class="co">#&gt; `class(old)`: <span style="color: #BBBB00;">"tbl_df"</span> <span style="color: #BBBB00;">"tbl"</span> <span style="color: #555555;">"data.frame"</span></span></span>
+<span><span class="co">#&gt; `class(new)`:                <span style="color: #555555;">"data.frame"</span></span></span>
 <span><span class="co"># mean-and-quantiles forecast data</span></span>
 <span><span class="va">dat3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  time<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span>
@@ -473,7 +486,7 @@ overpredicts/underpredicts values</li>
 <p><code><a href="../reference/score.html">score()</a></code> scores every forecast passed to it against
 <code>obs</code>, and returns a score for each one.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;If &lt;code&gt;fcsts&lt;/code&gt; is a list of forecast objects, a
 list of scores will be returned. If &lt;code&gt;fcsts&lt;/code&gt; is a single
-forecast object, a single score will be returned&lt;/p&gt;"><sup>2</sup></a></p>
+forecast object, a single score will be returned&lt;/p&gt;"><sup>3</sup></a></p>
 <p>Below are examples of scoring. For a detailed explanation of how
 scoring works, see the <a href="scoring.html">scoring vignette</a></p>
 </div>
@@ -498,7 +511,7 @@ like the <code>quant_pairs</code> parameter in <code><a href="../reference/accur
 and it is used to draw quantile intervals on the plot.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;It is named &lt;code&gt;quant_intervals&lt;/code&gt; and not
 &lt;code&gt;quant_pairs&lt;/code&gt; so that it does not conflict when passing
 &lt;code&gt;quant_pairs&lt;/code&gt; through the &lt;code&gt;...&lt;/code&gt; parameter to a
-scoring function&lt;/p&gt;"><sup>3</sup></a></p>
+scoring function&lt;/p&gt;"><sup>4</sup></a></p>
 <p>If <code>val_q50</code> is present in the forecast data, then the
 median will be plotted. Similarly, if <code>val_mean</code> is present,
 the mean will be plotted.</p>
@@ -610,10 +623,10 @@ forecast. If you want further control over the visualization process,
 you can use these functions directly. They are as follows:</p>
 <ul>
 <li>
-<code><a href="../reference/plot_ensemble.html">plot_ensemble()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;See function documentation for parameters&lt;/p&gt;"><sup>4</sup></a> plots an ensemble of forecast
+<code><a href="../reference/plot_ensemble.html">plot_ensemble()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;See function documentation for parameters&lt;/p&gt;"><sup>5</sup></a> plots an ensemble of forecast
 realizations<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;If the forecast contains a &lt;code&gt;sim&lt;/code&gt; column, the
 realizations will be plotted as individual curves. Otherwise, the
-forecast data will be plotted as points.&lt;/p&gt;"><sup>5</sup></a>
+forecast data will be plotted as points.&lt;/p&gt;"><sup>6</sup></a>
 </li>
 <li>
 <code><a href="../reference/plot_observations.html">plot_observations()</a></code> plots a set of observations. If
@@ -660,7 +673,7 @@ using a pipe to produce the plot you want.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

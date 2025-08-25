@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">casteval</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,7 +19,9 @@
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/dev.html">For developers</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/denmark2020.html">Casteval demonstration</a></li>
+    <li><a class="dropdown-item" href="../articles/dev.html">For developers</a></li>
+    <li><a class="dropdown-item" href="../articles/grouping.html">Grouping forecast data</a></li>
     <li><a class="dropdown-item" href="../articles/scoring.html">Scoring forecasts</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -61,6 +63,12 @@
         <dd>Calculate accuracy given a single quantile pair</dd>
       </dl><dl><dt>
 
+          <code><a href="apply_facets.html">apply_facets()</a></code>
+
+        </dt>
+        <dd>Apply facets to plot</dd>
+      </dl><dl><dt>
+
           <code><a href="bias.html">bias()</a></code>
 
         </dt>
@@ -91,6 +99,12 @@
         <dd>Compute Continuous Ranked Probability Score for forecast</dd>
       </dl><dl><dt>
 
+          <code><a href="denmark2020df.html">denmark2020df</a></code>
+
+        </dt>
+        <dd>Denmark 2020 COVID-19 forecast data frame</dd>
+      </dl><dl><dt>
+
           <code><a href="denmark2020ens.html">denmark2020ens</a></code>
 
         </dt>
@@ -100,7 +114,7 @@
           <code><a href="denmark2020fc.html">denmark2020fc</a></code>
 
         </dt>
-        <dd>Denmark 2020 COVID-19 forecast data</dd>
+        <dd>Denmark 2020 COVID-19 forecast object</dd>
       </dl><dl><dt>
 
           <code><a href="denmark2020obs.html">denmark2020obs</a></code>
@@ -113,6 +127,24 @@
 
         </dt>
         <dd>Isolate projected values from fit values</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_group_cols.html">get_group_cols()</a></code>
+
+        </dt>
+        <dd>Get group column names</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_group_names.html">get_group_names()</a></code>
+
+        </dt>
+        <dd>Get group names of forecast data</dd>
+      </dl><dl><dt>
+
+          <code><a href="get_plotting_groups.html">get_plotting_groups()</a></code>
+
+        </dt>
+        <dd>Find the groups relevant to plotting</dd>
       </dl><dl><dt>
 
           <code><a href="get_quant_col.html">get_quant_col()</a></code>
@@ -145,6 +177,36 @@
         <dd>Get type of data frame time column</dd>
       </dl><dl><dt>
 
+          <code><a href="group_all.html">group_all()</a></code>
+
+        </dt>
+        <dd>Group forecast data frame</dd>
+      </dl><dl><dt>
+
+          <code><a href="groups1.html">groups1</a></code>
+
+        </dt>
+        <dd>Grouping example forecast 1</dd>
+      </dl><dl><dt>
+
+          <code><a href="groups2.html">groups2</a></code>
+
+        </dt>
+        <dd>Grouping example forecast 2</dd>
+      </dl><dl><dt>
+
+          <code><a href="groups_obs.html">groups_obs</a></code>
+
+        </dt>
+        <dd>Grouping example observations</dd>
+      </dl><dl><dt>
+
+          <code><a href="has_groups.html">has_groups()</a></code>
+
+        </dt>
+        <dd>Does the forecast data have groups?</dd>
+      </dl><dl><dt>
+
           <code><a href="integer_breaks.html">integer_breaks()</a></code>
 
         </dt>
@@ -161,6 +223,12 @@
 
         </dt>
         <dd>Is it a valid forecast?</dd>
+      </dl><dl><dt>
+
+          <code><a href="join_data.html">join_data()</a></code>
+
+        </dt>
+        <dd>Join two data frames</dd>
       </dl><dl><dt>
 
           <code><a href="join_fcst_obs.html">join_fcst_obs()</a></code>
@@ -196,7 +264,7 @@
           <code><a href="parse_quant_pairs.html">parse_quant_pairs()</a></code>
 
         </dt>
-        <dd>Pairs quantile pair(s)</dd>
+        <dd>Parse quantile pair(s)</dd>
       </dl><dl><dt>
 
           <code><a href="plot_KDE.html">plot_KDE()</a></code>
@@ -283,10 +351,22 @@
         <dd>Validate forecast in named-list format</dd>
       </dl><dl><dt>
 
+          <code><a href="validate_group_names.html">validate_group_names()</a></code>
+
+        </dt>
+        <dd>Validate forecast group names</dd>
+      </dl><dl><dt>
+
           <code><a href="validate_obs.html">validate_obs()</a></code>
 
         </dt>
         <dd>Validate observations data frame</dd>
+      </dl><dl><dt>
+
+          <code><a href="validate_plotting_groups.html">validate_plotting_groups()</a></code>
+
+        </dt>
+        <dd>Check that groups can be plotted</dd>
       </dl><dl><dt>
 
           <code><a href="validate_quant.html">validate_quant()</a></code>
@@ -332,7 +412,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
