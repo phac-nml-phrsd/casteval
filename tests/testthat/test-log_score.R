@@ -83,7 +83,7 @@ test_that("log_score() works", {
       summarize=FALSE
     ),
     dplyr::tibble(
-      time=1:3, val_obs=c(-1, 2.5, 5), score=c(-4.03779, -1.649454, -2.004065)
+      time=1:3, score=c(-4.03779, -1.649454, -2.004065), val_obs=c(-1, 2.5, 5)
     ),
     tolerance=0.0001
   )
@@ -198,6 +198,24 @@ test_that("log_score() works", {
     bw=bw.nrd(dat2)
   )
   expect_equal(s1,s2)
+})
+
+test_that("log_score() grouping works", {
+  fc <- create_forecast(groups2)
+  obs <- groups_obs
+
+  res <- join_fcst_obs(fc$data, obs) |> dplyr::group_by(time) |> group_all(.add=TRUE) |>
+      dplyr::summarize(score=-scoringRules::logs_sample(val_obs[[1]], val), val_obs=val_obs[[1]], .groups="drop")
+
+  expect_equal(
+    log_score(fc, obs, summarize=FALSE),
+    res
+  )
+
+  expect_equal(
+    log_score(fc, obs, at=2),
+    res |> dplyr::filter(time==2)
+  )
 })
 
 test_that("make_log_score() works", {

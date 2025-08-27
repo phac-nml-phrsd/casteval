@@ -54,6 +54,24 @@ test_that("bias() works", {
   )
 })
 
+test_that("bias() grouping works", {
+  fc <- create_forecast(groups1)
+  obs <- groups_obs
+  
+  expect_equal(
+    bias(fc, obs),
+    join_fcst_obs(fc$data, obs) |> dplyr::mutate(score=sign(val_mean-val_obs)) |>
+        group_all() |> dplyr::summarize(score=mean(score), .groups="drop")
+  )
+
+  expect_equal(
+    bias(fc, obs, summarize=FALSE),
+    join_fcst_obs(fc$data, obs) |> dplyr::mutate(score=sign(val_mean-val_obs)) |>
+        group_all() |> dplyr::group_by(time, .add=TRUE) |>
+        dplyr::summarize(val_obs=val_obs[[1]], score=mean(score), .groups="drop")
+  )
+})
+
 # TODO test summarizing/unsummarizing of raw, mean, and median formats
 # add output messages for whether using raw, mean, or median
 # test graphing of bias unsummarized scoring

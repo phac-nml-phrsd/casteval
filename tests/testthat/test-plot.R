@@ -1,0 +1,88 @@
+# test the facets on every function that does facets
+test_that("facets work", {
+  vdiffr::expect_doppelganger("facet1",
+    NULL |> plot_observations(groups_obs |> dplyr::filter(grp_variable=="hosp"))
+  )
+
+  vdiffr::expect_doppelganger("facet2",
+    NULL |> plot_observations(groups_obs |> dplyr::filter(grp_scenario==1))
+  )
+
+  vdiffr::expect_doppelganger("facet3",
+    NULL |> plot_observations(groups_obs |> dplyr::filter(grp_province=="ON"))
+  )
+
+  vdiffr::expect_doppelganger("facet4",
+    NULL |> plot_observations(groups_obs |> dplyr::filter(grp_province=="ON", grp_scenario==1))
+  )
+
+  expect_error(
+    NULL |> plot_observations(groups_obs),
+    "more than 2 groups contain multiple values"
+  )
+
+  vdiffr::expect_doppelganger("facet5",
+    NULL |> plot_ensemble(create_forecast(groups2 |> dplyr::filter(grp_province=="ON")))
+  )
+
+  vdiffr::expect_doppelganger("facet6",
+    NULL |> plot_ensemble(create_forecast(groups2 |> dplyr::filter(grp_province=="ON", grp_variable=="case")))
+  )
+
+  vdiffr::expect_doppelganger("facet7",
+    NULL |> plot_mean(create_forecast(groups1 |> dplyr::filter(grp_province=="ON", grp_variable=="case")))
+  )
+
+  vdiffr::expect_doppelganger("facet8",
+    NULL |> plot_mean(create_forecast(groups1 |> dplyr::filter(grp_variable=="case")))
+  )
+
+  vdiffr::expect_doppelganger("facet9",
+    NULL |> plot_quant_intervals(create_forecast(groups1 |> dplyr::filter(grp_variable=="case")))
+  )
+
+  vdiffr::expect_doppelganger("facet10",
+    NULL |> plot_quant_intervals(create_forecast(groups1 |> dplyr::filter(grp_variable=="case", grp_scenario==2)))
+  )
+
+  vdiffr::expect_doppelganger("facet11",
+    NULL |> plot_quantiles(create_forecast(groups1 |> dplyr::filter(grp_variable=="case", grp_scenario==2)))
+  )
+
+  vdiffr::expect_doppelganger("facet12",
+    NULL |> plot_quantiles(create_forecast(groups1 |> dplyr::filter(grp_scenario==2)))
+  )
+
+  vdiffr::expect_doppelganger("facet13",
+    plot_forecast(create_forecast(groups2 |> dplyr::filter(grp_scenario==1)))
+  )
+
+  vdiffr::expect_doppelganger("facet14",
+    plot_forecast(create_forecast(groups2 |> dplyr::filter(grp_scenario==1, grp_province=="QC")))
+  )
+
+  vdiffr::expect_doppelganger("facet15",
+    plot_forecast(create_forecast(groups1 |> dplyr::filter(grp_scenario==1)))
+  )
+
+  vdiffr::expect_doppelganger("facet16",
+    plot_forecast(create_forecast(groups1 |> dplyr::filter(grp_scenario==1, grp_province=="ON")))
+  )
+
+  # TODO plot_forecast() definitely needs to be modified to do group filtering for us. it's way too tedious to have to filter the forecast and observations in separate but identical ways
+  vdiffr::expect_doppelganger("facet17",
+    plot_forecast(
+      create_forecast(groups1 |> dplyr::filter(grp_scenario==1, grp_province=="ON")),
+      groups_obs |> dplyr::filter(grp_scenario==1, grp_province=="ON"),
+      score=bias
+    )
+  )
+
+  vdiffr::expect_doppelganger("facet18",
+    plot_forecast(
+      create_forecast(groups1 |> dplyr::filter(grp_scenario==1)),
+      groups_obs |> dplyr::filter(grp_scenario==1),
+      score=bias
+    )
+  )
+})

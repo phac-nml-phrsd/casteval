@@ -4,9 +4,10 @@
 #' Compute Continuous Ranked Probability Score for forecast
 #'
 #' Given a forecast and set of observations, compute the
-#' 
 #' Continuous Ranked Probability Score (CRPS) for every time point.
-#' The CRPS for a given distribution `f` and observation `y`,
+#' 
+#' @details
+#' For a given distribution `f` and observation `y`,
 #' let `F` be the CDF of `f`. Then the CRPS is the integral of the square
 #' of `F(x) - H(x - y)`, where `H` is the Heaviside function.
 #' 
@@ -18,6 +19,7 @@
 #' @template summarize
 #'
 #' @template at_after_returns
+#' @template grouping
 #' @export
 #' @autoglobal
 #'
@@ -30,7 +32,7 @@
 #' crps(fc, data.frame(time=1:3, val_obs=c(3,4,5)), summarize=FALSE)
 #' 
 #' crps(fc, data.frame(time=1:3, val_obs=c(3,4,5)), at=2)
-crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
+crps <- function(fcst, obs, summarize=TRUE, at=NULL, after=NULL) {
     # validate
     validate_fcst_obs_pair(fcst, obs)
     if(!"val" %in% colnames(fcst$data)) {
@@ -42,15 +44,15 @@ crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
 
     # join & group
     df <- df |>
-        dplyr::select(time, val) |>
         join_fcst_obs(obs) |>
-        dplyr::group_by(time)
+        dplyr::group_by(time) |>
+        group_all(.add=TRUE)
 
     # compute the CRPS score
-    df <- df |> dplyr::summarize(score=scoringRules::crps_sample(val_obs[[1]], val), val_obs=val_obs[[1]])
+    df <- df |> dplyr::summarize(score=scoringRules::crps_sample(val_obs[[1]], val), val_obs=val_obs[[1]], .groups="drop")
 
     if(!summarize) {
-        return(dplyr::select(df, time, val_obs, score))
+        return(df)
     }
 
     t <- calc_specified_time(fcst, at, after)
@@ -59,5 +61,10 @@ crps <- function(fcst, obs, at=NULL, after=NULL, summarize=TRUE) {
         stop(glue::glue("score was not calculated for time {t}"))
     }
 
-    df$score[[1]]
+    if(has_groups(df)) {
+        return(df |> dplyr::mutate(time=NULL, val_obs=NULL))
+    }
+    else {
+        return(df$score[[1]])
+    }
 }

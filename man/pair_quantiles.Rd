@@ -15,7 +15,7 @@ and \code{unpaired}, a vector of all the leftover quantiles.
 }
 \description{
 Given a list of quantiles, pair together the ones symmetrical around the median.
-For example, the 2.5\% quantile and 97.5\% quantile go together.
+For example, the 2.5\% quantile and 97.5\% quantile form a pair.
 The 50\% quantile will never be paired.
 }
 \examples{

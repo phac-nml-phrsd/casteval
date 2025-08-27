@@ -37,11 +37,14 @@ plot_ensemble <- function(plt=NULL, fcst, alpha=0.3, colour="black") {
 
     # if sim numbers present, plot ensemble curves
     if("sim" %in% cols) {
-        return(plt + ggplot2::geom_line(ggplot2::aes(x=time, y=val, group=sim), colour=colour, alpha=alpha, data=fcst$data))
+        plt <- plt + ggplot2::geom_line(ggplot2::aes(x=time, y=val, group=sim), colour=colour, alpha=alpha, data=fcst$data)
     }
     
     # if sim numbers absent, just plot points
     else {
-        return(plt + ggplot2::geom_point(ggplot2::aes(x=time, y=val), alpha=alpha, colour=colour, data=fcst$data))
+        plt <- plt + ggplot2::geom_point(ggplot2::aes(x=time, y=val), alpha=alpha, colour=colour, data=fcst$data)
     }
+
+    validate_plotting_groups(fcst$data)
+    plt |> apply_facets(get_plotting_groups(fcst$data))
 }

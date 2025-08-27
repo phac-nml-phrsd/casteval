@@ -2,7 +2,7 @@
 title: "Evaluate time series forecasts with casteval"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{casteval}
+  %\VignetteIndexEntry{Evaluate time series forecasts with casteval}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -30,9 +30,7 @@ A typical workflow using `{casteval}` is:
 2. [**Score the forecast**](#score-a-forecast) using `score()`, which accepts forecast object(s), corresponding observations, and a particular scoring function
 3. [**Visualize the forecast**](#visualize-forecast-evaluation) using `plot_forecast()` with a scored forecast and observations
 
-This vignette guides you through this process. 
-<!-- In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples.
-For a more realistic start-to-finish demonstration of the package's usage with real forecasts, please see [`vignette("denmark2020")`](denmark2020.html). -->
+This vignette guides you through this process.^[In this vignette, we demonstrate `{casteval}`'s main functionality via deliberately simple examples. For a more realistic start-to-finish demonstration of the package's usage with real forecasts, please see [`vignette("denmark2020")`](denmark2020.html).]
 
 # Create a forecast object {#create-a-forecast-object}
 
@@ -102,6 +100,9 @@ data.frame(
 ```
 
 All forecast data columns (`val`, `val_*`) as well as the `sim` column must be numeric.
+
+### Grouping
+`{casteval}` supports *grouping*, whereby multiple locations, scenarios, variables, etc. can be stored in a single data frame for scoring and plotting. For details, see this [vignette](grouping.html)
 
 ## Forecast input as lists {#forecast-list}
 
