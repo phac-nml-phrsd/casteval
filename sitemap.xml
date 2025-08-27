@@ -43,6 +43,7 @@
 <url><loc>https://phac-nml-phrsd.github.io/casteval/reference/join_data.html</loc></url>
 <url><loc>https://phac-nml-phrsd.github.io/casteval/reference/join_fcst_obs.html</loc></url>
 <url><loc>https://phac-nml-phrsd.github.io/casteval/reference/log_score.html</loc></url>
+<url><loc>https://phac-nml-phrsd.github.io/casteval/reference/log_score_approx_normal.html</loc></url>
 <url><loc>https://phac-nml-phrsd.github.io/casteval/reference/make_accuracy.html</loc></url>
 <url><loc>https://phac-nml-phrsd.github.io/casteval/reference/make_log_score.html</loc></url>
 <url><loc>https://phac-nml-phrsd.github.io/casteval/reference/pair_quantiles.html</loc></url>
